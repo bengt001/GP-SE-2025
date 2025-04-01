@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>de.techfak.gse</groupId>
+    <artifactId>template</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>template</name>
+    <description>Project Template GPSE Project Summer Term 2025</description>
+    <url/>
+    <packaging>pom</packaging>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.4.3</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+
+    <properties>
+        <main.basedir>${project.basedir}</main.basedir>
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <java.version>21</java.version>
+
+        <!-- Spring Boot Dependencies -->
+        <!-- Spring Boot Starter -->
+        <sbs-data-jpa.version>3.4.3</sbs-data-jpa.version>
+        <sbs-web.version>3.4.3</sbs-web.version>
+        <sbs-test.version>3.4.3</sbs-test.version>
+        <!-- Spring Boot -->
+        <sb-devtools.version>3.4.3</sb-devtools.version>
+        <sb-config-processor.version>3.4.3</sb-config-processor.version>
+        <!-- Other -->
+        <h2-database.version>2.3.232</h2-database.version>
+        <lombok.version>1.18.36</lombok.version>
+
+        <!--suppress UnresolvedMavenProperty -->
+        <skipUTs>${skipTests}</skipUTs>
+
+        <!-- Build Tools -->
+        <build-plugin.jacoco.version>0.8.12</build-plugin.jacoco.version>
+        <compilerPlugin.version>3.13.0</compilerPlugin.version>
+        <buildHelper.version>3.6.0</buildHelper.version>
+        <checkstylePlugin.version>3.3.1</checkstylePlugin.version>
+        <checkstyle.version>8.38</checkstyle.version>
+        <spotbugsPlugin.version>4.9.1.0</spotbugsPlugin.version>
+        <spotbugs.version>4.9.1</spotbugs.version>
+        <jacoco.version>0.8.12</jacoco.version>
+        <junit.version>5.11.4</junit.version>
+        <surefirePlugin.version>3.5.2</surefirePlugin.version>
+        <maven-clean-plugin.version>3.4.1</maven-clean-plugin.version>
+        <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
+        <spring-boot-maven-plugin.version>3.4.3</spring-boot-maven-plugin.version>
+        <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
+        <maven-javadoc-plugin.version>3.11.2</maven-javadoc-plugin.version>
+    </properties>
+
+    <modules>
+        <module>frontend</module>
+        <module>backend</module>
+    </modules>
+
+    <build>
+        <defaultGoal>clean verify</defaultGoal>
+        <finalName>${project.artifactId}</finalName>
+        <plugins>
+            <!-- Maven Clean -->
+            <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>${maven-clean-plugin.version}</version>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>frontend/node</directory>
+                        </fileset>
+                        <fileset>
+                            <directory>frontend/node_modules</directory>
+                        </fileset>
+                    </filesets>
+                </configuration>
+            </plugin>
+            <!-- Surefire -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${surefirePlugin.version}</version>
+                <configuration>
+                    <!--suppress MavenModelInspection -->
+                    <skipTests>${skipUTs}</skipTests>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
