@@ -7,7 +7,7 @@
           @click.stop="drawer = !drawer"
         ></v-app-bar-nav-icon>
 
-        <v-toolbar-title>Template GPSE 2025</v-toolbar-title>
+        <v-toolbar-title>Welcome Message Placeholder</v-toolbar-title>
 
         <v-spacer></v-spacer>
 
@@ -15,7 +15,7 @@
           <v-btn icon="mdi-magnify" variant="text"></v-btn>
         </template>
 
-        <v-btn icon="mdi-dots-vertical" variant="text"></v-btn>
+        <v-btn icon="mdi-account" variant="text"></v-btn>
       </v-app-bar>
 
       <v-navigation-drawer
