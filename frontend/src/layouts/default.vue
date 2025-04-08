@@ -15,7 +15,7 @@
           <v-btn icon="mdi-magnify" variant="text"></v-btn>
         </template>
 
-        <v-btn icon="mdi-account" variant="text"></v-btn>
+        <router-link to="/login"><v-btn icon="mdi-account" variant="text"></v-btn></router-link>
       </v-app-bar>
 
       <v-navigation-drawer
