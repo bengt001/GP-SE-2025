@@ -10,31 +10,44 @@ const passwordRepeat = ref('')
 const registerRepeat_snack = ref(false)
 const registerEmail_snack = ref(false)
 const registerDone_snack = ref(false)
+const validEmail_snack = ref(false)
+const validPassword_snack = ref(false)
+const regexEmail = new RegExp("^[^\s@]+@[^\s@]+\.[^\s@]+")
+const regexPassword = new RegExp("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}")
 
 const router = useRouter()
 
 function login() {
-  userStore.authenticate(email.value, password.value)
-  if (userStore.authenticated) {
-    login_snack.value = false
-    router.push('/')
+  if (!regexEmail.test(email.value)) {
+    validEmail_snack.value = true
   } else {
-    login_snack.value = true
+    userStore.authenticate(email.value, password.value)
+    if (userStore.authenticated) {
+      login_snack.value = false
+      router.push('/')
+    } else {
+      login_snack.value = true
+    }
   }
 }
 
 function register() {
-  if (userStore.emailTaken(email.value)) {
-    registerEmail_snack.value = true
-  } else if (password.value !== passwordRepeat.value) {
-    registerRepeat_snack.value = true
+  if (!regexEmail.test(email.value)) {
+    validEmail_snack.value = true
   } else {
-    registerDone_snack.value = true
-    setTimeout(() => {
-      router.push('/')
-    }, 2000)
+    if (userStore.emailTaken(email.value)) {
+      registerEmail_snack.value = true
+    } else if (password.value !== passwordRepeat.value) {
+      registerRepeat_snack.value = true
+    } else if (!regexPassword.test(password.value)) {
+      validPassword_snack.value = true
+    } else {
+      registerDone_snack.value = true
+      setTimeout(() => {
+        router.push('/')
+      }, 2000)
+    }
   }
-
 }
 </script>
 
@@ -99,7 +112,7 @@ function register() {
       class="elevation-24"
       color="red-accent-4"
     >
-      Wrong username or password
+      Falscher Nutzername oder Passwort
     </v-snackbar>
 
     <v-snackbar
@@ -107,7 +120,7 @@ function register() {
       :timeout="2000"
       class="elevation-24"
       color="red-accent-4">
-      Passwords do not match
+      Passwörter stimmen nicht überein
     </v-snackbar>
 
     <v-snackbar
@@ -115,7 +128,7 @@ function register() {
       :timeout="2000"
       class="elevation-24"
       color="red-accent-4">
-      Email already exists
+      Email existiert bereits
     </v-snackbar>
 
     <v-snackbar
@@ -123,7 +136,23 @@ function register() {
       :timeout="2000"
       class="elevation-24"
       color="green-accent-4">
-      Registration successful
+      Registrierung erfolgreich
+    </v-snackbar>
+
+    <v-snackbar
+      v-model="validEmail_snack"
+      :timeout="2000"
+      class="elevation-24"
+      color="red-accent-4">
+      Kein gültiges Email format
+    </v-snackbar>
+
+    <v-snackbar
+      v-model="validPassword_snack"
+      :timeout="2000"
+      class="elevation-24"
+      color="red-accent-4">
+      Das Passwort muss mindestens 8 Zeichen lang sein und mindestens eine Zahl und ein Buchstabe enthalten.
     </v-snackbar>
   </v-responsive>
 </template>
