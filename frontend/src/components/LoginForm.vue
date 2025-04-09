@@ -26,7 +26,7 @@ function login() {
       elevation="12"
       color="surface-variant"
       max-width="344"
-      title="Willkommen"
+      title="Login"
     >
       <template #actions>
         <v-col>
@@ -40,7 +40,7 @@ function login() {
             type="password"
           />
           <v-row justify="space-between">
-            <v-btn text="Anmelden" @click="login"/>
+            <v-btn class="loginButton" @click="login">Anmelden</v-btn>
           </v-row>
         </v-col>
       </template>
@@ -55,4 +55,11 @@ function login() {
     </v-snackbar>
   </v-responsive>
 </template>
+
+<style>
+.loginButton {
+  background-color: #054D63;
+  color: white;
+}
+</style>
 
