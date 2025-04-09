@@ -6,6 +6,8 @@ const email = ref('')
 const password = ref('')
 const login_snack = ref(false)
 const tab = ref('login')
+const passwordRepeat =  ref('')
+const register_snack = ref(false)
 
 const router = useRouter()
 
@@ -16,6 +18,11 @@ function login() {
     router.push('/')
   } else {
     login_snack.value = true
+  }
+}
+function register() {
+  if (password.value !== passwordRepeat.value) {
+    register_snack.value = true
   }
 }
 </script>
@@ -50,7 +57,6 @@ function login() {
               </v-row>
             </v-col>
           </v-tabs-window-item>
-
           <v-tabs-window-item value="register">
             <v-text-field
               v-model="email"
@@ -61,9 +67,14 @@ function login() {
               placeholder="Password"
               type="password"
             />
+            <v-text-field
+              v-model="passwordRepeat"
+              placeholder="Password wiederholen"
+              type="password"
+            />
             <v-col>
               <v-row justify="space-between">
-                <v-btn class="blueButton" @click="login">Anmelden</v-btn>
+                <v-btn class="blueButton" @click="register">Regestrieren</v-btn>
               </v-row>
             </v-col>
           </v-tabs-window-item>
@@ -78,6 +89,14 @@ function login() {
       color="red-accent-4"
     >
       Wrong username or password
+    </v-snackbar>
+
+    <v-snackbar
+      v-model="register_snack"
+      :timeout="2000"
+      class="elevation-24"
+      color="red-accent-4">
+      Passwords do not match
     </v-snackbar>
   </v-responsive>
 </template>
