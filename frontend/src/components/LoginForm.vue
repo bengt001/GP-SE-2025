@@ -6,8 +6,10 @@ const email = ref('')
 const password = ref('')
 const login_snack = ref(false)
 const tab = ref('login')
-const passwordRepeat =  ref('')
-const register_snack = ref(false)
+const passwordRepeat = ref('')
+const registerRepeat_snack = ref(false)
+const registerEmail_snack = ref(false)
+const registerDone_snack = ref(false)
 
 const router = useRouter()
 
@@ -20,10 +22,19 @@ function login() {
     login_snack.value = true
   }
 }
+
 function register() {
-  if (password.value !== passwordRepeat.value) {
-    register_snack.value = true
+  if (userStore.emailTaken(email.value)) {
+    registerEmail_snack.value = true
+  } else if (password.value !== passwordRepeat.value) {
+    registerRepeat_snack.value = true
+  } else {
+    registerDone_snack.value = true
+    setTimeout(() => {
+      router.push('/')
+    }, 2000)
   }
+
 }
 </script>
 
@@ -92,11 +103,27 @@ function register() {
     </v-snackbar>
 
     <v-snackbar
-      v-model="register_snack"
+      v-model="registerRepeat_snack"
       :timeout="2000"
       class="elevation-24"
       color="red-accent-4">
       Passwords do not match
+    </v-snackbar>
+
+    <v-snackbar
+      v-model="registerEmail_snack"
+      :timeout="2000"
+      class="elevation-24"
+      color="red-accent-4">
+      Email already exists
+    </v-snackbar>
+
+    <v-snackbar
+      v-model="registerDone_snack"
+      :timeout="2000"
+      class="elevation-24"
+      color="green-accent-4">
+      Registration successful
     </v-snackbar>
   </v-responsive>
 </template>
