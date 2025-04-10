@@ -12,7 +12,7 @@ const registerEmail_snack = ref(false)
 const registerDone_snack = ref(false)
 const validEmail_snack = ref(false)
 const validPassword_snack = ref(false)
-const loginSucess_snack = ref(false)
+const loginSuccess_snack = ref(false)
 const regexEmail = new RegExp("^[^\s@]+@[^\s@]+\.[^\s@]+")
 const regexPassword = new RegExp("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}")
 
@@ -25,10 +25,10 @@ function login() {
     userStore.authenticate(email.value, password.value)
     if (userStore.authenticated) {
       login_snack.value = false
-      loginSucess_snack.value = true
+      loginSuccess_snack.value = true
       setTimeout(() => {
         router.push('/')
-      },1000)
+      }, 1000)
     } else {
       login_snack.value = true
     }
@@ -65,8 +65,10 @@ function register() {
       color="surface-variant"
       max-width="344"
     >
-      <v-tabs v-model="tab"
-              class="blueButton">
+      <v-tabs
+        v-model="tab"
+        class="blueButton"
+      >
         <v-tab value="login">
           Login
         </v-tab>
@@ -88,8 +90,10 @@ function register() {
             />
             <v-col>
               <v-row justify="space-between">
-                <v-btn class="blueButton"
-                       @click="login">
+                <v-btn
+                  class="blueButton"
+                  @click="login"
+                >
                   Anmelden
                 </v-btn>
               </v-row>
@@ -112,8 +116,10 @@ function register() {
             />
             <v-col>
               <v-row justify="space-between">
-                <v-btn class="blueButton"
-                       @click="register">
+                <v-btn
+                  class="blueButton"
+                  @click="register"
+                >
                   Regestrieren
                 </v-btn>
               </v-row>
@@ -133,7 +139,7 @@ function register() {
     </v-snackbar>
 
     <v-snackbar
-      v-model="loginSucess_snack"
+      v-model="loginSuccess_snack"
       :timeout="1000"
       class="elevation-24"
       color="green-accent-4"

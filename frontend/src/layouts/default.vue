@@ -15,7 +15,25 @@
           <v-btn icon="mdi-magnify" variant="text"></v-btn>
         </template>
 
-        <router-link to="/login"><v-btn icon="mdi-account" variant="text"></v-btn></router-link>
+        <router-link
+          v-if="!userStore.authenticated"
+          to="/login"
+        >
+          <v-btn
+            icon="mdi-account"
+            variant="text"
+          />
+        </router-link>
+
+        <router-link
+          v-else
+          to="/profile"
+        >
+          <v-btn
+            icon="mdi-account"
+            variant="text"
+          />
+        </router-link>
       </v-app-bar>
 
       <v-navigation-drawer
@@ -36,6 +54,10 @@
 </template>
 
 <script lang="ts" setup>
+import {useUserStore} from "@/stores/users";
+
+const userStore = useUserStore();
+
 const drawer = ref(false)
 const group = ref()
 const items = ref([
