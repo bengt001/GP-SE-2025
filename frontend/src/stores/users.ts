@@ -26,6 +26,9 @@ export const useUserStore = defineStore('users', {
         }
       }
       return false;
+    },
+    addUser(email: string,password: string) {
+      this.registeredUsers.push({email, password});
     }
   }
 }

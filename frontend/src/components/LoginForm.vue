@@ -12,6 +12,7 @@ const registerEmail_snack = ref(false)
 const registerDone_snack = ref(false)
 const validEmail_snack = ref(false)
 const validPassword_snack = ref(false)
+const loginSucess_snack = ref(false)
 const regexEmail = new RegExp("^[^\s@]+@[^\s@]+\.[^\s@]+")
 const regexPassword = new RegExp("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}")
 
@@ -24,7 +25,10 @@ function login() {
     userStore.authenticate(email.value, password.value)
     if (userStore.authenticated) {
       login_snack.value = false
-      router.push('/')
+      loginSucess_snack.value = true
+      setTimeout(() => {
+        router.push('/')
+      },1000)
     } else {
       login_snack.value = true
     }
@@ -42,6 +46,8 @@ function register() {
     } else if (!regexPassword.test(password.value)) {
       validPassword_snack.value = true
     } else {
+      userStore.addUser(email.value, password.value)
+      userStore.authenticate(email.value, password.value)
       registerDone_snack.value = true
       setTimeout(() => {
         router.push('/')
@@ -113,6 +119,14 @@ function register() {
       color="red-accent-4"
     >
       Falscher Nutzername oder Passwort
+    </v-snackbar>
+
+    <v-snackbar
+      v-model="loginSucess_snack"
+      :timeout="1000"
+      class="elevation-24"
+      color="green-accent-4">
+      Login erfolgreich
     </v-snackbar>
 
     <v-snackbar
