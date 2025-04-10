@@ -65,9 +65,14 @@ function register() {
       color="surface-variant"
       max-width="344"
     >
-      <v-tabs v-model="tab" class="blueButton">
-        <v-tab value="login">Login</v-tab>
-        <v-tab value="register">Registrieren</v-tab>
+      <v-tabs v-model="tab"
+              class="blueButton">
+        <v-tab value="login">
+          Login
+        </v-tab>
+        <v-tab value="register">
+          Registrieren
+        </v-tab>
       </v-tabs>
       <v-card-text>
         <v-tabs-window v-model="tab">
@@ -83,7 +88,10 @@ function register() {
             />
             <v-col>
               <v-row justify="space-between">
-                <v-btn class="blueButton" @click="login">Anmelden</v-btn>
+                <v-btn class="blueButton"
+                       @click="login">
+                  Anmelden
+                </v-btn>
               </v-row>
             </v-col>
           </v-tabs-window-item>
@@ -104,7 +112,10 @@ function register() {
             />
             <v-col>
               <v-row justify="space-between">
-                <v-btn class="blueButton" @click="register">Regestrieren</v-btn>
+                <v-btn class="blueButton"
+                       @click="register">
+                  Regestrieren
+                </v-btn>
               </v-row>
             </v-col>
           </v-tabs-window-item>
@@ -125,7 +136,8 @@ function register() {
       v-model="loginSucess_snack"
       :timeout="1000"
       class="elevation-24"
-      color="green-accent-4">
+      color="green-accent-4"
+    >
       Login erfolgreich
     </v-snackbar>
 
@@ -133,7 +145,8 @@ function register() {
       v-model="registerRepeat_snack"
       :timeout="2000"
       class="elevation-24"
-      color="red-accent-4">
+      color="red-accent-4"
+    >
       Passwörter stimmen nicht überein
     </v-snackbar>
 
@@ -141,7 +154,8 @@ function register() {
       v-model="registerEmail_snack"
       :timeout="2000"
       class="elevation-24"
-      color="red-accent-4">
+      color="red-accent-4"
+    >
       Email existiert bereits
     </v-snackbar>
 
@@ -149,7 +163,8 @@ function register() {
       v-model="registerDone_snack"
       :timeout="2000"
       class="elevation-24"
-      color="green-accent-4">
+      color="green-accent-4"
+    >
       Registrierung erfolgreich
     </v-snackbar>
 
@@ -157,7 +172,8 @@ function register() {
       v-model="validEmail_snack"
       :timeout="2000"
       class="elevation-24"
-      color="red-accent-4">
+      color="red-accent-4"
+    >
       Kein gültiges Email format
     </v-snackbar>
 
@@ -165,7 +181,8 @@ function register() {
       v-model="validPassword_snack"
       :timeout="2000"
       class="elevation-24"
-      color="red-accent-4">
+      color="red-accent-4"
+    >
       Das Passwort muss mindestens 8 Zeichen lang sein und mindestens eine Zahl und ein Buchstabe enthalten.
     </v-snackbar>
   </v-responsive>
