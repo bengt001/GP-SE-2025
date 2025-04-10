@@ -7,7 +7,7 @@
           @click.stop="drawer = !drawer"
         ></v-app-bar-nav-icon>
 
-        <v-toolbar-title>Welcome Message Placeholder</v-toolbar-title>
+        <v-toolbar-title>Wilkommen {{ userStore.username }}</v-toolbar-title>
 
         <v-spacer></v-spacer>
 
