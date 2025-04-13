@@ -19,4 +19,15 @@ public class UserServiceImpl implements UserService {
         return userRepository.findById(email)
         .orElseThrow(() -> new UsernameNotFoundException("User Email " + email + " not found."));
     }
+
+    @Override
+    public User createUser(final String username, final String email,
+                           final String password, final String... roles) {
+        final User user = new User(username, email, password);
+        for (final String role : roles) {
+            user.addRole(role);
+        }
+        final User saved = userRepository.save(user);
+        return saved;
+    }
 }
