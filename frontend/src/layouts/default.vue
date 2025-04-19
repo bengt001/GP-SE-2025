@@ -21,7 +21,7 @@
         >
           <v-btn
             icon="mdi-account"
-            variant="text"
+            color="white"
           />
         </router-link>
 
