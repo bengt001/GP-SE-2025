@@ -7,9 +7,11 @@
           @click.stop="drawer = !drawer"
         ></v-app-bar-nav-icon>
 
-        <v-toolbar-title>Wilkommen {{ userStore.username }}</v-toolbar-title>
+        <v-toolbar-title
+        style="font-size: 20px;"
+        >Wilkommen {{ userStore.username }}</v-toolbar-title>
 
-        <v-spacer></v-spacer>
+
 
         <template v-if="$vuetify.display.mdAndUp">
           <v-btn icon="mdi-magnify" variant="text"></v-btn>
@@ -31,7 +33,7 @@
         >
           <v-btn
             icon="mdi-account"
-            variant="text"
+            color="white"
           />
         </router-link>
       </v-app-bar>
