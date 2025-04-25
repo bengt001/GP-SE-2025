@@ -18,12 +18,12 @@ const regexPassword = new RegExp("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}")
 
 const router = useRouter()
 
-/*
+
 function login() {
   if (!regexEmail.test(email.value)) {
     validEmail_snack.value = true
   } else {
-    userStore.requestToken({username: username.value, password: password.value}).then(() => {
+    userStore.requestToken({username: email.value, password: password.value}).then(() => {
     login_snack.value = false
     loginSuccess_snack.value = true
       setTimeout(() => {
@@ -35,7 +35,7 @@ function login() {
   })
   }
 }
-
+/*
 function register() {
   if (!regexEmail.test(email.value)) {
     validEmail_snack.value = true
@@ -56,46 +56,10 @@ function register() {
     }
   }
 }
-}
- */
+*/
 
-function login() {
-  if (!regexEmail.test(email.value)) {
-    validEmail_snack.value = true
-  } else {
-    userStore.authenticate(email.value, password.value)
-    if (userStore.authenticated) {
-      login_snack.value = false
-      loginSuccess_snack.value = true
-      setTimeout(() => {
-        router.push('/')
-      }, 1000)
-    } else {
-      login_snack.value = true
-    }
-  }
-}
 
-function register() {
-  if (!regexEmail.test(email.value)) {
-    validEmail_snack.value = true
-  } else {
-    if (userStore.emailTaken(email.value)) {
-      registerEmail_snack.value = true
-    } else if (password.value !== passwordRepeat.value) {
-      registerRepeat_snack.value = true
-    } else if (!regexPassword.test(password.value)) {
-      validPassword_snack.value = true
-    } else {
-      userStore.addUser(email.value, password.value)
-      userStore.authenticate(email.value, password.value)
-      registerDone_snack.value = true
-      setTimeout(() => {
-        router.push('/')
-      }, 2000)
-    }
-  }
-}
+
 </script>
 
 <template>

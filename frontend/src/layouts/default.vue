@@ -8,13 +8,13 @@
         ></v-app-bar-nav-icon>
 
         <v-toolbar-title
-        style="font-size: 20px;"
+          style="font-size: 20px;"
         >Wilkommen {{ userStore.username }}</v-toolbar-title>
 
 
 
         <template v-if="$vuetify.display.mdAndUp">
-          <v-btn icon="mdi-magnify" variant="text"></v-btn>
+          <v-btn icon="mdi-magnify" variant="text"/>
         </template>
 
         <router-link
@@ -43,7 +43,7 @@
         :location="$vuetify.display.mobile ? 'bottom' : undefined"
         temporary
       >
-        <v-list :items="items"></v-list>
+        <v-list :items="items"/>
       </v-navigation-drawer>
 
       <v-main>
