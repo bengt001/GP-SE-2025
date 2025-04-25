@@ -7,15 +7,35 @@
           @click.stop="drawer = !drawer"
         ></v-app-bar-nav-icon>
 
-        <v-toolbar-title>Template GPSE 2025</v-toolbar-title>
+        <v-toolbar-title
+        style="font-size: 20px;"
+        >Wilkommen {{ userStore.username }}</v-toolbar-title>
 
-        <v-spacer></v-spacer>
+
 
         <template v-if="$vuetify.display.mdAndUp">
           <v-btn icon="mdi-magnify" variant="text"></v-btn>
         </template>
 
-        <v-btn icon="mdi-dots-vertical" variant="text"></v-btn>
+        <router-link
+          v-if="!userStore.authenticated"
+          to="/login"
+        >
+          <v-btn
+            icon="mdi-account"
+            color="white"
+          />
+        </router-link>
+
+        <router-link
+          v-else
+          to="/profile"
+        >
+          <v-btn
+            icon="mdi-account"
+            color="white"
+          />
+        </router-link>
       </v-app-bar>
 
       <v-navigation-drawer
@@ -36,6 +56,10 @@
 </template>
 
 <script lang="ts" setup>
+import {useUserStore} from "@/stores/users";
+
+const userStore = useUserStore();
+
 const drawer = ref(false)
 const group = ref()
 const items = ref([
