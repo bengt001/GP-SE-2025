@@ -15,19 +15,19 @@ public class UserServiceImpl implements UserService {
 
     /** loads User by ID (email) */
     @Override
-    public User loadUserByUsername(final String email) throws UsernameNotFoundException {
+    public Usr loadUserByUsername(final String email) throws UsernameNotFoundException {
         return userRepository.findById(email)
-        .orElseThrow(() -> new UsernameNotFoundException("User Email " + email + " not found."));
+        .orElseThrow(() -> new UsernameNotFoundException(email + " not found."));
     }
 
     @Override
-    public User createUser(final String username, final String email,
-                           final String password, final String... roles) {
-        final User user = new User(username, email, password);
+    public Usr createUser(final String username, final String email,
+                          final String password, final String... roles) {
+        final Usr usr = new Usr(username, email, password);
         for (final String role : roles) {
-            user.addRole(role);
+            usr.addRole(role);
         }
-        final User saved = userRepository.save(user);
+        final Usr saved = userRepository.save(usr);
         return saved;
     }
 }

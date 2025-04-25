@@ -1,4 +1,4 @@
-package de.techfak.gse.template.domain.security;
+package de.techfak.gse.template.security;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;

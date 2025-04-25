@@ -1,4 +1,4 @@
-package de.techfak.gse.template.domain.security;
+package de.techfak.gse.template.security;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;

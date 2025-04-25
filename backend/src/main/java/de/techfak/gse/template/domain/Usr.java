@@ -11,7 +11,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Entity
-public class User implements UserDetails {
+public class Usr implements UserDetails {
 
     private static final long serialVersionUID = 0L;
 
@@ -29,11 +29,11 @@ public class User implements UserDetails {
     private List<String> roles = new ArrayList<>();
 
     /** JPA constructor */
-    protected User() {
+    protected Usr() {
 
     }
 
-    public User(final String username, final String email, final String password) {
+    public Usr(final String username, final String email, final String password) {
         this.username = username;
         this.email = email;
         this.password = password;
