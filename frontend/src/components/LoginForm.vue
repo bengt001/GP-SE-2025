@@ -3,6 +3,7 @@ import {useUserStore} from "@/stores/users"
 
 const userStore = useUserStore()
 const email = ref('')
+const username = ref('')
 const password = ref('')
 const login_snack = ref(false)
 const tab = ref('login')
@@ -20,40 +21,68 @@ const router = useRouter()
 
 
 function login() {
-
-    userStore.requestToken({email: email.value, password: password.value}).then(() => {
+  let j;
+  for (j = 0; j < email.value.length; j++) {
+    if (email.value[j] === '@') {
+      username.value = email.value.slice(0, j);
+      break;
+    }
+  }
+  userStore.requestToken({email: email.value, password: password.value, username: username.value}).then(() => {
     login_snack.value = false
     loginSuccess_snack.value = true
-      setTimeout(() => {
-        router.push('/')
-      }, 1000)
+    userStore.setNameEmail(username.value, email.value);
+    setTimeout(() => {
+      router.push('/')
+    }, 1000)
   }).catch(() => {
+    username.value = ''
     login_snack.value = true
   })
 }
-/*
+
 function register() {
   if (!regexEmail.test(email.value)) {
-    validEmail_snack.value = true
-  } else {
-    if (userStore.emailTaken(email.value)) {
-      registerEmail_snack.value = true
-    } else if (password.value !== passwordRepeat.value) {
-      registerRepeat_snack.value = true
-    } else if (!regexPassword.test(password.value)) {
-      validPassword_snack.value = true
-    } else {
-      userStore.addUser(email.value, password.value)
-      userStore.authenticate(email.value, password.value)
-      registerDone_snack.value = true
-      setTimeout(() => {
-        router.push('/')
-      }, 2000)
-    }
+    validEmail_snack.value = true;
+    return;
   }
-}
-*/
 
+  userStore.emailTaken(email.value).then((taken) => {
+    if (taken) {
+      registerEmail_snack.value = true;
+    } else if (password.value !== passwordRepeat.value) {
+      registerRepeat_snack.value = true;
+    } else if (!regexPassword.test(password.value)) {
+      validPassword_snack.value = true;
+    } else {
+      let j;
+      for (j = 0; j < email.value.length; j++) {
+        if (email.value[j] === '@') {
+          username.value = email.value.slice(0, j);
+          break;
+        }
+      }
+      userStore.saveUsr({email: email.value, password: password.value, username: username.value})
+        .then(() => {
+          console.log('Saved')
+
+          userStore.requestToken({email: email.value, password: password.value, username: username.value}).then(() => {
+            console.log('Token requestet')
+            registerDone_snack.value = true
+            userStore.setNameEmail(username.value, email.value);
+            setTimeout(() => {
+              router.push('/')
+            }, 1000)
+          }).catch(() => {
+            console.log('Error')
+            username.value = ''
+          })
+        });
+    }
+  }).catch(() => {
+    registerEmail_snack.value = true;
+  });
+}
 
 
 </script>
