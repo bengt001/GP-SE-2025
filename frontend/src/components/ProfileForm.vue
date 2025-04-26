@@ -22,12 +22,20 @@ function logOut() {
     color="white"
     max-width="344"
   >
-    <v-responsive class="mx-auto" max-width="900">
+    <v-responsive
+      class="mx-auto"
+      max-width="900">
       <div class="text-center">
-        <h3 class="mb-4">Profile</h3>
+        <h3 class="mb-4">
+          Profile
+        </h3>
 
-        <div class="mb-2">Email: {{ userStore.email }}</div>
-        <div class="mb-4">Username: {{ userStore.username }}</div>
+        <div class="mb-2">
+          Email: {{ userStore.email }}
+        </div>
+        <div class="mb-4">
+          Username: {{ userStore.username }}
+        </div>
 
         <v-btn
           color="primary"
