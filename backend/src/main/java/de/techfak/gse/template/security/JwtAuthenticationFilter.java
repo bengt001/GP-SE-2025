@@ -5,6 +5,7 @@ import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.java.Log;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -33,10 +34,12 @@ public final class JwtAuthenticationFilter extends UsernamePasswordAuthenticatio
 
     @Override
     public Authentication attemptAuthentication(final HttpServletRequest request, final HttpServletResponse response) {
-        String username = request.getParameter("username");
+        String email = request.getParameter("email"); //in unserem fall kein username sondern email
         String password = request.getParameter("password");
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
-
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, password);
+        System.out.println("email: " + email);
+        System.out.println("password: " + password);
+        System.out.println("AuthenticationToken: " + authenticationToken);
         return authenticationManager.authenticate(authenticationToken);
     }
 

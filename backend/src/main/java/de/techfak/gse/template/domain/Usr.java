@@ -15,10 +15,10 @@ public class Usr implements UserDetails {
 
     private static final long serialVersionUID = 0L;
 
-    private String username;
-
     @Id
     private String email;
+
+    private String username;
 
     @JsonIgnore
     private String password;

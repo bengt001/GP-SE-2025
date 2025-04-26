@@ -27,7 +27,6 @@ public class UserServiceImpl implements UserService {
         for (final String role : roles) {
             usr.addRole(role);
         }
-        final Usr saved = userRepository.save(usr);
-        return saved;
+        return userRepository.save(usr);
     }
 }

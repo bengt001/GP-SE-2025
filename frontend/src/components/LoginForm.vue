@@ -20,20 +20,16 @@ const router = useRouter()
 
 
 function login() {
-  if (!regexEmail.test(email.value)) {
-    validEmail_snack.value = true
-  } else {
-    userStore.requestToken({username: email.value, password: password.value}).then(() => {
+
+    userStore.requestToken({email: email.value, password: password.value}).then(() => {
     login_snack.value = false
     loginSuccess_snack.value = true
       setTimeout(() => {
         router.push('/')
       }, 1000)
-    router.go(-1)
   }).catch(() => {
     login_snack.value = true
   })
-  }
 }
 /*
 function register() {

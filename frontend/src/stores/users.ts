@@ -12,6 +12,7 @@ export const useUserStore = defineStore('users', {
             if (token !== null) {
                 this.authenticated = true;
                 localStorage.setItem('token', token);
+                console.log("authenticated", token);
             } else {
                 this.authenticated = false;
             }
@@ -19,10 +20,12 @@ export const useUserStore = defineStore('users', {
 
         requestToken(credentials: Credentials) : Promise<void> {
             return new Promise<void>((resolve, reject) => {
-                api.authorization.login(credentials.username, credentials.password).then((res) => {
+                api.authorization.login(credentials.email, credentials.password).then((res) => {
+                  console.log('login', res);
                     this.authenticate(res.headers.authorization);
                     resolve();
-                }).catch(() => {
+                }).catch((error) => {
+                  console.log("Fehler",error)
                     this.authenticate(null);
                     reject();
                 })
