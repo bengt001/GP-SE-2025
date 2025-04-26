@@ -34,4 +34,15 @@ public class UserServiceImpl implements UserService {
 
         return userRepository.save(usr);
     }
+
+    @Override
+    public boolean exists(String email){
+        try{
+            loadUserByUsername(email);
+            return true;
+        }
+        catch (UsernameNotFoundException e){
+            return false;
+        }
+    }
 }

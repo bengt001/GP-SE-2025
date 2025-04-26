@@ -15,8 +15,13 @@ public class UsrController {
         this.userService = userService;
     }
 
-    @PostMapping("/users")
+    @PostMapping("/register")
     public Usr createUser(@RequestBody UsrCmd usrCmd) {
         return userService.createUser(usrCmd.username(), usrCmd.email(), usrCmd.password(),"ROLE_USER");
+    }
+
+    @GetMapping("/exists")
+    public boolean exists(@RequestParam String email) {
+        return userService.exists(email);
     }
 }

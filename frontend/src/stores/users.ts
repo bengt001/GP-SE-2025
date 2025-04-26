@@ -43,7 +43,7 @@ export const useUserStore = defineStore('users', {
           email: user.email,
           password: user.password
         };
-        return axios.post('/api/users', usrCmd);
+        return axios.post('/api/register', usrCmd);
       },
       logout() {
         this.authenticated = false;
@@ -52,7 +52,8 @@ export const useUserStore = defineStore('users', {
       },
 
       emailTaken(email: string): Promise<boolean> {
-        return Promise.resolve(false);
+        return axios.get(`/api/exists`,{params: {email}})
+          .then(res => res.data)
       }
 
     }
