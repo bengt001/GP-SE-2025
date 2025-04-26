@@ -199,7 +199,7 @@ function register() {
       v-model="registerDone_snack"
       :timeout="2000"
       class="elevation-24"
-      color="green-accent-4"
+      color="success"
     >
       Registrierung erfolgreich
     </v-snackbar>

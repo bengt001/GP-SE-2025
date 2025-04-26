@@ -2,7 +2,6 @@ package de.techfak.gse.template.domain;
 
 import de.techfak.gse.template.web.UsrCmd;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

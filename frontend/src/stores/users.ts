@@ -37,7 +37,7 @@ export const useUserStore = defineStore('users', {
         this.email = email;
       },
 
-      saveUsr(user: Credentials): Promise<AxiosResponse<Credentials, any>> {
+      saveUsr(user: Credentials): Promise<AxiosResponse<Credentials>> {
         const usrCmd = {
           username: user.username,
           email: user.email,

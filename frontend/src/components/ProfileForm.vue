@@ -16,36 +16,38 @@ function logOut() {
 </script>
 
 <template>
-  <v-container class="fill-height">
-    <v-responsive class="align-centerfill-height mx-auto" max-width="900">
+  <v-card
+    class="mx-auto my-10 pa-6"
+    elevation="15"
+    color="white"
+    max-width="344"
+  >
+    <v-responsive class="mx-auto" max-width="900">
       <div class="text-center">
-        <div>Profile</div>
-        <div>Email: {{ userStore.email }}</div>
-        <div>Username: {{ userStore.username }}</div>
+        <h3 class="mb-4">Profile</h3>
+
+        <div class="mb-2">Email: {{ userStore.email }}</div>
+        <div class="mb-4">Username: {{ userStore.username }}</div>
+
         <v-btn
-          class="blueButton"
+          color="primary"
           @click="logOut"
         >
           Log Out
         </v-btn>
       </div>
-
-      <v-snackbar
-        v-model="LogOutSuccess_snack"
-        :timeout="1000"
-        class="elevation-24"
-        color="green-accent-4"
-      >
-        Log Out erfolgreich
-      </v-snackbar>
     </v-responsive>
-  </v-container>
+
+    <v-snackbar
+      v-model="LogOutSuccess_snack"
+      :timeout="1000"
+      class="elevation-24"
+      color="success"
+    >
+      Log Out erfolgreich
+    </v-snackbar>
+  </v-card>
 </template>
 
-<style>
-.blueButton {
-  background-color: #054D63;
-  color: white;
-}
-</style>
+
 

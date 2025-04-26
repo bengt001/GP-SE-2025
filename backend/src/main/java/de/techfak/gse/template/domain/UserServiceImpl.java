@@ -32,7 +32,6 @@ public class UserServiceImpl implements UserService {
             usr.addRole(role);
         }
 
-        Usr saved = userRepository.save(usr);
-        return saved;
+        return userRepository.save(usr);
     }
 }
