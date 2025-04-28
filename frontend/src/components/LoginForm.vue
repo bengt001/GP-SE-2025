@@ -14,7 +14,7 @@ const registerDone_snack = ref(false)
 const validEmail_snack = ref(false)
 const validPassword_snack = ref(false)
 const loginSuccess_snack = ref(false)
-const regexEmail = new RegExp("^[a-zA-Z0-9]+@[a-zA-Z0-9]+\\.[a-zA-Z0-9]+")
+const regexEmail = new RegExp("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9]+\\.[a-zA-Z0-9]+")
 const regexPassword = new RegExp("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}")
 
 const router = useRouter()
