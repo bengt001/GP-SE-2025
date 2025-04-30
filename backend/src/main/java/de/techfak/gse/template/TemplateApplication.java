@@ -9,6 +9,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  * Spring boot application entry point.
  */
 @SpringBootApplication
+@EnableJpaRepositories
+@EnableTransactionManagement
 public class TemplateApplication {
 
 	public static void main(String[] args) {

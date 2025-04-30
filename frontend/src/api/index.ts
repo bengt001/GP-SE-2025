@@ -1,7 +1,7 @@
-import example from './example'
+import authorization from './auth'
 
 export default {
-  example
+  authorization
 }
 
 
