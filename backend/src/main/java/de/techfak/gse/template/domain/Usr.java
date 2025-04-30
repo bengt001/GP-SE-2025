@@ -2,6 +2,7 @@ package de.techfak.gse.template.domain;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -16,13 +17,13 @@ public class Usr {
     @Column
     private String email;
     @Embedded
-    private Date creation_date;
+    private LocalDate creation_date;
     @OneToMany(mappedBy = "user_id")
     private List<CardRating> ratings;
 
     protected Usr() {}
 
-    public Usr(final Long user_id, String username, final String displayName, final String email, final Date creation_date) {
+    public Usr(final Long user_id, String username, final String displayName, final String email, final LocalDate creation_date) {
         this.user_id = user_id;
         this.username = username;
         this.displayName = displayName;
@@ -45,7 +46,7 @@ public class Usr {
         this.email = email;
     }
 
-    public void setCreation_date(final Date creation_date) {
+    public void setCreation_date(final LocalDate creation_date) {
         this.creation_date = creation_date;
     }
 
@@ -61,7 +62,7 @@ public class Usr {
         return email;
     }
 
-    public Date getCreation_date() {
+    public LocalDate getCreation_date() {
         return creation_date;
     }
 

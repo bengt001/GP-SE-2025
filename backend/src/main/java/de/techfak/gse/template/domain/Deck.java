@@ -5,30 +5,32 @@ import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 
+import java.time.LocalDate;
+
 @Entity
-public class Stapel {
+public class Deck {
     @Id
-    private Long stapel_id;
+    private Long deck_id;
     @Column
     private Integer author_id;
     @Embedded
-    private Date publish_date;
+    private LocalDate publish_date;
     @Column
     private Boolean visibility;
 
-protected Stapel() {}
+    protected Deck() {}
 
-    public Stapel(Long stapel_id, Integer author_id, Date publish_date, Boolean visibility) {
-        this.stapel_id = stapel_id;
+    public Deck(Long deck_id, Integer author_id, LocalDate publish_date, Boolean visibility) {
+        this.deck_id = deck_id;
         this.author_id = author_id;
         this.publish_date = publish_date;
         this.visibility = visibility;
     }
     public Long getId() {
-        return stapel_id;
+        return deck_id;
     }
     public void setId(Long id) {
-        this.stapel_id = id;
+        this.deck_id = id;
     }
     public Integer getAuthor_id() {
         return author_id;
@@ -37,11 +39,11 @@ protected Stapel() {}
         this.author_id = author_id;
     }
 
-    public Date getPublish_date() {
+    public LocalDate getPublish_date() {
         return publish_date;
     }
 
-    public void setPublish_date(Date publish_date) {
+    public void setPublish_date(LocalDate publish_date) {
         this.publish_date = publish_date;
     }
     public Boolean getVisibility() {
