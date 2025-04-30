@@ -6,17 +6,11 @@ import jakarta.persistence.Lob;
 import lombok.Getter;
 import lombok.Setter;
 
-@Setter
 @Getter
-@Entity
+@Setter
 public class Card {
-    @Id
     private Long card_id;
-
-    @Lob
     private String content;
-
-    @Column
     private String card_type;
 
     protected Card() {}

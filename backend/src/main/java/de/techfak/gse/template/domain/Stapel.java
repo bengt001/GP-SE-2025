@@ -6,17 +6,13 @@ import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
 
-@Entity
 @Getter
 @Setter
 public class Stapel {
-    @Id
+
     private Long stapel_id;
-    @Column
     private Integer author_id;
-    @Embedded
     private Date publish_date;
-    @Column
     private Boolean visibility;
 
     protected Stapel() {

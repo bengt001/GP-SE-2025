@@ -5,22 +5,15 @@ import lombok.Setter;
 
 import java.util.List;
 
-@Entity
 @Getter
 @Setter
 public class Usr {
-    @Id
-    @Column
+
     private Long user_id;
-    @Column
     private String username;
-    @Column
     private String displayName;
-    @Column
     private String email;
-    @Embedded
     private Date creation_date;
-    @OneToMany(mappedBy = "user_id")
     private List<CardRating> ratings;
 
     protected Usr() {
