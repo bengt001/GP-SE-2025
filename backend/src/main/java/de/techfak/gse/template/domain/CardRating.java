@@ -5,20 +5,13 @@ import org.apache.catalina.User;
 
 import java.time.LocalDate;
 
-@Entity
 public class CardRating {
-    @Id
-    @GeneratedValue
+
     private Long id;
-    @ManyToOne
     private Usr user_id;
-    @ManyToOne
     private Card card_id;
-    @ManyToOne
     private Deck deck_id;
-    @Embedded
     private LocalDate last_date_rated;
-    @Column
     private int rating;
 
 protected CardRating() {}

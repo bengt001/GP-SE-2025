@@ -7,15 +7,10 @@ import jakarta.persistence.Id;
 
 import java.time.LocalDate;
 
-@Entity
 public class Deck {
-    @Id
     private Long deck_id;
-    @Column
     private Integer author_id;
-    @Embedded
     private LocalDate publish_date;
-    @Column
     private Boolean visibility;
 
     protected Deck() {}

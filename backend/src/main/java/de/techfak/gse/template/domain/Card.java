@@ -5,13 +5,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 
-@Entity
 public class Card {
-    @Id
     private Long card_id;
-    @Lob
     private String content;
-    @Column
     private String card_type;
 
 protected Card() {}

@@ -1,8 +1,7 @@
 package de.techfak.gse.template;
 
-import de.techfak.gse.template.domain.Date;
-import de.techfak.gse.template.domain.DeckServiceImpl;
-import de.techfak.gse.template.domain.Stapel;
+
+import de.techfak.gse.template.domain.*;
 import de.techfak.gse.template.web.controller.DeckController;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.ArrayList;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,16 +17,23 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 public class DeckControllerTest {
-    Date today = new Date(2025, 4,29);
-    final List<Stapel> DECKS = List.of(new Stapel((long) 1, 1, today, true),
-            new Stapel((long) 2, 2, today, false),
-            new Stapel((long) 3, 2, today, true));
-    final Stapel DECK = new Stapel((long) 1, 1, today, true);
+    final List<Deck> DECKS = List.of(new Deck((long) 1, 1, LocalDate.now(), true),
+            new Deck((long) 2, 2, LocalDate.now(), false),
+            new Deck((long) 3, 2, LocalDate.now(), true));
+    final Deck DECK = new Deck((long) 1, 1, LocalDate.now(), true);
+
+    final List<Card> CARDS = List.of(new Card((long) 1, "Tolle Karte", "Karte"),
+            new Card((long) 2, "Super Karte", "Karte"),
+            new Card((long) 3, "Blöde Karte", "Karte"));
+    final Card CARD = new Card((long) 1, "Tolle Karte", "Karte");
 
     private AutoCloseable closeable;
 
     @Mock
-    private DeckServiceImpl deckService; // <1>
+    private DeckServiceImpl deckService;
+
+    @Mock
+    private UserService userService;
 
     @BeforeEach
     void setUp() {
@@ -35,15 +41,16 @@ public class DeckControllerTest {
     }
 
     @Test
-    void getDecks() {
+    void getAllDecks() {
         assertThat(deckService).isNotNull();
-        when(deckService.getDecks()).thenReturn(DECKS); // <3>
-        DeckController deckController = new DeckController(deckService); // <4>
+        assertThat(userService).isNotNull();
+        when(deckService.getAllDecks()).thenReturn(DECKS); // <3>
+        DeckController deckController = new DeckController(deckService, userService); // <4>
 
-        List<Stapel> decks = deckController.getDecks();
+        List<Deck> decks = deckController.getAllDecks();
 
         assertThat(decks.size()).isEqualTo(3);
-        assertThat(decks.get(0).getStapel_id()).isEqualTo(1);
+        assertThat(decks.get(0).getId()).isEqualTo(1);
         assertThat(decks.get(1).getAuthor_id()).isEqualTo(2);
         assertThat(decks.get(2).getVisibility()).isEqualTo(true);
     }
@@ -51,12 +58,26 @@ public class DeckControllerTest {
     @Test
     void getDeckById() {
         assertThat(deckService).isNotNull();
+        assertThat(userService).isNotNull();
         when(deckService.getDeckById(1)).thenReturn(Optional.of(DECK));
-        DeckController deckController = new DeckController(deckService);
+        DeckController deckController = new DeckController(deckService, userService);
 
-        Stapel deck = deckController.getDeckById(1);
+        Deck deck = deckController.getDeckById(1);
 
-        assertThat(deck.getStapel_id()).isEqualTo(1);
+        assertThat(deck.getId()).isEqualTo(1);
+    }
+
+    @Test
+    void getCards() {
+        assertThat(deckService).isNotNull();
+        assertThat(userService).isNotNull();
+        when(deckService.getCards(1)).thenReturn(CARDS);
+        DeckController deckController = new DeckController(deckService, userService);
+
+        List<Card> cards = deckController.getCards(1);
+
+        assertThat(cards.size()).isEqualTo(3);
+        assertThat(deckService.getCards(1).get(1)).isEqualTo(CARDS.get(1));
     }
 
     @AfterEach

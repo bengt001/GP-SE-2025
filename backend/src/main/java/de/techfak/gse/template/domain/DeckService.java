@@ -5,8 +5,19 @@ import java.util.Optional;
 
 public interface DeckService {
 
-    List<Stapel> getDecks();
+    List<Deck> getAllDecks();
 
-    Optional<Stapel> getDeckById(long id);
+    Optional<Deck> getDeckById(long id);
 
+    List<Deck> getUserDecks(Usr usr);
+
+    Optional<Deck> getUserDeckById(Usr usr, long id);
+
+    List<Card> getCards(long deckId);
+
+    Optional<Card> getCardById(long deckId,long id);
+
+    List<Card> getUserCards(Usr usr, long deckId);
+
+    Optional<Card> getUseCardById(Usr usr, long deckId,long id);
 }
