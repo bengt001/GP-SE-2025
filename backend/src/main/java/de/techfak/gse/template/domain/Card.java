@@ -1,7 +1,11 @@
 package de.techfak.gse.template.domain;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 @Entity
 public class Card {
     @Id
@@ -14,36 +18,14 @@ public class Card {
     @JoinColumn(name = "deck_id")
     private Deck deck;
 
-    protected Card() {}
+    protected Card() {
+    }
 
-    public Card (Long card_id, String content, String card_type, Deck deck) {
+    public Card(Long card_id, String content, String card_type, Deck deck) {
         this.card_id = card_id;
         this.content = content;
         this.card_type = card_type;
         this.deck = deck;
     }
-
-    public Long getCard_id() {
-        return card_id;
-    }
-
-    public void setCard_id(Long card_id) {
-        this.card_id = card_id;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public String getCard_type() {
-        return card_type;
-    }
-
-    public void setCard_type(String card_type) {
-        this.card_type = card_type;
-    }
 }
+
