@@ -1,11 +1,10 @@
 package de.techfak.gse.template.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,6 +20,11 @@ public class Deck {
     private LocalDate publish_date;
     @Column
     private Boolean visibility;
+
+    @ElementCollection
+    @CollectionTable(name = "deck_field", joinColumns = @JoinColumn(name = "deck_id"))
+    @Column(name = "field_of_law")
+    private List<String> field_of_law;
 
     protected Deck() {}
 
