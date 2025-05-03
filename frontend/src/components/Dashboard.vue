@@ -6,7 +6,7 @@
   <v-card
     title="Stapel hinzufügen"
     hover
-    href="/adder"
+    href="/adderpage"
   append-icon="mdi-plus"
   color="scheme_lexmea_lighter"
   text="Klicke hier, um einen neuen Karteikartenstapel zum Lernen hinzuzufügen">
