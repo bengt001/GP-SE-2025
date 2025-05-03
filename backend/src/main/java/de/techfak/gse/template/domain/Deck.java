@@ -13,7 +13,7 @@ public class Deck {
     private Long deck_id;
     @Column
     private Integer author_id;
-    @Embedded
+    @Column
     private LocalDate publish_date;
     @Column
     private Boolean visibility;

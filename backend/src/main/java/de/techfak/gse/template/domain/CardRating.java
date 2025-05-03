@@ -16,7 +16,7 @@ public class CardRating {
     private Card card_id;
     @ManyToOne
     private Deck deck_id;
-    @Embedded
+    @Column
     private LocalDate last_date_rated;
     @Column
     private int rating;

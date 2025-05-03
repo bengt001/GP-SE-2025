@@ -16,7 +16,7 @@ public class Usr {
     private String displayName;
     @Column
     private String email;
-    @Embedded
+    @Column
     private LocalDate creation_date;
     @OneToMany(mappedBy = "user_id")
     private List<CardRating> ratings;

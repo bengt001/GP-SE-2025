@@ -1,9 +1,6 @@
 package de.techfak.gse.template.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
+import jakarta.persistence.*;
 
 @Entity
 public class Card {
@@ -13,13 +10,17 @@ public class Card {
     private String content;
     @Column
     private String card_type;
+    @ManyToOne
+    @JoinColumn(name = "deck_id")
+    private Deck deck;
 
-protected Card() {}
+    protected Card() {}
 
-    public Card (Long card_id, String content, String card_type) {
+    public Card (Long card_id, String content, String card_type, Deck deck) {
         this.card_id = card_id;
         this.content = content;
         this.card_type = card_type;
+        this.deck = deck;
     }
 
     public Long getCard_id() {
