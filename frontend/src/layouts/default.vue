@@ -9,7 +9,7 @@
 
         <v-toolbar-title
           style="font-size: 20px;"
-        >Les Artes Wilkommen {{ userStore.username }}</v-toolbar-title>
+        >LexArtes Willkommen {{ userStore.username }}</v-toolbar-title>
 
         <v-spacer></v-spacer>
 

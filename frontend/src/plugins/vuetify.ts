@@ -7,6 +7,7 @@
 // Styles
 import '@mdi/font/css/materialdesignicons.css'
 import 'vuetify/styles'
+import { VTreeview } from 'vuetify/labs/VTreeview'
 
 // Composables
 import { createVuetify } from 'vuetify'
@@ -151,5 +152,8 @@ export default createVuetify({
     themes: {
       lexmeaTheme,
     }
+  },
+  components: {
+    VTreeview,
   },
 })

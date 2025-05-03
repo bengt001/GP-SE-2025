@@ -4,8 +4,9 @@
 
 <template>
 
-</template>
+  <Adder/>
 
+</template>
 <style scoped lang="sass">
 
 </style>
