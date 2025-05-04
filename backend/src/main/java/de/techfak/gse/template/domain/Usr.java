@@ -27,8 +27,7 @@ public class Usr {
 
     protected Usr() {}
 
-    public Usr(final Long user_id, String username, final String displayName, final String email, final LocalDate creation_date) {
-        this.user_id = user_id;
+    public Usr(String username, final String displayName, final String email, final LocalDate creation_date) {
         this.username = username;
         this.displayName = displayName;
         this.email = email;

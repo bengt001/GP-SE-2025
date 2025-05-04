@@ -21,8 +21,7 @@ public class Card {
     protected Card() {
     }
 
-    public Card(Long card_id, String content, String card_type, Deck deck) {
-        this.card_id = card_id;
+    public Card(String content, String card_type, Deck deck) {
         this.content = content;
         this.card_type = card_type;
         this.deck = deck;

@@ -3,6 +3,7 @@ package de.techfak.gse.template.domain;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
@@ -28,10 +29,12 @@ public class Deck {
 
     protected Deck() {}
 
-    public Deck(Long deck_id, Integer author_id, LocalDate publish_date, Boolean visibility) {
-        this.deck_id = deck_id;
-        this.author_id = author_id;
-        this.publish_date = publish_date;
+    public Deck(LocalDate publish_date, Boolean visibility, List<String> field_of_law) {
         this.visibility = visibility;
+        this.field_of_law = new ArrayList<>();
+        this.publish_date = LocalDate.now();
+    }
+    public void updateDate() {
+        this.publish_date = LocalDate.now();
     }
 }
