@@ -29,9 +29,9 @@ public class Deck {
 
     protected Deck() {}
 
-    public Deck(LocalDate publish_date, Boolean visibility, List<String> field_of_law) {
+    public Deck(Boolean visibility, List<String> field_of_law) {
         this.visibility = visibility;
-        this.field_of_law = new ArrayList<>();
+        this.field_of_law = field_of_law;
         this.publish_date = LocalDate.now();
     }
     public void updateDate() {

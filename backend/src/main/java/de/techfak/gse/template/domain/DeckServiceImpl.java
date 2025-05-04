@@ -32,8 +32,8 @@ public class DeckServiceImpl implements DeckService {
         return deckRepository.findById(deckId); //<2>
     }
     @Override
-    public Deck addDeck(final LocalDate publish_date, final Boolean visibility, final List<String> field_of_law) { //<1>
-        final Deck deck = new Deck(publish_date, visibility, field_of_law);
+    public Deck addDeck(final Boolean visibility, final List<String> field_of_law) { //<1>
+        final Deck deck = new Deck(visibility, field_of_law);
         return deckRepository.save(deck);
     }
 
