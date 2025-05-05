@@ -12,9 +12,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableJpaRepositories
 @EnableTransactionManagement
 public class TemplateApplication {
-
-	public static void main(String[] args) {
-		SpringApplication.run(TemplateApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(TemplateApplication.class, args);
+    }
 
 }

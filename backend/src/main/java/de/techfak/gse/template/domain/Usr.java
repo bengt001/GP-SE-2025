@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * User Klasse implementiert UserDetails. Definiert die Attribute eines Nutzers und getter und setter.
+ */
 @Entity
 public class Usr implements UserDetails {
 
@@ -28,11 +31,11 @@ public class Usr implements UserDetails {
     @SuppressWarnings("serial")
     private List<String> roles = new ArrayList<>();
 
-    /** JPA constructor */
+    /** JPA constructor. */
     protected Usr() {
 
     }
-
+    /** Konstruktor von Us. Benötigt einene Nutzernamen, eine email und ein Passwort */
     public Usr(final String username, final String email, final String password) {
         this.username = username;
         this.email = email;
