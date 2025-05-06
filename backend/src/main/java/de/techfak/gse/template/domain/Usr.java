@@ -35,7 +35,13 @@ public class Usr implements UserDetails {
     protected Usr() {
 
     }
-    /** Konstruktor von Us. Benötigt einene Nutzernamen, eine email und ein Passwort */
+
+    /**
+     * Konstruktor des Nutzers (Usr).
+     * @param username Nutzername des Nutzers.
+     * @param email Email des Nutzers.
+     * @param password Passwort des Nutzers.
+     */
     public Usr(final String username, final String email, final String password) {
         this.username = username;
         this.email = email;

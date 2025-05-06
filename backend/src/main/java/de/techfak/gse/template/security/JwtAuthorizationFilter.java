@@ -20,12 +20,23 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 
 import java.io.IOException;
 
+/**
+ * Filtert alle Requests und versucht Authentifizierungs-Daten zu extrahieren.
+ * Sind keine Vorhanden wird an den nächsten Filter übergeben.
+ * Andernfalls werden die Daten an den SecrityContext übergeben , damit Controller auf den Nutzer ugreifen kann.
+ */
 public final class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
     private static final Logger LOG = LoggerFactory.getLogger(JwtAuthorizationFilter.class);
     private final UserDetailsService userDetailsService;
     private final SecurityConstants securityConstants;
 
+    /**
+     * Konstruktor für einen neuen JWT-Autorisierungsfilter
+     * @param authenticationManager Der Manager zur Überprüfung von Authentifizierungen.
+     * @param userDetailsService Dienst zum Laden von Benutzerdetails anhand von Token-Informationen.
+     * @param securityConstants Enthält für Spring Security notwendigen Konstanten.
+     */
     public JwtAuthorizationFilter(final AuthenticationManager authenticationManager,
                                   final UserDetailsService userDetailsService,
                                   final SecurityConstants securityConstants) {
@@ -68,7 +79,8 @@ public final class JwtAuthorizationFilter extends BasicAuthenticationFilter {
                     return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 }
             } catch (final ExpiredJwtException exception) {
-                // Das kann gerne mal in der Projektentwicklung und auch in der fertigen Anwendung passieren, also überlegt euch, wie ihr damit umgeht!
+                // Das kann gerne mal in der Projektentwicklung
+                // und auch in der fertigen Anwendung passieren, also überlegt euch, wie ihr damit umgeht!
                 LOG.warn("Request to parse expired JWT : {} failed : {}", token, exception.getMessage());
             } catch (final UnsupportedJwtException exception) {
                 LOG.warn("Request to parse unsupported JWT : {} failed : {}", token, exception.getMessage());

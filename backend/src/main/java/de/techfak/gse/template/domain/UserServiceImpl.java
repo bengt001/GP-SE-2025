@@ -19,7 +19,7 @@ public class UserServiceImpl implements UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    /** loads User by ID (email) */
+    /** loads User by ID (email). */
     @Override
     public Usr loadUserByUsername(final String email) throws UsernameNotFoundException {
         return userRepository.findById(email)
@@ -39,12 +39,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean exists(String email){
-        try{
+    public boolean exists(String email) {
+        try {
             loadUserByUsername(email);
             return true;
-        }
-        catch (UsernameNotFoundException e){
+        } catch (UsernameNotFoundException e) {
             return false;
         }
     }
