@@ -3,7 +3,7 @@ const tab = ref('adder')
 
 import { ref } from 'vue'
 
-const selected_creator = ref([])
+const selected_creator = ref(['LexMea'])
 const selected = shallowRef([])
 const no_creator_snack = ref(false)
 const router = useRouter()
@@ -155,10 +155,12 @@ function addCards() {
       </v-tabs-window>
     </v-card-text>
     <v-card-actions>
-      <v-row>
-      <v-btn @click="addCards">
+      <v-row dense>
+      <v-btn variant="outlined"
+        @click="addCards">
         Karteikarten aktivieren
       </v-btn>
+        <v-spacer></v-spacer>
         <v-select
           v-model="selected_creator"
           label="Ersteller"
