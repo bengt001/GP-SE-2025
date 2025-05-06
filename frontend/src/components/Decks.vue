@@ -13,6 +13,14 @@ const bufferValue = 70
 const decks = ['Strafrecht AT', 'Strafrecht BT']
 const faellig = ['Heute keine Karten fällig', '12 Karten fällig']
 
+function resetCards() {
+
+}
+
+function deactivateCards() {
+
+}
+
 </script>
 
 <template>
