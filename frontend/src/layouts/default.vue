@@ -8,8 +8,9 @@
         ></v-app-bar-nav-icon>
 
         <v-toolbar-title
+
           style="font-size: 20px;"
-        >LexArtes Willkommen {{ userStore.username }}</v-toolbar-title>
+        >LexArtes</v-toolbar-title>
 
         <v-spacer></v-spacer>
 

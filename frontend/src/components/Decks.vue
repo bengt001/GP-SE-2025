@@ -10,36 +10,38 @@ const DialogDeactivate = ref(false)
 
 const value = 50
 const bufferValue = 70
-const title = "Strafrecht AT"
 const decks = ['Strafrecht AT', 'Strafrecht BT']
-
-function openResetDialog(title: string) {
-
-}
+const faellig = ['Heute keine Karten fällig', '12 Karten fällig']
 
 </script>
 
 <template>
   <v-container>
     <v-row no-gutters>
+      <!--      Dashboard for authenticated User-->
       <v-col v-if="UserStore.authenticated"
-             v-for="deck in decks"
+             v-for="n in decks.length"
+             :key="n"
              cols="auto"
              sm="4">
         <v-sheet class="ma-2 pa-2"
                  color="background">
           <v-card
-            max-width="344"
+            min-width="300"
+            max-width="300"
             height="400"
             class="d-flex flex-column"
             ref="card"
             variant="elevated"
           >
             <v-card-title class="text-h5">
-              {{deck}}
+              {{decks[n-1]}}
             </v-card-title>
 
             <v-card-text class="text-center">
+              <v-col class="text-h6"
+                     cols="auto">
+              {{faellig[n-1]}}
               <v-progress-linear
                 v-model="value"
                 :buffer-value="bufferValue"
@@ -49,10 +51,11 @@ function openResetDialog(title: string) {
                 bg-color="primary"
                 :height="10"
               ></v-progress-linear>
+              </v-col>
             </v-card-text>
 
             <v-card-actions class="mt-auto">
-              <v-row justify="space-around">
+              <v-row justify="space-evenly">
 
                 <v-btn class="align-content-center"
                        variant="flat"
@@ -63,7 +66,7 @@ function openResetDialog(title: string) {
                 <v-btn class="align-content-center"
                        variant="flat"
                        color="red_darkest"
-                       @click="openResetDialog(title)">
+                       @click="DialogReset=true">
                   Reset
                 </v-btn>
 
@@ -79,6 +82,7 @@ function openResetDialog(title: string) {
           </v-card>
         </v-sheet>
       </v-col>
+      <!--      Dashboard for unauthenticated User-->
       <v-col
         v-if="!UserStore.authenticated"
         cols="auto"
@@ -87,18 +91,23 @@ function openResetDialog(title: string) {
         :key="n">
         <v-sheet class="ma-2 pa-2"
                  color="background">
+
           <v-card
-            max-width="344"
+            min-width="300"
+            max-width="300"
             height="400"
             class="d-flex flex-column"
             ref="card"
             variant="elevated"
           >
             <v-card-title class="text-h5">
-              {{title}}
+              {{decks[0]}}
             </v-card-title>
 
             <v-card-text class="text-center">
+              <v-col class="text-h6"
+                     cols="auto">
+              8 fällige Karten
               <v-progress-linear
                 v-model="value"
                 :buffer-value="bufferValue"
@@ -106,12 +115,12 @@ function openResetDialog(title: string) {
                 buffer-color="red"
                 buffer-opacity="100"
                 bg-color="primary"
-                :height="10"
-              ></v-progress-linear>
+                :height="10"></v-progress-linear>
+              </v-col>
             </v-card-text>
 
             <v-card-actions class="mt-auto">
-              <v-row justify="space-around">
+              <v-row justify="space-evenly">
 
                 <v-btn class="align-content-center"
                 variant="flat"
@@ -122,7 +131,7 @@ function openResetDialog(title: string) {
                 <v-btn class="align-content-center"
                        variant="flat"
                         color="red_darkest"
-                @click="openResetDialog(title)">
+                @click="DialogReset=true">
                   Reset
                 </v-btn>
 
@@ -148,7 +157,7 @@ function openResetDialog(title: string) {
         Karten deaktivieren
       </v-card-title>
       <v-card-text>
-        Sind Sie sicher, dass Sie diesen Stapel deaktivieren möchten?
+        Bist du sicher, dass du diesen Stapel deaktivieren möchtest?
       </v-card-text>
       <v-card-actions>
         <v-btn @click="deactivateCards">
@@ -168,11 +177,11 @@ function openResetDialog(title: string) {
         Karten reseten
       </v-card-title>
       <v-card-text>
-        Sind Sie sicher, dass Sie diesen Stapel reseten möchten?
+        Bist du sicher, dass du diesen Stapel resetten möchtest?
       </v-card-text>
       <v-card-actions>
         <v-btn @click="resetCards()">
-          Ja, reseten
+          Ja, resetten
         </v-btn>
         <v-btn @click="DialogReset=false">
           Abbrechen
