@@ -5,16 +5,21 @@
         <v-app-bar-nav-icon
           variant="text"
           @click.stop="drawer = !drawer"
-        ></v-app-bar-nav-icon>
+        />
 
         <v-toolbar-title
           style="font-size: 20px;"
-        >Wilkommen {{ userStore.username }}</v-toolbar-title>
+        >
+          Wilkommen {{ userStore.username }}
+        </v-toolbar-title>
 
 
 
         <template v-if="$vuetify.display.mdAndUp">
-          <v-btn icon="mdi-magnify" variant="text"/>
+          <v-btn
+            icon="mdi-magnify"
+            variant="text"
+          />
         </template>
 
         <router-link
@@ -43,12 +48,12 @@
         :location="$vuetify.display.mobile ? 'bottom' : undefined"
         temporary
       >
-        <v-list :items="items"/>
+        <v-list :items="items" />
       </v-navigation-drawer>
 
       <v-main>
         <v-container>
-          <router-view/>
+          <router-view />
         </v-container>
       </v-main>
     </v-app>
