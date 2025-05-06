@@ -14,6 +14,7 @@ import lombok.Setter;
 @Entity
 public class Deck {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long deck_id;
     @Column
     private Integer author_id;

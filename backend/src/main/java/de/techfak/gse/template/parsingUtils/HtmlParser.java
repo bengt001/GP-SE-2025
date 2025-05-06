@@ -22,24 +22,31 @@ public class HtmlParser {
      */
     public static ArrayList<String[]> getProblemBoxes(String html) {
         Document doc = Jsoup.parse(html);
+        doc.outputSettings().prettyPrint(false);
         Elements problemSections = doc.select("section[data-style=problem]");
         ArrayList<String[]> problemBoxes = new ArrayList<>();
         for (Element section : problemSections) {
+
             String text = section.text();
             text = text.replaceFirst("\\\\n ", "");
             String[] frontBack = text.split(" \\\\n \\\\n \\\\n ");
-            frontBack[1] = frontBack[1].replaceAll(" \\\\n \\\\n ", "\n");
-            frontBack[1] = frontBack[1].replaceAll("\\\\n ", "\n");
-            frontBack[1] = frontBack[1].replaceAll("\\\\n", "\n");
-            frontBack[1] = frontBack[1].replaceAll("\n\n", "");
-            frontBack[0] = frontBack[0].replaceAll("\\\\n ", "\n");
-            //Needs to be replaced with robust loging
-            //System.out.println("########################################################################################");
-            //System.out.println(frontBack[0]);
-            //System.out.println("----------------------------------------------------------------------------------------");
-            //System.out.println(frontBack[1]);
-            //System.out.println("########################################################################################");
-            problemBoxes.add(frontBack);
+            if(frontBack.length == 2){
+                frontBack[1] = frontBack[1].replaceAll(" \\\\n \\\\n ", "\n");
+                frontBack[1] = frontBack[1].replaceAll("\\\\n ", "\n");
+                frontBack[1] = frontBack[1].replaceAll("\\\\n", "\n");
+                frontBack[1] = frontBack[1].replaceAll("\n\n", "");
+                frontBack[0] = frontBack[0].replaceAll("\\\\n ", "\n");
+                //Needs to be replaced with robust loging
+                //System.out.println("########################################################################################");
+                //System.out.println(frontBack[0]);
+                //System.out.println("----------------------------------------------------------------------------------------");
+                //System.out.println(frontBack[1]);
+                //System.out.println("########################################################################################");
+                problemBoxes.add(frontBack);
+            } else {
+                //System.out.print("AHHHHHHHHHHHHHH");
+            }
+
         }
         return problemBoxes;
     }
@@ -56,21 +63,27 @@ public class HtmlParser {
         Elements problemSections = doc.select("section[data-style=definition]");
         ArrayList<String[]> definitionBoxes = new ArrayList<>();
         for (Element section : problemSections) {
+            //System.out.println(section.text());
             String text = section.text();
             text = text.replaceFirst("\\\\n ", "");
-            String[] frontBack = text.split(" \\\\n \\\\n \\\\n ");
-            frontBack[1] = frontBack[1].replaceAll(" \\\\n \\\\n ", "\n");
-            frontBack[1] = frontBack[1].replaceAll("\\\\n ", "\n");
-            frontBack[1] = frontBack[1].replaceAll("\\\\n", "\n");
-            frontBack[1] = frontBack[1].replaceAll("\n\n", "");
-            frontBack[0] = frontBack[0].replaceAll("\\\\n ", "\n");
-            //Needs to be replaced with robust loging
-            //System.out.println("########################################################################################");
-            //System.out.println(frontBack[0]);
-            //System.out.println("----------------------------------------------------------------------------------------");
-            //System.out.println(frontBack[1]);
-            //System.out.println("########################################################################################");
-            definitionBoxes.add(frontBack);
+            String[] frontBack = text.split(" = ");
+            if(frontBack.length == 2){
+                frontBack[1] = frontBack[1].replaceAll(" \\\\n \\\\n ", "\n");
+                frontBack[1] = frontBack[1].replaceAll("\\\\n ", "\n");
+                frontBack[1] = frontBack[1].replaceAll("\\\\n", "\n");
+                frontBack[1] = frontBack[1].replaceAll("\n\n", "");
+                frontBack[0] = frontBack[0].replaceAll("\\\\n ", "\n");
+                //Needs to be replaced with robust loging
+                //System.out.println("########################################################################################");
+                //System.out.println(frontBack[0]);
+                //System.out.println("----------------------------------------------------------------------------------------");
+                //System.out.println(frontBack[1]);
+                //System.out.println("########################################################################################");
+                definitionBoxes.add(frontBack);
+            } else {
+                //System.out.print("AHHHHHHHHHHHHHH");
+            }
+
         }
         return definitionBoxes;
     }

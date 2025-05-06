@@ -9,6 +9,7 @@ import lombok.Setter;
 @Entity
 public class Card {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long card_id;
     @Lob
     private String content;

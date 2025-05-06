@@ -77,14 +77,14 @@ public class JsonParser {
                 currentNode = currentNode.get((String) recursionPath.get(i));
                 if (currentNode.has(fieldname)) {
                     JsonNode nameNode = currentNode.get(fieldname);
-                    stringList.add(nameNode.toString());
+                    stringList.add(nameNode.asText());
                     //System.out.print(nameNode.toString());
                 }
             } else if (recursionPath.get(i) instanceof Integer) {
                 currentNode = currentNode.get((Integer) recursionPath.get(i));
                 if (currentNode.has(fieldname)) {
                     JsonNode nameNode = currentNode.get(fieldname);
-                    stringList.add(nameNode.toString());
+                    stringList.add(nameNode.asText());
                     //System.out.print(nameNode.toString());
                 }
             } else {
