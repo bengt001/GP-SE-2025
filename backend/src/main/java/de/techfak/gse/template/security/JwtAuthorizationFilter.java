@@ -32,7 +32,7 @@ public final class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     private final SecurityConstants securityConstants;
 
     /**
-     * Konstruktor für einen neuen JWT-Autorisierungsfilter
+     * Konstruktor für einen neuen JWT-Autorisierungsfilter.
      * @param authenticationManager Der Manager zur Überprüfung von Authentifizierungen.
      * @param userDetailsService Dienst zum Laden von Benutzerdetails anhand von Token-Informationen.
      * @param securityConstants Enthält für Spring Security notwendigen Konstanten.
