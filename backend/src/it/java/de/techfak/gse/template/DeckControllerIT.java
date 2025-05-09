@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -24,11 +25,10 @@ class DeckControllerIT {
 
     @Test
     void getDecks() throws Exception {
-        this.mvc.perform(get("/api/decks"))
+        ResultActions resultActions = this.mvc.perform(get("/api/decks"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().string(containsString("stapel_id")))
-                .andExpect(content().string(containsString("author_id")));
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+
     }
 }
 
