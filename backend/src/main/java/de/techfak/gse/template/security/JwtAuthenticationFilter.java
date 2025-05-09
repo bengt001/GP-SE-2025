@@ -16,6 +16,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Filter der eine Anfrage zur Authentifizierung bearbeitet.
+ * Gibt als Antwort einen JSON-Web Token zurück.
+ */
 public final class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private static final int TEN_DAYS_IN_MILLIS = 864_000_000;
@@ -24,6 +28,11 @@ public final class JwtAuthenticationFilter extends UsernamePasswordAuthenticatio
 
     private final SecurityConstants securityConstants;
 
+    /**
+     * Konstrukor für einen neuen JwtAuthentication Filter.
+     * @param authenticationManager Manager , der für das Authentifizierten zuständg ist.
+     * @param securityConstants Enthält für Spring Security notwendigen Konstanten.
+     */
     public JwtAuthenticationFilter(final AuthenticationManager authenticationManager,
                                    final SecurityConstants securityConstants) {
         this.authenticationManager = authenticationManager;
@@ -33,9 +42,11 @@ public final class JwtAuthenticationFilter extends UsernamePasswordAuthenticatio
 
     @Override
     public Authentication attemptAuthentication(final HttpServletRequest request, final HttpServletResponse response) {
-        String email = request.getParameter("email"); //in unserem fall kein username sondern email
+        //in unserem fall kein username sondern email
+        String email = request.getParameter("email");
         String password = request.getParameter("password");
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, password);
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(email, password);
         return authenticationManager.authenticate(authenticationToken);
     }
 
@@ -58,7 +69,8 @@ public final class JwtAuthenticationFilter extends UsernamePasswordAuthenticatio
                 .audience().add(securityConstants.getTokenAudience())
                 .and()
                 .subject(user.getUsername())
-                .expiration(new Date(System.currentTimeMillis() + TEN_DAYS_IN_MILLIS)) // + 10 Tage
+                .expiration(new Date(System.currentTimeMillis() + TEN_DAYS_IN_MILLIS))
+                // + 10 Tage
                 .claim("rol", roles)
                 .compact();
 
