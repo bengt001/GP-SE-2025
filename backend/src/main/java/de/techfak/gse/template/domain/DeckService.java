@@ -3,6 +3,9 @@ package de.techfak.gse.template.domain;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Interface for a DeckService.
+ */
 public interface DeckService {
 
     List<Deck> getAllDecks();
@@ -15,9 +18,9 @@ public interface DeckService {
 
     List<Card> getCards(long deckId);
 
-    Optional<Card> getCardById(long deckId,long id);
+    Optional<Card> getCardById(long deckId, long id);
 
     List<Card> getUserCards(Usr usr, long deckId);
 
-    Optional<Card> getUseCardById(Usr usr, long deckId,long id);
+    Optional<Card> getUseCardById(Usr usr, long deckId, long id);
 }

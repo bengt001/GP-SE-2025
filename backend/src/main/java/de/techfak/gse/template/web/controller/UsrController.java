@@ -13,12 +13,13 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin
 @RequestMapping("/api")
 public class UsrController {
-    private UserService userService;
+    private final UserService userService;
 
     @Autowired
     public UsrController(UserService userService) {
         this.userService = userService;
     }
+
     @PostMapping("/register")
     public Usr createUser(@RequestBody UsrCmd usrCmd) {
         return userService.createUser(usrCmd.username(), usrCmd.email(), usrCmd.password(), "ROLE_USER");
