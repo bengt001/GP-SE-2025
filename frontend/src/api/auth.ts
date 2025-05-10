@@ -3,7 +3,7 @@ import axios from './config'
 import type {AxiosResponse} from "axios";
 
 const authorization = {
-  login(email: string, password: string) : Promise<AxiosResponse<any, any>> { //<1>
+  login(email: string, password: string) : Promise<AxiosResponse> { //<1>
     const credentials : URLSearchParams = new URLSearchParams();
     credentials.append('email', email);
     credentials.append('password', password);

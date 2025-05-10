@@ -2,6 +2,9 @@ package de.techfak.gse.template.security;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+/**
+ * Klasse Security Constants definiert Konstanten, die für Spring Security benötigt werden.
+ */
 @ConfigurationProperties("security")
 public final class SecurityConstants {
 
@@ -17,6 +20,16 @@ public final class SecurityConstants {
     private final String tokenIssuer;
     private final String tokenAudience;
 
+    /**
+     * Konstruktur setzt die Konstanten sie für Spring Security benötigt werden.
+     * @param authLoginUrl Url an die die Zugangsdaten gesendet werden.
+     * @param jwtSecret Server Geheimnis für Prüfsumme.
+     * @param tokenHeader Name des Headers.
+     * @param tokenPrefix Präfix mit dem Token gesendet wird und wo er in einem Request abgerufen wird.
+     * @param tokenType Typ des Tokens.
+     * @param tokenIssuer Aussteller, in diesem Fall die geschützte API.
+     * @param tokenAudience Defenieren wer einen Token verarbeiten können soll.
+     */
     public SecurityConstants(final String authLoginUrl, final String jwtSecret,
                              final String tokenHeader, final String tokenPrefix, final String tokenType,
                              final String tokenIssuer, final String tokenAudience) {

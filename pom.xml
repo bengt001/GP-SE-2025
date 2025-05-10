@@ -46,7 +46,7 @@
         <compilerPlugin.version>3.13.0</compilerPlugin.version>
         <buildHelper.version>3.6.0</buildHelper.version>
         <checkstylePlugin.version>3.3.1</checkstylePlugin.version>
-        <checkstyle.version>8.38</checkstyle.version>
+        <checkstyle.version>10.23.0</checkstyle.version>
         <spotbugsPlugin.version>4.9.1.0</spotbugsPlugin.version>
         <spotbugs.version>4.9.1</spotbugs.version>
         <jacoco.version>0.8.12</jacoco.version>
