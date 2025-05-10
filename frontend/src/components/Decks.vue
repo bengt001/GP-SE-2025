@@ -27,64 +27,74 @@ function deactivateCards() {
   <v-container>
     <v-row no-gutters>
       <!--      Dashboard for authenticated User-->
-      <v-col v-if="UserStore.authenticated"
-             v-for="n in decks.length"
-             :key="n"
-             cols="auto"
-             sm="4">
-        <v-sheet class="ma-2 pa-2"
-                 color="background">
+      <v-col
+        v-for="n in decks.length"
+        v-if="UserStore.authenticated"
+        :key="n"
+        cols="auto"
+        sm="4"
+      >
+        <v-sheet
+          class="ma-2 pa-2"
+          color="background"
+        >
           <v-card
+            ref="card"
             min-width="300"
             max-width="300"
             height="400"
             class="d-flex flex-column"
-            ref="card"
             variant="elevated"
           >
             <v-card-title class="text-h5">
-              {{decks[n-1]}}
+              {{ decks[n - 1] }}
             </v-card-title>
 
             <v-card-text class="text-center">
-              <v-col class="text-h6"
-                     cols="auto">
-              {{faellig[n-1]}}
-              <v-progress-linear
-                v-model="value"
-                :buffer-value="bufferValue"
-                color="success"
-                buffer-color="red"
-                buffer-opacity="100"
-                bg-color="primary"
-                :height="10"
-              ></v-progress-linear>
+              <v-col
+                class="text-h6"
+                cols="auto"
+              >
+                {{ faellig[n - 1] }}
+                <v-progress-linear
+                  v-model="value"
+                  :buffer-value="bufferValue"
+                  color="success"
+                  buffer-color="red"
+                  buffer-opacity="100"
+                  bg-color="primary"
+                  :height="10"
+                />
               </v-col>
             </v-card-text>
 
             <v-card-actions class="mt-auto">
               <v-row justify="space-evenly">
-
-                <v-btn class="align-content-center"
-                       variant="flat"
-                       color="lexmea_blue_200">
+                <v-btn
+                  class="align-content-center"
+                  variant="flat"
+                  color="lexmea_blue_200"
+                >
                   Lernen
                 </v-btn>
 
-                <v-btn class="align-content-center"
-                       variant="flat"
-                       color="red_darkest"
-                       @click="DialogReset=true">
+                <v-btn
+                  class="align-content-center"
+                  variant="flat"
+                  color="red_darkest"
+                  @click="DialogReset=true"
+                >
                   Reset
                 </v-btn>
 
-                <v-btn class="align-content-center"
-                       variant="flat"
-                       color="orange_darkest"
-                       @click="DialogDeactivate=true">
+                <v-btn
+                  class="align-content-center"
+                  variant="flat"
+                  color="orange_darkest"
+                  @click="DialogDeactivate=true"
+                >
                   Deaktivieren
                 </v-btn>
-
               </v-row>
             </v-card-actions>
           </v-card>
@@ -92,64 +102,73 @@ function deactivateCards() {
       </v-col>
       <!--      Dashboard for unauthenticated User-->
       <v-col
+        v-for="n in 1"
         v-if="!UserStore.authenticated"
+        :key="n"
         cols="auto"
         sm="4"
-        v-for="n in 1"
-        :key="n">
-        <v-sheet class="ma-2 pa-2"
-                 color="background">
-
+      >
+        <v-sheet
+          class="ma-2 pa-2"
+          color="background"
+        >
           <v-card
+            ref="card"
             min-width="300"
             max-width="300"
             height="400"
             class="d-flex flex-column"
-            ref="card"
             variant="elevated"
           >
             <v-card-title class="text-h5">
-              {{decks[0]}}
+              {{ decks[0] }}
             </v-card-title>
 
             <v-card-text class="text-center">
-              <v-col class="text-h6"
-                     cols="auto">
-              8 fällige Karten
-              <v-progress-linear
-                v-model="value"
-                :buffer-value="bufferValue"
-                color="success"
-                buffer-color="red"
-                buffer-opacity="100"
-                bg-color="primary"
-                :height="10"></v-progress-linear>
+              <v-col
+                class="text-h6"
+                cols="auto"
+              >
+                8 fällige Karten
+                <v-progress-linear
+                  v-model="value"
+                  :buffer-value="bufferValue"
+                  color="success"
+                  buffer-color="red"
+                  buffer-opacity="100"
+                  bg-color="primary"
+                  :height="10"
+                />
               </v-col>
             </v-card-text>
 
             <v-card-actions class="mt-auto">
               <v-row justify="space-evenly">
-
-                <v-btn class="align-content-center"
-                variant="flat"
-                color="lexmea_blue_200">
+                <v-btn
+                  class="align-content-center"
+                  variant="flat"
+                  color="lexmea_blue_200"
+                >
                   Lernen
                 </v-btn>
 
-                <v-btn class="align-content-center"
-                       variant="flat"
-                        color="red_darkest"
-                @click="DialogReset=true">
+                <v-btn
+                  class="align-content-center"
+                  variant="flat"
+                  color="red_darkest"
+                  @click="DialogReset=true"
+                >
                   Reset
                 </v-btn>
 
-                <v-btn class="align-content-center"
-                       variant="flat"
-                       color="orange_darkest"
-                @click="DialogDeactivate=true">
+                <v-btn
+                  class="align-content-center"
+                  variant="flat"
+                  color="orange_darkest"
+                  @click="DialogDeactivate=true"
+                >
                   Deaktivieren
                 </v-btn>
-
               </v-row>
             </v-card-actions>
           </v-card>
@@ -158,8 +177,10 @@ function deactivateCards() {
     </v-row>
   </v-container>
 
-  <v-dialog v-model="DialogDeactivate"
-  max-width="344">
+  <v-dialog
+    v-model="DialogDeactivate"
+    max-width="344"
+  >
     <v-card>
       <v-card-title>
         Karten deaktivieren
@@ -178,8 +199,10 @@ function deactivateCards() {
     </v-card>
   </v-dialog>
 
-  <v-dialog v-model="DialogReset"
-  max-width="344">
+  <v-dialog
+    v-model="DialogReset"
+    max-width="344"
+  >
     <v-card>
       <v-card-title>
         Karten reseten

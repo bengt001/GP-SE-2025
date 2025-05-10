@@ -3,9 +3,7 @@
 </script>
 
 <template>
-
-  <Adder/>
-
+  <Adder />
 </template>
 <style scoped lang="sass">
 

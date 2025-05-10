@@ -5,17 +5,22 @@
         <v-app-bar-nav-icon
           variant="text"
           @click.stop="drawer = !drawer"
-        ></v-app-bar-nav-icon>
+        />
 
         <v-toolbar-title
 
           style="font-size: 20px;"
-        >LexArtes</v-toolbar-title>
+        >
+          LexArtes
+        </v-toolbar-title>
 
-        <v-spacer></v-spacer>
+        <v-spacer />
 
         <template v-if="$vuetify.display.mdAndUp">
-          <v-btn icon="mdi-magnify" variant="text"/>
+          <v-btn
+            icon="mdi-magnify"
+            variant="text"
+          />
         </template>
 
         <router-link
@@ -44,12 +49,12 @@
         :location="$vuetify.display.mobile ? 'bottom' : undefined"
         temporary
       >
-        <v-list :items="items"/>
+        <v-list :items="items" />
       </v-navigation-drawer>
 
       <v-main>
         <v-container>
-          <router-view/>
+          <router-view />
         </v-container>
       </v-main>
     </v-app>
