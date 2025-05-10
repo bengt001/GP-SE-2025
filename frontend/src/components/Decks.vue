@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import {useDeckStore} from "@/stores/deck";
+// import {useDeckStore} from "@/stores/deck";
 import {useUserStore} from "@/stores/users";
-import Decks from "@/components/Decks.vue";
+// import Decks from "@/components/Decks.vue";
 
 const UserStore = useUserStore()
-const DeckStore = useDeckStore()
+// const DeckStore = useDeckStore()
 const DialogReset = ref(false)
 const DialogDeactivate = ref(false)
 
@@ -25,11 +25,13 @@ function deactivateCards() {
 
 <template>
   <v-container>
-    <v-row no-gutters>
+    <v-row
+      v-if="UserStore.authenticated"
+      no-gutters
+    >
       <!--      Dashboard for authenticated User-->
       <v-col
         v-for="n in decks.length"
-        v-if="UserStore.authenticated"
         :key="n"
         cols="auto"
         sm="4"
@@ -100,10 +102,14 @@ function deactivateCards() {
           </v-card>
         </v-sheet>
       </v-col>
-      <!--      Dashboard for unauthenticated User-->
+    </v-row>
+    <!--      Dashboard for unauthenticated User-->
+    <v-row
+      v-if="!UserStore.authenticated"
+      no-gutters
+    >
       <v-col
         v-for="n in 1"
-        v-if="!UserStore.authenticated"
         :key="n"
         cols="auto"
         sm="4"
