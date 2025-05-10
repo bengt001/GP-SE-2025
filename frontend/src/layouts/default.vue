@@ -8,13 +8,11 @@
         />
 
         <v-toolbar-title
-
           style="font-size: 20px;"
         >
-          LexArtes
+          Wilkommen {{ userStore.username }}
         </v-toolbar-title>
 
-        <v-spacer />
 
         <template v-if="$vuetify.display.mdAndUp">
           <v-btn

@@ -5,6 +5,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+/**
+ * Service der das UserService Interface implementiert. Enthält methoden um mit Usern zu iteragieren.
+ */
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
@@ -16,7 +19,7 @@ public class UserServiceImpl implements UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    /** loads User by ID (email) */
+    /** loads User by ID (email). */
     @Override
     public Usr loadUserByUsername(final String email) throws UsernameNotFoundException {
         return userRepository.findById(email)
@@ -36,12 +39,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean exists(String email){
-        try{
+    public boolean exists(String email) {
+        try {
             loadUserByUsername(email);
             return true;
-        }
-        catch (UsernameNotFoundException e){
+        } catch (UsernameNotFoundException e) {
             return false;
         }
     }
