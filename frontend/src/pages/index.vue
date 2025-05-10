@@ -1,8 +1,6 @@
 <template>
-
-  <Decks/>
-  <Dashboard/>
-
+  <Decks />
+  <Dashboard />
 </template>
 
 <script lang="ts" setup>

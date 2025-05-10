@@ -24,7 +24,8 @@ function logOut() {
   >
     <v-responsive
       class="mx-auto"
-      max-width="900">
+      max-width="900"
+    >
       <div class="text-center">
         <h3 class="mb-4">
           Profile

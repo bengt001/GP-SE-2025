@@ -108,67 +108,73 @@ function addCards() {
 
 <template>
   <v-responsive>
-  <v-card>
-   <v-tabs v-model="tab" bg-color="primary">
-     <v-tab value="Strafrecht">
-       Strafrecht
-     </v-tab>
-     <v-tab value="Öffentliches Recht">
-       Öffentliches Recht
-     </v-tab>
-     <v-tab value="Zivilrecht">
-       Zivilrecht
-     </v-tab>
-   </v-tabs>
-    <v-card-text>
-      <v-tabs-window v-model="tab">
-        <v-tabs-window-item value="Strafrecht">
-          <v-treeview
-            :items="strafrecht"
-            item-value="id"
-            selectable
-            select-strategy="classic"
-            return-object
-            v-model:selected="selected"
-          ></v-treeview>
-        </v-tabs-window-item>
-        <v-tabs-window-item value="Öffentliches Recht">
-          <v-treeview
-            :items="oeffirecht"
-            item-value="id"
-            selectable
-            select-strategy="classic"
-            return-object
-            v-model:selected="selected"
-          ></v-treeview>
-        </v-tabs-window-item>
-        <v-tabs-window-item value="Zivilrecht">
-          <v-treeview
-            :items="zivilrecht"
-            item-value="id"
-            selectable
-            select-strategy="classic"
-            return-object
-            v-model:selected="selected"
-          ></v-treeview>
-        </v-tabs-window-item>
-      </v-tabs-window>
-    </v-card-text>
-    <v-card-actions>
-      <v-row dense>
-      <v-btn variant="outlined"
-        @click="addCards">
-        Karteikarten aktivieren
-      </v-btn>
-        <v-spacer></v-spacer>
-        <v-select
-          v-model="selected_creator"
-          label="Ersteller"
-          :items="['LexMea', 'Professor*in', 'Privat']"
-          multiple></v-select>
-      </v-row>
-    </v-card-actions>
-  </v-card>
+    <v-card>
+      <v-tabs
+        v-model="tab"
+        bg-color="primary"
+      >
+        <v-tab value="Strafrecht">
+          Strafrecht
+        </v-tab>
+        <v-tab value="Öffentliches Recht">
+          Öffentliches Recht
+        </v-tab>
+        <v-tab value="Zivilrecht">
+          Zivilrecht
+        </v-tab>
+      </v-tabs>
+      <v-card-text>
+        <v-tabs-window v-model="tab">
+          <v-tabs-window-item value="Strafrecht">
+            <v-treeview
+              v-model:selected="selected"
+              :items="strafrecht"
+              item-value="id"
+              selectable
+              select-strategy="classic"
+              return-object
+            />
+          </v-tabs-window-item>
+          <v-tabs-window-item value="Öffentliches Recht">
+            <v-treeview
+              v-model:selected="selected"
+              :items="oeffirecht"
+              item-value="id"
+              selectable
+              select-strategy="classic"
+              return-object
+            />
+          </v-tabs-window-item>
+          <v-tabs-window-item value="Zivilrecht">
+            <v-treeview
+              v-model:selected="selected"
+              :items="zivilrecht"
+              item-value="id"
+              selectable
+              select-strategy="classic"
+              return-object
+            />
+          </v-tabs-window-item>
+        </v-tabs-window>
+      </v-card-text>
+      <v-card-actions>
+        <v-row dense>
+          <v-btn
+            variant="outlined"
+            @click="addCards"
+          >
+            Karteikarten aktivieren
+          </v-btn>
+          <v-spacer />
+          <v-select
+            v-model="selected_creator"
+            label="Ersteller"
+            :items="['LexMea', 'Professor*in', 'Privat']"
+            multiple
+          />
+        </v-row>
+      </v-card-actions>
+    </v-card>
   </v-responsive>
 
   <v-snackbar
@@ -179,7 +185,6 @@ function addCards() {
   >
     Wähle einen Ersteller für die Karteikarten aus
   </v-snackbar>
-
 </template>
 
 <style scoped lang="sass">
