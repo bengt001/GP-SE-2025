@@ -20,4 +20,6 @@ public interface DeckService {
     List<Card> getUserCards(Usr usr, long deckId);
 
     Optional<Card> getUseCardById(Usr usr, long deckId,long id);
+
+    Optional<Deck> getNewUserDeck(Usr usr, long templateDeckId);
 }

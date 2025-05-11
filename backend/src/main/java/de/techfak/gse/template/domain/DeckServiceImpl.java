@@ -61,4 +61,8 @@ public class DeckServiceImpl implements DeckService {
         return Optional.empty();
     }
 
+    @Override
+    public Optional<Deck> getNewUserDeck(Usr usr, long deckId) {
+        return Optional.empty();
+    }
 }
