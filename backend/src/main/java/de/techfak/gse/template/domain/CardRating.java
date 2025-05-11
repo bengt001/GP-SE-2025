@@ -29,13 +29,13 @@ protected CardRating() {
 }
 
     /**
-     * @param user_id
+     * @param userId
      * @param cardId
      * @param deckId
      * @param rating
      */
-    public CardRating(Usr user_id, Card cardId, Deck deckId, int rating) {
-        this.userId = user_id;
+    public CardRating(Usr userId, Card cardId, Deck deckId, int rating) {
+        this.userId = userId;
         this.cardId = cardId;
         this.deckId = deckId;
         this.rating = rating;
