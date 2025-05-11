@@ -3,13 +3,11 @@ package de.techfak.gse.template.web.controller;
 import de.techfak.gse.template.domain.*;
 import de.techfak.gse.template.web.Exception.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 import java.util.List;
@@ -18,11 +16,11 @@ import java.util.List;
 @RequestMapping("/api")
 public class DeckController {
 
-    private final DeckServiceImpl deckService;
+    private final DeckService deckService;
     private final UserService userService;
 
     @Autowired
-    public DeckController(DeckServiceImpl deckService, UserService userService) {
+    public DeckController(DeckService deckService, UserService userService) {
         this.deckService = deckService;
         this.userService = userService;
     }
@@ -77,5 +75,13 @@ public class DeckController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Usr usr = userService.loadUserByUsername(auth.getName());
         return deckService.getUseCardById(usr, deckId, cardId).orElseThrow(BadRequestException::new);
+    }
+
+    @PostMapping("/usr/decks/new/{deckId:\\d+}")
+    @Secured("ROLE_USER")
+    public Deck createNewDeck(@PathVariable final long deckId) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Usr usr = userService.loadUserByUsername(auth.getName());
+        return deckService.getNewUserDeck(usr, deckId).orElseThrow(BadRequestException::new);
     }
 }
