@@ -26,13 +26,11 @@ public class DeckControllerTest {
     final List<Deck> DECKS = List.of(new Deck((long) 1, 1, LocalDate.now(), true),
             new Deck((long) 2, 2, LocalDate.now(), false),
             new Deck((long) 3, 2, LocalDate.now(), true));
-    final Deck DECK = new Deck((long) 1, 1, LocalDate.now(), true);
     final Deck DECK_SINGLE = new Deck(5L, 1, LocalDate.now(), true);
 
     final List<Card> CARDS = List.of(new Card((long) 1, "Tolle Karte", "Karte"),
             new Card((long) 2, "Super Karte", "Karte"),
             new Card((long) 3, "Blöde Karte", "Karte"));
-    final Card CARD = new Card((long) 1, "Tolle Karte", "Karte");
 
     private AutoCloseable closeable;
 
@@ -97,7 +95,6 @@ public class DeckControllerTest {
         long templateId = 1L;
         long newDeckId = 101L;
         int authorId = 2;
-        int userId = 5;
 
         Usr mockUser = mock(Usr.class);
 
