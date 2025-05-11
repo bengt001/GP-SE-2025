@@ -2,7 +2,7 @@ package de.techfak.gse.template;
 
 
 import de.techfak.gse.template.domain.*;
-import de.techfak.gse.template.web.Exception.BadRequestException;
+import de.techfak.gse.template.web.exception.BadRequestException;
 import de.techfak.gse.template.web.controller.DeckController;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
