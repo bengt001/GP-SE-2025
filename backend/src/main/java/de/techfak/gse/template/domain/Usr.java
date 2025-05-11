@@ -13,7 +13,7 @@ import lombok.Setter;
 public class Usr {
     @Id
     @Column
-    private Long user_id;
+    private Long userId;
     @Column
     private String username;
     @Column
@@ -21,16 +21,24 @@ public class Usr {
     @Column
     private String email;
     @Column
-    private LocalDate creation_date;
-    @OneToMany(mappedBy = "user_id")
+    private LocalDate creationDate;
+    @OneToMany(mappedBy = "userId")
     private List<CardRating> ratings;
 
-    protected Usr() {}
+    protected Usr() {
 
-    public Usr(String username, final String displayName, final String email, final LocalDate creation_date) {
+    }
+
+    /**
+     * @param username
+     * @param displayName
+     * @param email
+     * @param creationDate
+     */
+    public Usr(String username, final String displayName, final String email, final LocalDate creationDate) {
         this.username = username;
         this.displayName = displayName;
         this.email = email;
-        this.creation_date = creation_date;
+        this.creationDate = creationDate;
     }
 }

@@ -17,9 +17,14 @@ public class InitializeLexmeaDatabase implements InitializingBean {
     private final DeckService deckService;
 
     private ParsingPipeline pipeline;
-
+    /**
+     * Initializes the Lexmea database with provided services.
+     *
+     * @param cardService   the service handling card operations
+     * @param deckService   the service handling deck operations
+     */
     @Autowired
-    public InitializeLexmeaDatabase(final CardService cardService, final DeckService deckService){
+    public InitializeLexmeaDatabase(final CardService cardService, final DeckService deckService) {
         this.cardService = cardService;
         this.deckService = deckService;
         this.pipeline = new ParsingPipeline(this.cardService, this.deckService);
@@ -27,7 +32,8 @@ public class InitializeLexmeaDatabase implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() {
-        try (InputStream is = TemplateApplication.class.getClassLoader().getResourceAsStream("schemasWithFoLTree.json")) {
+        try (InputStream is = TemplateApplication.class.getClassLoader().
+                getResourceAsStream("schemasWithFoLTree.json")) {
             assert is != null;
             pipeline.importLexmeaToDatabase(is);
         } catch (IOException e) {

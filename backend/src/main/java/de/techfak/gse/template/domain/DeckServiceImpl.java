@@ -3,12 +3,11 @@ package de.techfak.gse.template.domain;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@Service //<1>
+@Service
 public class DeckServiceImpl implements DeckService {
     private final DeckRepository deckRepository;
 
@@ -21,30 +20,30 @@ public class DeckServiceImpl implements DeckService {
     public List<Deck> getDecks() {
         final List<Deck> decks = new ArrayList<>();
 
-        deckRepository.findAll().forEach(decks::add);  //<2>
+        deckRepository.findAll().forEach(decks::add);
 
         return decks;
     }
     @Override
     public Optional<Deck> getDeck(final String id) {
-        final Long deckId = Long.valueOf(id); //<1>
+        final Long deckId = Long.valueOf(id);
 
-        return deckRepository.findById(deckId); //<2>
+        return deckRepository.findById(deckId);
     }
     @Override
-    public Deck addDeck(final Boolean visibility, final List<String> field_of_law) { //<1>
-        final Deck deck = new Deck(visibility, field_of_law);
+    public Deck addDeck(final Boolean visibility, final List<String> fieldOfLaw) {
+        final Deck deck = new Deck(visibility, fieldOfLaw);
         return deckRepository.save(deck);
     }
 
     @Override
-    public Deck updateDeck(final String id, final Boolean visibility, final List<String> field_of_law) { //<2>
+    public Deck updateDeck(final String id, final Boolean visibility, final List<String> fieldOfLaw) {
         final Long deckId = Long.valueOf(id);
         final Deck deck = deckRepository.findById(deckId)
-                .orElseThrow(); // hier muss eine Fehlermeldung rein
-
+                .orElseThrow();
+        // hier muss eine Fehlermeldung rein
         deck.setVisibility(visibility);
-        deck.setField_of_law(field_of_law);
+        deck.setFieldOfLaw(fieldOfLaw);
 
         return deckRepository.save(deck);
     }

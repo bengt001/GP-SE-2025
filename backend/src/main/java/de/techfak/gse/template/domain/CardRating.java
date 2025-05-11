@@ -14,23 +14,31 @@ public class CardRating {
     @GeneratedValue
     private Long id;
     @ManyToOne
-    private Usr user_id;
+    private Usr userId;
     @ManyToOne
-    private Card card_id;
+    private Card cardId;
     @ManyToOne
-    private Deck deck_id;
+    private Deck deckId;
     @Column
-    private LocalDate last_date_rated;
+    private LocalDate lastDateRated;
     @Column
     private int rating;
 
-protected CardRating() {}
+protected CardRating() {
 
-    public CardRating(Usr user_id, Card card_id, Deck deck_id, int rating) {
-        this.user_id = user_id;
-        this.card_id = card_id;
-        this.deck_id = deck_id;
+}
+
+    /**
+     * @param user_id
+     * @param cardId
+     * @param deckId
+     * @param rating
+     */
+    public CardRating(Usr user_id, Card cardId, Deck deckId, int rating) {
+        this.userId = user_id;
+        this.cardId = cardId;
+        this.deckId = deckId;
         this.rating = rating;
-        this.last_date_rated = LocalDate.now();
+        this.lastDateRated = LocalDate.now();
     }
 }

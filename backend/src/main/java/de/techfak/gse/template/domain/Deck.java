@@ -3,7 +3,6 @@ package de.techfak.gse.template.domain;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
@@ -15,27 +14,33 @@ import lombok.Setter;
 public class Deck {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long deck_id;
+    private Long deckId;
     @Column
-    private Integer author_id;
+    private Integer authorId;
     @Column
-    private LocalDate publish_date;
+    private LocalDate publishDate;
     @Column
     private Boolean visibility;
 
     @ElementCollection
-    @CollectionTable(name = "deck_field", joinColumns = @JoinColumn(name = "deck_id"))
-    @Column(name = "field_of_law")
-    private List<String> field_of_law;
+    @CollectionTable(name = "deckField", joinColumns = @JoinColumn(name = "deckId"))
+    @Column(name = "fieldOfLaw")
+    private List<String> fieldOfLaw;
 
-    protected Deck() {}
+    protected Deck() {
 
-    public Deck(Boolean visibility, List<String> field_of_law) {
+    }
+
+    /**
+     * @param visibility
+     * @param fieldOfLaw
+     */
+    public Deck(Boolean visibility, List<String> fieldOfLaw) {
         this.visibility = visibility;
-        this.field_of_law = field_of_law;
-        this.publish_date = LocalDate.now();
+        this.fieldOfLaw = fieldOfLaw;
+        this.publishDate = LocalDate.now();
     }
     public void updateDate() {
-        this.publish_date = LocalDate.now();
+        this.publishDate = LocalDate.now();
     }
 }

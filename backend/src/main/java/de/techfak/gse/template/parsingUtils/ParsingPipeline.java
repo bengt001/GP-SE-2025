@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import de.techfak.gse.template.domain.*;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -38,7 +37,8 @@ public class ParsingPipeline {
                 ArrayList<ArrayList<Object>> allPaths = new ArrayList<>();
                 JsonParser.findPathWithFieldAndValue(root, "type", "schema", recursionPath, allPaths);
                 System.out.println(allPaths.size());
-                //System.out.println("##########################################################################################");
+                //System.out.println("#######################################################
+                // ###################################");
                 for (ArrayList<Object> path : allPaths) {
                     createDeckWithCards(path, root);
                 }
@@ -95,7 +95,7 @@ public class ParsingPipeline {
                 try {
                     String jsonArray = mapper.writeValueAsString(aufdeckCard);
                     System.out.println(jsonArray);
-                    if(aufdeckCard.hasOtherData()){
+                    if (aufdeckCard.hasOtherData()) {
                         //one of these is broken
                         //System.out.println(jsonArray);
                         cardService.addCard(jsonArray, "Aufdeckkarte", currentDeck);

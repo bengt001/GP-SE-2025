@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@Service //<1>
+@Service
 public class CardServiceImpl implements CardService {
     private final CardRepository cardRepository;
 
@@ -20,31 +20,32 @@ public class CardServiceImpl implements CardService {
     public List<Card> getCards() {
         final List<Card> cards = new ArrayList<>();
 
-        cardRepository.findAll().forEach(cards::add);  //<2>
+        cardRepository.findAll().forEach(cards::add);
 
         return cards;
     }
 
     @Override
     public Optional<Card> getCard(final String id) {
-        final Long deckId = Long.valueOf(id); //<1>
+        final Long deckId = Long.valueOf(id);
 
-        return cardRepository.findById(deckId); //<2>
+        return cardRepository.findById(deckId);
     }
     @Override
-    public Card addCard(final String content, final String card_type, final Deck deck) { //<1>
-        final Card card = new Card(content, card_type, deck);
+    public Card addCard(final String content, final String cardType, final Deck deck) {
+        final Card card = new Card(content, cardType, deck);
         return cardRepository.save(card);
     }
 
     @Override
-    public Card updateCard(final String id, final String content, final String card_type, final Deck deck) { //<2>
+    public Card updateCard(final String id, final String content, final String cardType, final Deck deck) {
         final Long cardId = Long.valueOf(id);
         final Card card = cardRepository.findById(cardId)
-                .orElseThrow(); // hier muss eine Fehlermeldung rein
+                .orElseThrow();
+        // hier muss eine Fehlermeldung rein
 
         card.setContent(content);
-        card.setCard_type(card_type);
+        card.setCardType(cardType);
         card.setDeck(deck);
 
         return cardRepository.save(card);

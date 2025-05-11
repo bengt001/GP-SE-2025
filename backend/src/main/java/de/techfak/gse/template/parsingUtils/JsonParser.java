@@ -68,11 +68,14 @@ public class JsonParser {
      * @param fieldname     the fieldname
      * @return the array list
      */
-    public static ArrayList<String> extractContentAsStringFromPath(JsonNode jsonContent, ArrayList<Object> recursionPath, String fieldname) {
+    public static ArrayList<String> extractContentAsStringFromPath
+    (JsonNode jsonContent, ArrayList<Object> recursionPath, String fieldname) {
         ArrayList<String> stringList = new ArrayList<>();
         JsonNode currentNode = jsonContent;
         for (int i = 0; i < recursionPath.size(); i++) {
-            if (currentNode == null) break;
+            if (currentNode == null) {
+                break;
+            }
             if (recursionPath.get(i) instanceof String) {
                 currentNode = currentNode.get((String) recursionPath.get(i));
                 if (currentNode.has(fieldname)) {

@@ -5,9 +5,9 @@ import java.util.Optional;
 
 public interface CardService {
 
-    Card addCard(String content, String card_type, Deck deck);
+    Card addCard(String content, String cardType, Deck deck);
 
-    Card updateCard(String id, String content, String card_type, Deck deck);
+    Card updateCard(String id, String content, String cardType, Deck deck);
 
     List<Card> getCards();
 
