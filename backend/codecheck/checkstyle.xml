@@ -260,11 +260,11 @@
         </module>
         <module name="JavadocVariable">
             <property name="severity" value="info"/>
-            <property name="scope" value="package"/>
+            <property name="accessModifiers" value="package"/>
         </module>
         <module name="JavadocMethod">
             <property name="severity" value="info"/>
-            <property name="scope" value="protected"/>
+            <property name="accessModifiers" value="protected"/>
             <property name="allowedAnnotations" value="Override, Test"/>
         </module>
     </module>

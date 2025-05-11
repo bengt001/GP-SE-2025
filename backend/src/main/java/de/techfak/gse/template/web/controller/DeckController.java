@@ -1,7 +1,7 @@
 package de.techfak.gse.template.web.controller;
 
 import de.techfak.gse.template.domain.*;
-import de.techfak.gse.template.web.Exception.BadRequestException;
+import de.techfak.gse.template.web.exception.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * DeckController to handle API requests.
+ */
 @RestController
 @RequestMapping("/api")
 public class DeckController {
@@ -18,32 +21,61 @@ public class DeckController {
     private final DeckService deckService;
     private final UserService userService;
 
+    /**
+     * Constructor for the Deck Controller.
+     * @param deckService An implementation of the DeckService.
+     * @param userService An implementation of the UserService
+     */
     @Autowired
     public DeckController(DeckService deckService, UserService userService) {
         this.deckService = deckService;
         this.userService = userService;
     }
 
+    /**
+     * API Endpoint to get all decks that are available.
+     * @return List of decks that are available
+     */
     @GetMapping("/decks")
     public List<Deck> getAllDecks() {
         return deckService.getAllDecks();
     }
 
-    @GetMapping("/decks/{id:\\d+}")
-    public Deck getDeckById(@PathVariable("id") final long id) {
-        return deckService.getDeckById(id).orElseThrow(BadRequestException::new);
+    /**
+     * API Endpoint to get a deck by its id.
+     * @param deckId The deck id.
+     * @return A Deck, if no deck with this id exists a BadRequestException.
+     */
+    @GetMapping("/decks/{deckId:\\d+}")
+    public Deck getDeckById(@PathVariable("deckId") final long deckId) {
+        return deckService.getDeckById(deckId).orElseThrow(BadRequestException::new);
     }
 
-    @GetMapping("/decks/{id:\\d+}/cards")
-    public List<Card> getCards(@PathVariable("id") final long id) {
-        return deckService.getCards(id);
+    /**
+     * API Endpoint to get all cards from a deck.
+     * @param deckId from the deck to get the cards from.
+     * @return List of Card with all cards in this deck.
+     */
+    @GetMapping("/decks/{deckId:\\d+}/cards")
+    public List<Card> getCards(@PathVariable("deckId") final long deckId) {
+        return deckService.getCards(deckId);
     }
 
+    /**
+     * API Endpoint to get a Card by its id.
+     * @param deckId of the deck the card is in.
+     * @param cardId of the card you want to get.
+     * @return a single Card.
+     */
     @GetMapping("/decks/{deckId:\\d+}/cards/{cardId:\\d+}")
     public Card getCardById(@PathVariable("deckId") final long deckId, @PathVariable("cardId") final long cardId) {
         return deckService.getCardById(deckId, cardId).orElseThrow(BadRequestException::new);
     }
 
+    /**
+     * API Endpoint to get all Decks of a User.
+     * @return List of Deck.
+     */
     @GetMapping("/usr/decks")
     @Secured("ROLE_USER")
     public List<Deck> getUserDecks() {
@@ -52,14 +84,24 @@ public class DeckController {
         return deckService.getUserDecks(usr);
     }
 
-    @GetMapping("/usr/decks/{id:\\d+}")
+    /**
+     * API Endpoint to get a specific deck of a user.
+     * @param deckId of the deck that you want to get.
+     * @return A Deck.
+     */
+    @GetMapping("/usr/decks/{deckId:\\d+}")
     @Secured("ROLE_USER")
-    public Deck getUserDeckById(@PathVariable("id") final long id) {
+    public Deck getUserDeckById(@PathVariable("deckId") final long deckId) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Usr usr = userService.loadUserByUsername(auth.getName());
-        return deckService.getUserDeckById(usr, id).orElseThrow(BadRequestException::new);
+        return deckService.getUserDeckById(usr, deckId).orElseThrow(BadRequestException::new);
     }
 
+    /**
+     * API Endpoint to get all Cards from one of the users decks.
+     * @param deckId of the deck.
+     * @return List of Card.
+     */
     @GetMapping("/usr/decks/{deckId:\\d+}/cards")
     @Secured("ROLE_USER")
     public List<Card> getUserCards(@PathVariable("deckId") final long deckId) {
@@ -68,6 +110,12 @@ public class DeckController {
         return deckService.getUserCards(usr, deckId);
     }
 
+    /**
+     * API Endpoint to get a Card by id from a specific user deck.
+     * @param deckId of the deck the card is in.
+     * @param cardId of the card you want to get.
+     * @return a Card or a BadRequestException if the card does not exist.
+     */
     @GetMapping("/usr/decks/{deckId:\\d+}/cards/{cardId:\\d+}")
     @Secured("ROLE_USER")
     public Card getUserCardById(@PathVariable("deckId") final long deckId, @PathVariable("cardId") final long cardId) {

@@ -3,6 +3,9 @@ package de.techfak.gse.template.domain;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Interface for a DeckService.
+ */
 public interface DeckService {
 
     List<Deck> getAllDecks();
