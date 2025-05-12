@@ -124,6 +124,12 @@ public class DeckController {
         return deckService.getUseCardById(usr, deckId, cardId).orElseThrow(BadRequestException::new);
     }
 
+
+    /**
+     * API Endpoint for creating a new user deck as POST-Request
+     * @param deckId the Deck ID for the Deck that shall be copied
+     * @return a new Deck as exact copy of the requested deck
+     */
     @PostMapping("/usr/decks/new/{deckId:\\d+}")
     @Secured("ROLE_USER")
     public Deck createNewDeck(@PathVariable final long deckId) {
