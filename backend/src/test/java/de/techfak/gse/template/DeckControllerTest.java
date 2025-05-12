@@ -141,6 +141,22 @@ public class DeckControllerTest {
 
     }
 
+    /**
+     * Test Case for updating Card
+     */
+    @Test
+    void updateCard_whenCardIsUpdated() {
+
+    }
+
+    /**
+     * Test Case for updating Deck
+     */
+    @Test
+    void updateDeck_whenDeckIsUpdated() {
+
+    }
+
     @AfterEach
     public void releaseMocks() throws Exception {
         closeable.close();
