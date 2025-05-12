@@ -137,6 +137,13 @@ public class DeckController {
         return deckService.getNewUserDeck(usr, deckId).orElseThrow(BadRequestException::new);
     }
 
+    /**
+     * API Endpoint for sending a updateCard Patch-Request
+     * @param deckId the deckId for the to be updated card
+     * @param cardId the cardId for the to be updated card
+     * @param card the updated Card
+     * @return an updated Version of the Card
+     */
     @PatchMapping("/usr/decks/{deckId:\\d+}/{cardId:\\d+}")
     @Secured("ROLE_USER")
     public Card updateCard(@PathVariable final long deckId, @PathVariable final long cardId, @RequestBody final Card card) {
@@ -145,6 +152,12 @@ public class DeckController {
         return deckService.updateCard(usr, deckId, cardId, card).orElseThrow(BadRequestException::new);
     }
 
+    /**
+     * API Endpoint for sending a updateDeck Patch-Request
+     * @param deckId the deckId that shall be updated
+     * @param deck the updated version of the deck
+     * @return an updated Version of the Deck
+     */
     @PatchMapping("/usr/decks/{deckId:d\\+}")
     @Secured("ROLE_USER")
     public Deck updateDeck(@PathVariable final long deckId, @RequestBody final Deck deck) {
