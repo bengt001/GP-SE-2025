@@ -57,12 +57,22 @@ public class DeckServiceImpl implements DeckService {
     }
 
     @Override
+    public Optional<Card> updateCard(Usr usr, long deckId, long cardId) {
+        return Optional.empty();
+    }
+
+    @Override
     public Optional<Card> getUseCardById(Usr usr, long deckId, long id) {
         return Optional.empty();
     }
 
     @Override
     public Optional<Deck> getNewUserDeck(Usr usr, long deckId) {
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<Deck> updateDeck(Usr usr, long deckId) {
         return Optional.empty();
     }
 }
