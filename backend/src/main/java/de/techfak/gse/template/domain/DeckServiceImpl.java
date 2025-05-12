@@ -57,7 +57,7 @@ public class DeckServiceImpl implements DeckService {
     }
 
     @Override
-    public Optional<Card> updateCard(Usr usr, long deckId, long cardId) {
+    public Optional<Card> updateCard(Usr usr, long deckId, long cardId, Card updatedCard) {
         return Optional.empty();
     }
 
@@ -72,7 +72,7 @@ public class DeckServiceImpl implements DeckService {
     }
 
     @Override
-    public Optional<Deck> updateDeck(Usr usr, long deckId) {
+    public Optional<Deck> updateDeck(Usr usr, long deckId, Deck deck) {
         return Optional.empty();
     }
 }

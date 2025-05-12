@@ -21,11 +21,12 @@ public interface DeckService {
     Optional<Card> getCardById(long deckId,long id);
 
     List<Card> getUserCards(Usr usr, long deckId);
-    Optional<Card> updateCard(Usr usr, long deckId, long cardId);
+
+    Optional<Card> updateCard(Usr usr, long deckId, long cardId, Card updatedCard);
 
     Optional<Card> getUseCardById(Usr usr, long deckId,long id);
 
     Optional<Deck> getNewUserDeck(Usr usr, long templateDeckId);
 
-    Optional<Deck> updateDeck(Usr usr, long deckId);
+    Optional<Deck> updateDeck(Usr usr, long deckId, Deck updatedDeck);
 }

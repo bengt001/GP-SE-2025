@@ -124,7 +124,6 @@ public class DeckController {
         return deckService.getUseCardById(usr, deckId, cardId).orElseThrow(BadRequestException::new);
     }
 
-
     /**
      * API Endpoint for creating a new user deck as POST-Request
      * @param deckId the Deck ID for the Deck that shall be copied
@@ -136,5 +135,21 @@ public class DeckController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Usr usr = userService.loadUserByUsername(auth.getName());
         return deckService.getNewUserDeck(usr, deckId).orElseThrow(BadRequestException::new);
+    }
+
+    @PatchMapping("/usr/decks/{deckId:\\d+}/{cardId:\\d+}")
+    @Secured("ROLE_USER")
+    public Card updateCard(@PathVariable final long deckId, @PathVariable final long cardId, @RequestBody final Card card) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Usr usr = userService.loadUserByUsername(auth.getName());
+        return deckService.updateCard(usr, deckId, cardId, card).orElseThrow(BadRequestException::new);
+    }
+
+    @PatchMapping("/usr/decks/{deckId:d\\+}")
+    @Secured("ROLE_USER")
+    public Deck updateDeck(@PathVariable final long deckId, @RequestBody final Deck deck) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Usr usr = userService.loadUserByUsername(auth.getName());
+        return deckService.updateDeck(usr, deckId, deck).orElseThrow(BadRequestException::new);
     }
 }
