@@ -1,5 +1,5 @@
 <template>
-  <v-responsive class="border rounded">
+  <v-responsive>
     <v-app>
       <v-app-bar color="primary">
         <v-app-bar-nav-icon
@@ -10,9 +10,8 @@
         <v-toolbar-title
           style="font-size: 20px;"
         >
-          Wilkommen {{ userStore.username }}
+          Willkommen {{ userStore.username }}
         </v-toolbar-title>
-
 
 
         <template v-if="$vuetify.display.mdAndUp">
@@ -52,6 +51,33 @@
       </v-navigation-drawer>
 
       <v-main>
+        <!--        Subheader mit Home-Button und Buttons für Benachrichtigungen, Statistiken und Karteikartenhinzufügen -->
+        <v-tabs
+          v-model="subheader"
+          align-tabs="center"
+          bg-color="lexmea_blue_300"
+          stacked
+        >
+          <v-tab
+            to="index"
+            class="font-weight-light text-none font-weight-bold"
+          >
+            <v-icon icon="mdi-home-circle" />
+            Dashboard
+          </v-tab>
+          <v-tab class="font-weight-light text-none font-weight-bold">
+            <v-icon icon="mdi-plus-box-multiple" />
+            Karten hinzufügen
+          </v-tab>
+          <v-tab class="font-weight-light text-none font-weight-bold">
+            <v-icon icon="mdi-chart-bar" />
+            Statistiken
+          </v-tab>
+          <v-tab class="font-weight-light text-none font-weight-bold">
+            <v-icon icon="mdi-message-text" />
+            Nachrichten
+          </v-tab>
+        </v-tabs>
         <v-container>
           <router-view />
         </v-container>
@@ -60,10 +86,16 @@
   </v-responsive>
 </template>
 
-<script lang="ts" setup>
+
+<script
+  lang="ts"
+  setup
+>
 import {useUserStore} from "@/stores/users";
 
 const userStore = useUserStore();
+
+const subheader = ref(' ')
 
 const drawer = ref(false)
 const group = ref()
