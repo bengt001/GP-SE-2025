@@ -14,6 +14,16 @@ import java.util.regex.Pattern;
  */
 public class HtmlParser {
 
+
+    public static final String BACKSLASH_N = "\\\\n ";
+    public static final String BACKSLASH_N_WITHOUT_SPACE = "\\\\n";
+    public static final String DOUBLE_BACKSLASH_N = " \\\\n \\\\n ";
+    public static final String TRIPLE_BACKSLASH_N = " \\\\n \\\\n \\\\n ";
+    public static final String NEWLINE = "\n";
+
+    protected HtmlParser() {
+    }
+
     /**
      * Gets problem boxes.
      *
@@ -28,20 +38,20 @@ public class HtmlParser {
         for (Element section : problemSections) {
 
             String text = section.text();
-            text = text.replaceFirst("\\\\n ", "");
-            String[] frontBack = text.split(" \\\\n \\\\n \\\\n ");
-            if(frontBack.length == 2){
-                frontBack[1] = frontBack[1].replaceAll(" \\\\n \\\\n ", "\n");
-                frontBack[1] = frontBack[1].replaceAll("\\\\n ", "\n");
-                frontBack[1] = frontBack[1].replaceAll("\\\\n", "\n");
-                frontBack[1] = frontBack[1].replaceAll("\n\n", "");
-                frontBack[0] = frontBack[0].replaceAll("\\\\n ", "\n");
+            text = text.replaceFirst(BACKSLASH_N, "");
+            String[] frontBack = text.split(TRIPLE_BACKSLASH_N);
+            if (frontBack.length == 2) {
+                frontBack[1] = frontBack[1].replaceAll(DOUBLE_BACKSLASH_N, NEWLINE);
+                frontBack[1] = frontBack[1].replaceAll(BACKSLASH_N, NEWLINE);
+                frontBack[1] = frontBack[1].replaceAll(BACKSLASH_N_WITHOUT_SPACE, NEWLINE);
+                frontBack[1] = frontBack[1].replaceAll(NEWLINE + NEWLINE, "");
+                frontBack[0] = frontBack[0].replaceAll(BACKSLASH_N, NEWLINE);
                 //Needs to be replaced with robust loging
-                //System.out.println("########################################################################################");
+                //System.out.println("############################################################################");
                 //System.out.println(frontBack[0]);
-                //System.out.println("----------------------------------------------------------------------------------------");
+                //System.out.println("----------------------------------------------------------------------------");
                 //System.out.println(frontBack[1]);
-                //System.out.println("########################################################################################");
+                //System.out.println("#############################################################################");
                 problemBoxes.add(frontBack);
             } else {
                 //System.out.print("AHHHHHHHHHHHHHH");
@@ -67,18 +77,18 @@ public class HtmlParser {
             String text = section.text();
             text = text.replaceFirst("\\\\n ", "");
             String[] frontBack = text.split(" = ");
-            if(frontBack.length == 2){
+            if (frontBack.length == 2) {
                 frontBack[1] = frontBack[1].replaceAll(" \\\\n \\\\n ", "\n");
                 frontBack[1] = frontBack[1].replaceAll("\\\\n ", "\n");
                 frontBack[1] = frontBack[1].replaceAll("\\\\n", "\n");
                 frontBack[1] = frontBack[1].replaceAll("\n\n", "");
                 frontBack[0] = frontBack[0].replaceAll("\\\\n ", "\n");
                 //Needs to be replaced with robust loging
-                //System.out.println("########################################################################################");
+                //System.out.println("############################################################################");
                 //System.out.println(frontBack[0]);
-                //System.out.println("----------------------------------------------------------------------------------------");
+                //System.out.println("----------------------------------------------------------------------------");
                 //System.out.println(frontBack[1]);
-                //System.out.println("########################################################################################");
+                //System.out.println("#############################################################################");
                 definitionBoxes.add(frontBack);
             } else {
                 //System.out.print("AHHHHHHHHHHHHHH");
