@@ -15,12 +15,15 @@ import java.util.regex.Pattern;
 public class HtmlParser {
 
 
-    public static final String BACKSLASH_N = "\\\\n ";
-    public static final String BACKSLASH_N_WITHOUT_SPACE = "\\\\n";
-    public static final String DOUBLE_BACKSLASH_N = " \\\\n \\\\n ";
-    public static final String TRIPLE_BACKSLASH_N = " \\\\n \\\\n \\\\n ";
-    public static final String NEWLINE = "\n";
+    private static final String BACKSLASH_N = "\\\\n ";
+    private static final String BACKSLASH_N_WITHOUT_SPACE = "\\\\n";
+    private static final String DOUBLE_BACKSLASH_N = " \\\\n \\\\n ";
+    private static final String TRIPLE_BACKSLASH_N = " \\\\n \\\\n \\\\n ";
+    private static final String NEWLINE = "\n";
 
+    /**
+     * Instantiates a new Html parser.
+     */
     protected HtmlParser() {
     }
 
@@ -75,14 +78,14 @@ public class HtmlParser {
         for (Element section : problemSections) {
             //System.out.println(section.text());
             String text = section.text();
-            text = text.replaceFirst("\\\\n ", "");
+            text = text.replaceFirst(BACKSLASH_N, "");
             String[] frontBack = text.split(" = ");
             if (frontBack.length == 2) {
-                frontBack[1] = frontBack[1].replaceAll(" \\\\n \\\\n ", "\n");
-                frontBack[1] = frontBack[1].replaceAll("\\\\n ", "\n");
-                frontBack[1] = frontBack[1].replaceAll("\\\\n", "\n");
-                frontBack[1] = frontBack[1].replaceAll("\n\n", "");
-                frontBack[0] = frontBack[0].replaceAll("\\\\n ", "\n");
+                frontBack[1] = frontBack[1].replaceAll(DOUBLE_BACKSLASH_N, NEWLINE);
+                frontBack[1] = frontBack[1].replaceAll(BACKSLASH_N, NEWLINE);
+                frontBack[1] = frontBack[1].replaceAll(BACKSLASH_N, NEWLINE);
+                frontBack[1] = frontBack[1].replaceAll(NEWLINE + NEWLINE, "");
+                frontBack[0] = frontBack[0].replaceAll(BACKSLASH_N, NEWLINE);
                 //Needs to be replaced with robust loging
                 //System.out.println("############################################################################");
                 //System.out.println(frontBack[0]);
