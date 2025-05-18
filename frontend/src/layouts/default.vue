@@ -27,33 +27,34 @@
         </div>
 
 
-        <template v-if="$vuetify.display.mdAndUp">
+        <div v-if="$vuetify.display.mdAndUp">
           <v-btn
             icon="mdi-magnify"
             variant="text"
           />
-        </template>
+        </div>
 
+        <div>
+          <router-link
+            v-if="!userStore.authenticated"
+            to="/login"
+          >
+            <v-btn
+              icon="mdi-account"
+              color="white"
+            />
+          </router-link>
 
-        <router-link
-          v-if="!userStore.authenticated"
-          to="/login"
-        >
-          <v-btn
-            icon="mdi-account"
-            color="white"
-          />
-        </router-link>
-
-        <router-link
-          v-else
-          to="/profile"
-        >
-          <v-btn
-            icon="mdi-account"
-            color="white"
-          />
-        </router-link>
+          <router-link
+            v-else
+            to="/profile"
+          >
+            <v-btn
+              icon="mdi-account"
+              color="white"
+            />
+          </router-link>
+        </div>
       </v-app-bar>
       <v-navigation-drawer
         v-model="drawer"
@@ -72,39 +73,16 @@
           stacked
         >
           <v-tab
-            to="index"
+            v-for="tab in subheader_tabs"
+            :key="tab.title"
             class="font-weight-light text-none font-weight-bold"
+            :to="tab.to"
           >
-            <v-icon icon="mdi-home-circle" />
-            <div class="hide">
-              Dashboard
-            </div>
-          </v-tab>
-          <v-tab class="font-weight-light text-none font-weight-bold">
-            <v-icon icon="mdi-plus-box-multiple" />
-            <div class="hide">
-              Karten hinzufügen
-            </div>
-          </v-tab>
-          <v-tab class="font-weight-light text-none font-weight-bold">
-            <v-icon
-              icon="mdi-chart-bar"
-            />
-            <div
-              id="statsHide"
-              class="hide"
-            >
-              Statistiken
-            </div>
-          </v-tab>
-          <v-tab class="font-weight-light text-none font-weight-bold">
-            <v-icon
-              icon="mdi-message-text"
-            />
-            <div
-              class="hide"
-            >
-              Nachrichten
+            <v-icon>
+              {{ tab.icon }}
+            </v-icon>
+            <div v-if="$vuetify.display.mdAndUp">
+              {{ tab.title }}
             </div>
           </v-tab>
         </v-tabs>
@@ -125,7 +103,30 @@ import {useUserStore} from "@/stores/users";
 
 const userStore = useUserStore();
 
+// Liste der Subheader-Tabs für for-Loop
 const subheader = ref(' ')
+const subheader_tabs = ref([
+  {
+    title: 'Dashboard',
+    icon: 'mdi-home-circle',
+    to: 'index',
+  },
+  {
+    title: 'Karten hinzufügen',
+    icon: 'mdi-plus-box-multiple',
+    to: ' ',
+  },
+  {
+    title: 'Statistiken',
+    icon: 'mdi-chart-bar',
+    to: ' ',
+  },
+  {
+    title: 'Benachrichtigungen',
+    icon: 'mdi-message-text',
+    to: ' ',
+  }
+])
 
 const drawer = ref(false)
 const group = ref()
@@ -152,15 +153,3 @@ watch(group, () => {
   drawer.value = false
 })
 </script>
-
-<style>
-
-
-.hide { display:none; }
-
-/* Desktop*/
-@media screen and (min-width: 768px) {
-  .hide  { display: block; }
-}
-
-</style>
