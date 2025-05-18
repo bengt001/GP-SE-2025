@@ -7,9 +7,24 @@
           @click.stop="drawer = !drawer"
         />
 
-        <v-toolbar-title
-          style="font-size: 20px;"
-        />
+        <v-toolbar-title>
+          <div>
+            <v-card
+              max-width="180"
+            >
+              <v-img
+                max-height="55"
+                color="white"
+                src="@/assets/lexMeaLogo.png"
+              />
+            </v-card>
+          </div>
+        </v-toolbar-title>
+
+
+        <div v-if="$vuetify.display.mdAndUp && userStore.authenticated">
+          Hallo,  {{ userStore.username }}!
+        </div>
 
 
         <template v-if="$vuetify.display.mdAndUp">
@@ -18,6 +33,7 @@
             variant="text"
           />
         </template>
+
 
         <router-link
           v-if="!userStore.authenticated"
@@ -39,7 +55,6 @@
           />
         </router-link>
       </v-app-bar>
-
       <v-navigation-drawer
         v-model="drawer"
         :location="$vuetify.display.mobile ? 'bottom' : undefined"
