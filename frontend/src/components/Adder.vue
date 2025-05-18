@@ -26,7 +26,6 @@ type TreeNode = {
 }
 
 function menuButton() {
-  console.log("button clicked")
   if(lexmea.value && own.value && broad.value){
     selected_strafrecht.value= 'strafrecht_lexmea_broadcast_own'
     selected_oeffrecht.value= 'oeffirecht_lexmea_broadcast_own'
