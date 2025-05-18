@@ -18,6 +18,13 @@ const lexmea = ref(true)
 const own = ref(false)
 const broad = ref(false)
 
+type TreeNode = {
+  id: number;
+  title: string;
+  color?: string;
+  children?: TreeNode[];
+}
+
 function menuButton() {
   console.log("button clicked")
   if(lexmea.value && own.value && broad.value){
@@ -65,7 +72,7 @@ function menuButton() {
 
 
 //Bäume wenn nur Lexmea als Ersteller gewählt ist:
-const strafrecht_lexmea = ref([
+const strafrecht_lexmea = ref<TreeNode[]>([
   {
     id: 1,
     title: 'Strafrecht AT (Lexmea)',
@@ -87,7 +94,7 @@ const strafrecht_lexmea = ref([
   },
 ])
 
-const oeffirecht_lexmea = ref([
+const oeffirecht_lexmea = ref<TreeNode[]>([
   {
     id: 1,
     title: 'Verfassungsrecht',
@@ -111,7 +118,7 @@ const oeffirecht_lexmea = ref([
   },
 ])
 
-const zivilrecht_lexmea = ref([
+const zivilrecht_lexmea = ref<TreeNode[]>([
   {
     id: 1,
     title: 'Bürgerliches Recht',
@@ -150,7 +157,7 @@ const zivilrecht_lexmea = ref([
 ])
 
 //Bäume wenn nur eigene als Ersteller gewählt ist:
-const strafrecht_own = ref([
+const strafrecht_own = ref<TreeNode[]>([
   {
     id: 1,
     title: 'Strafrecht AT (Eigner Stapel)',
@@ -172,7 +179,7 @@ const strafrecht_own = ref([
   },
 ])
 
-const oeffirecht_own = ref([
+const oeffirecht_own = ref<TreeNode[]>([
   {
     id: 1,
     title: 'Verfassungsrecht',
@@ -196,7 +203,7 @@ const oeffirecht_own = ref([
   },
 ])
 
-const zivilrecht_own = ref([
+const zivilrecht_own = ref<TreeNode[]>([
   {
     id: 1,
     title: 'Bürgerliches Recht',
@@ -235,7 +242,7 @@ const zivilrecht_own = ref([
 ])
 
 //Bäume wenn nur broadcast als Ersteller gewählt ist:
-const strafrecht_broad = ref([
+const strafrecht_broad = ref<TreeNode[]>([
   {
     id: 1,
     title: 'Strafrecht AT (Broadcast)',
@@ -257,7 +264,7 @@ const strafrecht_broad = ref([
   },
 ])
 
-const oeffirecht_broad = ref([
+const oeffirecht_broad = ref<TreeNode[]>([
   {
     id: 1,
     title: 'Verfassungsrecht',
@@ -281,7 +288,7 @@ const oeffirecht_broad = ref([
   },
 ])
 
-const zivilrecht_broad = ref([
+const zivilrecht_broad = ref<TreeNode[]>([
   {
     id: 1,
     title: 'Bürgerliches Recht',
@@ -320,7 +327,7 @@ const zivilrecht_broad = ref([
 ])
 
 //Bäume wenn nur eigene und lexmea als Ersteller gewählt ist:
-const strafrecht_lexmea_own = ref([
+const strafrecht_lexmea_own = ref<TreeNode[]>([
   {
     id: 1,
     title: 'Strafrecht AT (Lexmea)',
@@ -355,7 +362,7 @@ const strafrecht_lexmea_own = ref([
   },
 ])
 
-const oeffirecht_lexmea_own = ref([
+const oeffirecht_lexmea_own = ref<TreeNode[]>([
   {
     id: 1,
     title: 'Verfassungsrecht',
@@ -384,7 +391,7 @@ const oeffirecht_lexmea_own = ref([
   },
 ])
 
-const zivilrecht_lexmea_own = ref([
+const zivilrecht_lexmea_own = ref<TreeNode[]>([
   {
     id: 1,
     title: 'Bürgerliches Recht',
@@ -429,7 +436,7 @@ const zivilrecht_lexmea_own = ref([
 
 
 //Bäume wenn nur eigene und Broadcast als Ersteller gewählt ist:
-const strafrecht_broadcast_own = ref([
+const strafrecht_broadcast_own = ref<TreeNode[]>([
   {
     id: 1,
     title: 'Strafrecht AT (Broadcast)',
@@ -464,7 +471,7 @@ const strafrecht_broadcast_own = ref([
   },
 ])
 
-const oeffirecht_broadcast_own = ref([
+const oeffirecht_broadcast_own = ref<TreeNode[]>([
   {
     id: 1,
     title: 'Verfassungsrecht',
@@ -493,7 +500,7 @@ const oeffirecht_broadcast_own = ref([
   },
 ])
 
-const zivilrecht_broadcast_own = ref([
+const zivilrecht_broadcast_own = ref<TreeNode[]>([
   {
     id: 1,
     title: 'Bürgerliches Recht',
@@ -537,7 +544,7 @@ const zivilrecht_broadcast_own = ref([
 ])
 
 //Bäume wenn nur Broadcast und lexmea als Ersteller gewählt ist:
-const strafrecht_lexmea_broadcast = ref([
+const strafrecht_lexmea_broadcast = ref<TreeNode[]>([
   {
     id: 1,
     title: 'Strafrecht AT (Lexmea)',
@@ -572,7 +579,7 @@ const strafrecht_lexmea_broadcast = ref([
   },
 ])
 
-const oeffirecht_lexmea_broadcast = ref([
+const oeffirecht_lexmea_broadcast = ref<TreeNode[]>([
   {
     id: 1,
     title: 'Verfassungsrecht',
@@ -601,7 +608,7 @@ const oeffirecht_lexmea_broadcast = ref([
   },
 ])
 
-const zivilrecht_lexmea_broadcast = ref([
+const zivilrecht_lexmea_broadcast = ref<TreeNode[]>([
   {
     id: 1,
     title: 'Bürgerliches Recht',
@@ -645,7 +652,7 @@ const zivilrecht_lexmea_broadcast = ref([
 ])
 
 //Bäume wenn Eigene,  Broadcast und lexmea als Ersteller gewählt ist:
-const strafrecht_lexmea_broadcast_own = ref([
+const strafrecht_lexmea_broadcast_own = ref<TreeNode[]>([
   {
     id: 1,
     title: 'Strafrecht AT (Lexmea)',
@@ -693,7 +700,7 @@ const strafrecht_lexmea_broadcast_own = ref([
   },
 ])
 
-const oeffirecht_lexmea_broadcast_own = ref([
+const oeffirecht_lexmea_broadcast_own = ref<TreeNode[]>([
   {
     id: 1,
     title: 'Verfassungsrecht',
@@ -716,18 +723,18 @@ const oeffirecht_lexmea_broadcast_own = ref([
       { id: 12,
         title: 'Besonderes Verwaltungsrecht',
         children: [
-          { id: 10, title: 'Baurecht (Lexmea)',color : color_lexmea},
-          { id: 11, title: 'Baurecht (Broadcast)',color : color_broadcast},
-          { id: 12, title: 'Baurecht (Eigener Stapel)',color : color_own}
+          { id: 13, title: 'Baurecht (Lexmea)',color : color_lexmea},
+          { id: 14, title: 'Baurecht (Broadcast)',color : color_broadcast},
+          { id: 15, title: 'Baurecht (Eigener Stapel)',color : color_own}
         ]},
-      { id: 13, title: 'Verwaltungsprozessrecht (Lexmea)',color: color_lexmea},
-      { id: 14, title: 'Verwaltungsprozessrecht (Broadcast)',color: color_broadcast},
-      { id: 15, title: 'Verwaltungsprozessrecht (Eigener Stapel)',color: color_own},
+      { id: 16, title: 'Verwaltungsprozessrecht (Lexmea)',color: color_lexmea},
+      { id: 17, title: 'Verwaltungsprozessrecht (Broadcast)',color: color_broadcast},
+      { id: 18, title: 'Verwaltungsprozessrecht (Eigener Stapel)',color: color_own},
     ],
   },
 ])
 
-const zivilrecht_lexmea_broadcast_own = ref([
+const zivilrecht_lexmea_broadcast_own = ref<TreeNode[]>([
   {
     id: 1,
     title: 'Bürgerliches Recht',
@@ -863,7 +870,7 @@ const zivilrechtTree = computed(() => {
           <v-tabs-window-item value="Strafrecht">
             <v-treeview
               v-model:selected="selected"
-              :items='strafrechtTree'
+              :items="strafrechtTree"
               item-value="id"
               selectable
               select-strategy="leaf"
@@ -975,7 +982,6 @@ const zivilrechtTree = computed(() => {
       </v-card-actions>
     </v-card>
   </v-responsive>
-
 </template>
 
 <style scoped lang="sass">
