@@ -9,9 +9,7 @@
 
         <v-toolbar-title
           style="font-size: 20px;"
-        >
-          Willkommen {{ userStore.username }}
-        </v-toolbar-title>
+        />
 
 
         <template v-if="$vuetify.display.mdAndUp">
@@ -63,19 +61,36 @@
             class="font-weight-light text-none font-weight-bold"
           >
             <v-icon icon="mdi-home-circle" />
-            Dashboard
+            <div class="hide">
+              Dashboard
+            </div>
           </v-tab>
           <v-tab class="font-weight-light text-none font-weight-bold">
             <v-icon icon="mdi-plus-box-multiple" />
-            Karten hinzufügen
+            <div class="hide">
+              Karten hinzufügen
+            </div>
           </v-tab>
           <v-tab class="font-weight-light text-none font-weight-bold">
-            <v-icon icon="mdi-chart-bar" />
-            Statistiken
+            <v-icon
+              icon="mdi-chart-bar"
+            />
+            <div
+              id="statsHide"
+              class="hide"
+            >
+              Statistiken
+            </div>
           </v-tab>
           <v-tab class="font-weight-light text-none font-weight-bold">
-            <v-icon icon="mdi-message-text" />
-            Nachrichten
+            <v-icon
+              icon="mdi-message-text"
+            />
+            <div
+              class="hide"
+            >
+              Nachrichten
+            </div>
           </v-tab>
         </v-tabs>
         <v-container>
@@ -122,3 +137,15 @@ watch(group, () => {
   drawer.value = false
 })
 </script>
+
+<style>
+
+
+.hide { display:none; }
+
+/* Desktop*/
+@media screen and (min-width: 768px) {
+  .hide  { display: block; }
+}
+
+</style>
