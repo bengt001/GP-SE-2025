@@ -2,11 +2,13 @@
 const tab = ref('adder')
 
 import { ref } from 'vue'
+import {useDeckStore} from "@/stores/deck";
 
+const deckStore = useDeckStore()
 const color_own = "#FF968B"
 const color_lexmea = "#03364D"
 const color_broadcast = "#78B390"
-const selected = ref([])
+const selected = ref<TreeNode[]>([])
 
 const router = useRouter()
 const selected_strafrecht = ref('strafrecht_lexmea')
@@ -782,7 +784,9 @@ const zivilrecht_lexmea_broadcast_own = ref<TreeNode[]>([
 ])
 
 function addCards() {
-    console.log(selected)
+    for(const selecteddeck of selected.value ){
+      deckStore.addDeck(selecteddeck.title)
+    }
     router.go(-1)
 }
 
@@ -814,7 +818,6 @@ const strafrechtTree = computed(() => {
   for (const tree of trees) {
     if(tree.name === selected_strafrecht.value)
     {
-      console.log(tree.data)
       return tree.data.value
     }
   }
