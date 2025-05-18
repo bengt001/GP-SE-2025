@@ -57,7 +57,7 @@ public class HtmlParser {
                 //System.out.println("#############################################################################");
                 problemBoxes.add(frontBack);
             } else {
-                //System.out.print("AHHHHHHHHHHHHHH");
+                System.out.print("getProblemBoxes: Broken Split");
             }
 
         }
@@ -94,7 +94,7 @@ public class HtmlParser {
                 //System.out.println("#############################################################################");
                 definitionBoxes.add(frontBack);
             } else {
-                //System.out.print("AHHHHHHHHHHHHHH");
+                System.out.print("getDefinitionBoxes: Broken Split");
             }
 
         }
