@@ -1,12 +1,14 @@
 <script setup lang="ts">
 // import {useDeckStore} from "@/stores/deck";
 import {useUserStore} from "@/stores/users";
+import {ref} from "vue";
 // import Decks from "@/components/Decks.vue";
 
 const UserStore = useUserStore()
 // const DeckStore = useDeckStore()
 const DialogReset = ref(false)
 const DialogDeactivate = ref(false)
+const dot_menu = ref([false,false])
 
 const value = 50
 const bufferValue = 70
@@ -80,23 +82,42 @@ function deactivateCards() {
                   Lernen
                 </v-btn>
 
-                <v-btn
-                  class="align-content-center"
-                  variant="flat"
-                  color="red_darkest"
-                  @click="DialogReset=true"
+                <v-menu
+                  v-model="dot_menu[n - 1]"
+                  :close-on-content-click="false"
                 >
-                  Reset
-                </v-btn>
-
-                <v-btn
-                  class="align-content-center"
-                  variant="flat"
-                  color="orange_darkest"
-                  @click="DialogDeactivate=true"
-                >
-                  Deaktivieren
-                </v-btn>
+                  <template #activator="{ props }">
+                    <v-btn
+                      v-bind="props"
+                      icon="mdi-dots-horizontal"
+                      color="primary"
+                    />
+                  </template>
+                  <v-card min-width="200">
+                    <v-list>
+                      <v-list-item>
+                        <v-btn
+                          class="align-content-center"
+                          variant="flat"
+                          color="red_darkest"
+                          @click="DialogReset=true"
+                        >
+                          Reset
+                        </v-btn>
+                      </v-list-item>
+                      <v-list-item>
+                        <v-btn
+                          class="align-content-center"
+                          variant="flat"
+                          color="orange_darkest"
+                          @click="DialogDeactivate=true"
+                        >
+                          Deaktivieren
+                        </v-btn>
+                      </v-list-item>
+                    </v-list>
+                  </v-card>
+                </v-menu>
               </v-row>
             </v-card-actions>
           </v-card>
@@ -158,23 +179,42 @@ function deactivateCards() {
                   Lernen
                 </v-btn>
 
-                <v-btn
-                  class="align-content-center"
-                  variant="flat"
-                  color="red_darkest"
-                  @click="DialogReset=true"
+                <v-menu
+                  v-model="dot_menu[n - 1]"
+                  :close-on-content-click="false"
                 >
-                  Reset
-                </v-btn>
-
-                <v-btn
-                  class="align-content-center"
-                  variant="flat"
-                  color="orange_darkest"
-                  @click="DialogDeactivate=true"
-                >
-                  Deaktivieren
-                </v-btn>
+                  <template #activator="{ props }">
+                    <v-btn
+                      v-bind="props"
+                      icon="mdi-dots-horizontal"
+                      color="primary"
+                    />
+                  </template>
+                  <v-card min-width="200">
+                    <v-list>
+                      <v-list-item>
+                        <v-btn
+                          class="align-content-center"
+                          variant="flat"
+                          color="red_darkest"
+                          @click="DialogReset=true"
+                        >
+                          Reset
+                        </v-btn>
+                      </v-list-item>
+                      <v-list-item>
+                        <v-btn
+                          class="align-content-center"
+                          variant="flat"
+                          color="orange_darkest"
+                          @click="DialogDeactivate=true"
+                        >
+                          Deaktivieren
+                        </v-btn>
+                      </v-list-item>
+                    </v-list>
+                  </v-card>
+                </v-menu>
               </v-row>
             </v-card-actions>
           </v-card>
