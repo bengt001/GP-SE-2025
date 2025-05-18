@@ -1,30 +1,60 @@
 <script setup lang="ts">
-// import {useDeckStore} from "@/stores/deck";
+import {useDeckStore} from "@/stores/deck";
 import {useUserStore} from "@/stores/users";
 import {ref} from "vue";
-// import Decks from "@/components/Decks.vue";
+import { computed } from 'vue';
+
+import type Deck from "@/types/Deck";
 
 const UserStore = useUserStore()
-// const DeckStore = useDeckStore()
+const DeckStore = useDeckStore()
 const DialogReset = ref(false)
 const DialogDeactivate = ref(false)
-const dot_menu = ref([false,false])
 
 const value = 50
 const bufferValue = 70
-const decks = ['Strafrecht AT', 'Strafrecht BT']
-const faellig = ['Heute keine Karten fällig', '12 Karten fällig']
+const decks = computed(() => DeckStore.getDecksTitle())
+const faellig = computed(() => DeckStore.getDecksFaellig())
+
+const dot_menu = ref<boolean[]>([])
+const deckToDeactivate = ref('')
+const deckToReset = ref('')
+
+watch(
+  decks,
+  (newDecks) => {
+    dot_menu.value = Array(newDecks.length).fill(false)
+  },
+  { immediate: true }
+)
+
+function openResetDialog(deckTitle: string) {
+  deckToReset.value = deckTitle
+  DialogReset.value = true
+}
 
 function resetCards() {
+  DialogReset.value = false
+}
 
+function openDeactivateDialog(deckTitle: string) {
+  deckToDeactivate.value = deckTitle
+  DialogDeactivate.value = true
 }
 
 function deactivateCards() {
+  DeckStore.deactivateDeck(deckToDeactivate.value)
+  DialogDeactivate.value=false
+}
 
+function printAllActive() {
+  const allDecks: Deck[]  = DeckStore.getDecks()
+  for(const deck of allDecks){
+    console.log(deck.title)
+  }
 }
 
 </script>
-
 <template>
   <v-container>
     <v-row
@@ -100,7 +130,7 @@ function deactivateCards() {
                           class="align-content-center"
                           variant="flat"
                           color="red_darkest"
-                          @click="DialogReset=true"
+                          @click="() => openResetDialog(decks[n - 1])"
                         >
                           Reset
                         </v-btn>
@@ -110,7 +140,7 @@ function deactivateCards() {
                           class="align-content-center"
                           variant="flat"
                           color="orange_darkest"
-                          @click="DialogDeactivate=true"
+                          @click="() => openDeactivateDialog(decks[n - 1])"
                         >
                           Deaktivieren
                         </v-btn>
@@ -148,7 +178,7 @@ function deactivateCards() {
             variant="elevated"
           >
             <v-card-title class="text-h5">
-              {{ decks[0] }}
+              {{ decks[n-1] }}
             </v-card-title>
 
             <v-card-text class="text-center">
@@ -197,7 +227,7 @@ function deactivateCards() {
                           class="align-content-center"
                           variant="flat"
                           color="red_darkest"
-                          @click="DialogReset=true"
+                          @click="() => openResetDialog(decks[n - 1])"
                         >
                           Reset
                         </v-btn>
@@ -207,7 +237,7 @@ function deactivateCards() {
                           class="align-content-center"
                           variant="flat"
                           color="orange_darkest"
-                          @click="DialogDeactivate=true"
+                          @click="() => openDeactivateDialog(decks[n - 1])"
                         >
                           Deaktivieren
                         </v-btn>
