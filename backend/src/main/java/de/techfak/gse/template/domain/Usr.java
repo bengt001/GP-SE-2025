@@ -2,10 +2,13 @@ package de.techfak.gse.template.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -13,18 +16,31 @@ import java.util.List;
 /**
  * User Klasse implementiert UserDetails. Definiert die Attribute eines Nutzers und getter und setter.
  */
+@Getter
+@Setter
 @Entity
 public class Usr implements UserDetails {
 
+    @Column
+    private String displayName;
+
     private static final long serialVersionUID = 0L;
 
+    @Column
     private String username;
 
     @Id
+    @Column
     private String email;
 
     @JsonIgnore
     private String password;
+
+    @Column
+    private LocalDate creationDate;
+
+    @OneToMany(mappedBy = "userId")
+    private List<CardRating> ratings;
 
     @JsonIgnore
     @ElementCollection(fetch = FetchType.EAGER)
@@ -42,10 +58,12 @@ public class Usr implements UserDetails {
      * @param email Email des Nutzers.
      * @param password Passwort des Nutzers.
      */
-    public Usr(final String username, final String email, final String password) {
+    public Usr(final String username, final String email, final String password,  final String displayName) {
         this.username = username;
         this.email = email;
         this.password = password;
+        this.creationDate = LocalDate.now();
+        this.displayName = displayName;
     }
 
     public void addRole(String role) {
@@ -56,20 +74,6 @@ public class Usr implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return AuthorityUtils.createAuthorityList(this.roles.toArray(new String[0]));
-    }
-
-    @Override
-    public String getPassword() {
-        return this.password;
-    }
-
-    @Override
-    public String getUsername() {
-        return this.username;
-    }
-
-    public String getEmail() {
-        return this.email;
     }
 
     @JsonIgnore

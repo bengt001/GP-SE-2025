@@ -28,9 +28,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Usr createUser(final String username, final String email,
-                          final String password, final String... roles) {
+                          final String password,  final String nickname, final String... roles) {
         String encodedPassword = passwordEncoder.encode(password);
-        final Usr usr = new Usr(username, email, encodedPassword);
+        final Usr usr = new Usr(username, email, encodedPassword, nickname);
         for (final String role : roles) {
             usr.addRole(role);
         }
