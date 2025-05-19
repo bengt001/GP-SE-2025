@@ -109,7 +109,7 @@ const subheader_tabs = ref([
   {
     title: 'Dashboard',
     icon: 'mdi-home-circle',
-    to: 'index',
+    to: '/',
   },
   {
     title: 'Karten hinzufügen',
