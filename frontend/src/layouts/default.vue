@@ -10,12 +10,12 @@
         <v-toolbar-title>
           <div>
             <v-card
-              max-width="180"
+              max-width="150"
             >
               <v-img
                 max-height="55"
                 color="white"
-                src="@/assets/lexMeaLogo.png"
+                src="@/assets/lexMeaWebsiteLogo.png"
               />
             </v-card>
           </div>
@@ -60,6 +60,7 @@
         v-model="drawer"
         :location="$vuetify.display.mobile ? 'bottom' : undefined"
         temporary
+        color="primary"
       >
         <v-list :items="items" />
       </v-navigation-drawer>
@@ -132,19 +133,27 @@ const drawer = ref(false)
 const group = ref()
 const items = ref([
   {
-    title: 'Foo',
+    title: 'Bibliothek',
     value: 'foo',
+    children: [
+      {
+        title: 'Gesetze',
+      },
+      {
+        title:'Inhalte',
+      },
+      {
+        title: 'Chronik',
+      }
+
+    ]
   },
   {
-    title: 'Bar',
-    value: 'bar',
-  },
-  {
-    title: 'Fizz',
+    title: 'Arbeitsbereich',
     value: 'fizz',
   },
   {
-    title: 'Buzz',
+    title: 'Lernbereich',
     value: 'buzz',
   },
 ])
