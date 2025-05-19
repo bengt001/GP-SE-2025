@@ -160,7 +160,7 @@ function printAllActive() {
       no-gutters
     >
       <v-col
-        v-for="n in 1"
+        v-for="n in decks.length"
         :key="n"
         cols="auto"
         sm="4"
@@ -186,7 +186,7 @@ function printAllActive() {
                 class="text-h6"
                 cols="auto"
               >
-                8 fällige Karten
+                {{ faellig[n - 1] }}
                 <v-progress-linear
                   v-model="value"
                   :buffer-value="bufferValue"

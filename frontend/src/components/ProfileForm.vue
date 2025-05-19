@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import {useUserStore} from "@/stores/users"
+import {useDeckStore} from "@/stores/deck";
 
+const deckStore = useDeckStore()
 const userStore = useUserStore()
 const router = useRouter()
 
@@ -11,6 +13,7 @@ function logOut() {
   setTimeout(() => {
     router.push('/')
     userStore.logout()
+    deckStore.reset_decks()
   }, 1000)
 }
 </script>

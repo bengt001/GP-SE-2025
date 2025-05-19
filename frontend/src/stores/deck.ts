@@ -55,6 +55,28 @@ export const useDeckStore = defineStore('decks', {
       }
       return FaelligArr
     },
+    get_my_active_decks(): void{
+      //TODO aus de mbackend auslesn welche decks visible sind und die in decks hinzufügen wenn sie noch nicht drin sind
+    },
+    reset_decks(): void{
+      let counter: number = 0
+      while (counter < this.decks.length){
+        this.decks.splice(counter ,1)
+        localStorage.setItem('decks',JSON.stringify(this.decks))
+      }
+      counter ++
+      const deckId = this.decks.length + 1 //TODO deckID aus backend bekommen
+      const authorID = 1 //TODO authorID aus backebnd bekommen
+      const visible = true //TODO im backend visibility des decks setzen
+      const newDeck: Deck = {
+        title: "StrafrechtAT",
+        author_id: authorID,
+        stapel_id: deckId,
+        visibility: visible
+      }
+      this.decks.push(newDeck)
+      localStorage.setItem('decks', JSON.stringify(this.decks));
+    }
 
   },
 })
