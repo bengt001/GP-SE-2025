@@ -1,44 +1,98 @@
 package de.techfak.gse.template.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.userdetails.UserDetails;
 
-import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
+/**
+ * User Klasse implementiert UserDetails. Definiert die Attribute eines Nutzers und getter und setter.
+ */
 @Entity
-public class Usr {
-    @Id
-    @Column
-    private Long userId;
-    @Column
-    private String username;
-    @Column
-    private String displayName;
-    @Column
-    private String email;
-    @Column
-    private LocalDate creationDate;
-    @OneToMany(mappedBy = "userId")
-    private List<CardRating> ratings;
+public class Usr implements UserDetails {
 
+    private static final long serialVersionUID = 0L;
+
+    private String username;
+
+    @Id
+    private String email;
+
+    @JsonIgnore
+    private String password;
+
+    @JsonIgnore
+    @ElementCollection(fetch = FetchType.EAGER)
+    @SuppressWarnings("serial")
+    private List<String> roles = new ArrayList<>();
+
+    /** JPA constructor. */
     protected Usr() {
 
     }
 
     /**
-     * @param username
-     * @param displayName
-     * @param email
-     * @param creationDate
+     * Konstruktor des Nutzers (Usr).
+     * @param username Nutzername des Nutzers.
+     * @param email Email des Nutzers.
+     * @param password Passwort des Nutzers.
      */
-    public Usr(String username, final String displayName, final String email, final LocalDate creationDate) {
+    public Usr(final String username, final String email, final String password) {
         this.username = username;
-        this.displayName = displayName;
         this.email = email;
-        this.creationDate = creationDate;
+        this.password = password;
+    }
+
+    public void addRole(String role) {
+        this.roles.add(role);
+    }
+
+    @JsonIgnore
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return AuthorityUtils.createAuthorityList(this.roles.toArray(new String[0]));
+    }
+
+    @Override
+    public String getPassword() {
+        return this.password;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.username;
+    }
+
+    public String getEmail() {
+        return this.email;
+    }
+
+    @JsonIgnore
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @JsonIgnore
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @JsonIgnore
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @JsonIgnore
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }
