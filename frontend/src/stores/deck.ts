@@ -48,6 +48,13 @@ export const useDeckStore = defineStore('decks', {
       }
       return TitleArr
     },
+    getDecksID(): number[]{
+      const IdArr:number[] = []
+      for(const deck of this.decks){
+        IdArr.push(deck.stapel_id)
+      }
+      return IdArr
+    },
     getDecksFaellig(): number[]{
       const FaelligArr:number[] = []
       for(const deck of this.decks){
@@ -69,7 +76,7 @@ export const useDeckStore = defineStore('decks', {
       const authorID = 1 //TODO authorID aus backebnd bekommen
       const visible = true //TODO im backend visibility des decks setzen
       const newDeck: Deck = {
-        title: "StrafrechtAT",
+        title: "StrafrechtAT (Lexmea)",
         author_id: authorID,
         stapel_id: deckId,
         visibility: visible

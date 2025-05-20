@@ -10,11 +10,13 @@ const UserStore = useUserStore()
 const DeckStore = useDeckStore()
 const DialogReset = ref(false)
 const DialogDeactivate = ref(false)
+const SelectedCard = ref<boolean[]>([])
 
 const value = 50
 const bufferValue = 70
 const decks = computed(() => DeckStore.getDecksTitle())
 const faellig = computed(() => DeckStore.getDecksFaellig())
+const deckID = computed(() => DeckStore.getDecksID())
 
 const dot_menu = ref<boolean[]>([])
 const deckToDeactivate = ref('')
@@ -26,6 +28,14 @@ watch(
     dot_menu.value = Array(newDecks.length).fill(false)
   },
   { immediate: true }
+)
+
+watch(
+    decks,
+    (newDecks) => {
+      SelectedCard.value = Array(newDecks.length).fill(false)
+    },
+    { immediate: true }
 )
 
 function openResetDialog(deckTitle: string) {
@@ -54,8 +64,23 @@ function printAllActive() {
   }
 }
 
+function print_selected() {
+  const seleted_id_arr = []
+  let count: number = 0
+  for(const select of SelectedCard.value){
+    if(select === true){
+      seleted_id_arr.push(deckID.value[count])
+    }
+    count ++
+  }
+  console.log(seleted_id_arr)
+}
+
 </script>
 <template>
+  <v-btn @click="print_selected">
+    selected
+  </v-btn>
   <v-container>
     <v-row
       v-if="UserStore.authenticated"
@@ -104,13 +129,11 @@ function printAllActive() {
 
             <v-card-actions class="mt-auto">
               <v-row justify="space-evenly">
-                <v-btn
-                  class="align-content-center"
-                  variant="flat"
+                <v-checkbox
+                  v-model="SelectedCard[n-1]"
+                  label="lernen"
                   color="lexmea_blue_200"
-                >
-                  Lernen
-                </v-btn>
+                />
 
                 <v-menu
                   v-model="dot_menu[n - 1]"
@@ -201,13 +224,11 @@ function printAllActive() {
 
             <v-card-actions class="mt-auto">
               <v-row justify="space-evenly">
-                <v-btn
-                  class="align-content-center"
-                  variant="flat"
-                  color="lexmea_blue_200"
-                >
-                  Lernen
-                </v-btn>
+                <v-checkbox
+                    v-model="SelectedCard[n-1]"
+                    label="lernen"
+                    color="lexmea_blue_200"
+                />
 
                 <v-menu
                   v-model="dot_menu[n - 1]"
