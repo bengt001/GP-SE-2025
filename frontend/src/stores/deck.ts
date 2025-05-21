@@ -62,16 +62,35 @@ export const useDeckStore = defineStore('decks', {
       }
       return FaelligArr
     },
-    get_my_active_decks(): void{
-      //TODO aus de mbackend auslesn welche decks visible sind und die in decks hinzufügen wenn sie noch nicht drin sind
+    getCardArray(): number[][]{
+      const CardArray:number[][] = []
+      for(const deck of this.decks){
+        const TempArray:number[] = []
+        TempArray.push(deck.stapel_id*2)      //TODO grüne KArten aus backend
+        TempArray.push(deck.stapel_id)    //TODO grgelbe KArten aus backend
+        TempArray.push(deck.stapel_id*2)    //TODO orange KArten aus backend
+        TempArray.push(deck.stapel_id)    //TODO rote KArten aus backend
+        TempArray.push(deck.stapel_id)    //TODO grau KArten aus backend
+        CardArray.push(TempArray)
+      }
+      return CardArray
     },
-    reset_decks(): void{
-      let counter: number = 0
+    get_my_active_decks(): void{
+      //MOCK um es zu leeren
+      const counter: number = 0
       while (counter < this.decks.length){
         this.decks.splice(counter ,1)
         localStorage.setItem('decks',JSON.stringify(this.decks))
       }
-      counter ++
+      //TODO MOCK entfernen
+      //TODO aus de mbackend auslesn welche decks visible sind und die in decks hinzufügen wenn sie noch nicht drin sind
+    },
+    reset_decks(): void{
+      const counter: number = 0
+      while (counter < this.decks.length){
+        this.decks.splice(counter ,1)
+        localStorage.setItem('decks',JSON.stringify(this.decks))
+      }
       const deckId = this.decks.length + 1 //TODO deckID aus backend bekommen
       const authorID = 1 //TODO authorID aus backebnd bekommen
       const visible = true //TODO im backend visibility des decks setzen

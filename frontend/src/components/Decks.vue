@@ -12,11 +12,11 @@ const DialogReset = ref(false)
 const DialogDeactivate = ref(false)
 const SelectedCard = ref<boolean[]>([])
 
-const value = 50
-const bufferValue = 70
 const decks = computed(() => DeckStore.getDecksTitle())
 const faellig = computed(() => DeckStore.getDecksFaellig())
 const deckID = computed(() => DeckStore.getDecksID())
+const cards = computed(() => DeckStore.getCardArray())
+const colorNames = ['green', 'yellow', 'orange', 'red', 'grey'];
 
 const dot_menu = ref<boolean[]>([])
 const deckToDeactivate = ref('')
@@ -114,16 +114,22 @@ function print_selected() {
                 class="text-h6"
                 cols="auto"
               >
-                {{ faellig[n - 1] }}
-                <v-progress-linear
-                  v-model="value"
-                  :buffer-value="bufferValue"
-                  color="success"
-                  buffer-color="red"
-                  buffer-opacity="100"
-                  bg-color="primary"
-                  :height="10"
-                />
+                {{ faellig[n - 1] }} heute fällig
+                <div
+                  class="progress_bar"
+                  style="display:flex; width:250px; height:10px;  margin:0 auto;"
+                >
+                  <!--                  geht durch liste der cards für den stapel : Aufbau [Anzahl grüne Karten,Anzahl gelbe Karten,Anzahl orange Karten,Anzahl rote Karten,Anzahl graue Karten]-->
+                  <div
+                    v-for="(count, color_index) in cards[n-1]"
+                    :key="color_index"
+                    :style="{
+                      backgroundColor: colorNames[color_index],
+                      flexGrow: count,
+                      height: '100%'
+                    }"
+                  />
+                </div>
               </v-col>
             </v-card-text>
 
@@ -209,27 +215,32 @@ function print_selected() {
                 class="text-h6"
                 cols="auto"
               >
-                {{ faellig[n - 1] }}
-                <v-progress-linear
-                  v-model="value"
-                  :buffer-value="bufferValue"
-                  color="success"
-                  buffer-color="red"
-                  buffer-opacity="100"
-                  bg-color="primary"
-                  :height="10"
-                />
+                {{ faellig[n - 1] }} heute fällig
+                <div
+                  class="progress_bar"
+                  style="display:flex; width:250px; height:10px;  margin:0 auto;"
+                >
+                  <!--geht durch liste der cards für den stapel : Aufbau [Anzahl grüne Karten,Anzahl gelbe Karten,Anzahl orange Karten,Anzahl rote Karten,Anzahl graue Karten]-->
+                  <div
+                    v-for="(count, color_index) in cards[n-1]"
+                    :key="color_index"
+                    :style="{
+                      backgroundColor: colorNames[color_index],
+                      flexGrow: count,
+                      height: '100%'
+                    }"
+                  />
+                </div>
               </v-col>
             </v-card-text>
 
             <v-card-actions class="mt-auto">
               <v-row justify="space-evenly">
                 <v-checkbox
-                    v-model="SelectedCard[n-1]"
-                    label="lernen"
-                    color="lexmea_blue_200"
+                  v-model="SelectedCard[n-1]"
+                  label="lernen"
+                  color="lexmea_blue_200"
                 />
-
                 <v-menu
                   v-model="dot_menu[n - 1]"
                   :close-on-content-click="false"
@@ -302,7 +313,7 @@ function print_selected() {
   >
     <v-card>
       <v-card-title>
-        Karten reseten
+        Karten resetten
       </v-card-title>
       <v-card-text>
         Bist du sicher, dass du diesen Stapel resetten möchtest?
