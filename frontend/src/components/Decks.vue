@@ -44,6 +44,7 @@ function openResetDialog(deckTitle: string) {
 }
 
 function resetCards() {
+  DeckStore.resetCards(deckToReset.value)
   DialogReset.value = false
 }
 
