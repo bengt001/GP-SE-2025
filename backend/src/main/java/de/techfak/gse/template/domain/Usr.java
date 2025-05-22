@@ -8,6 +8,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -19,17 +21,21 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-public class Usr implements UserDetails {
+public class Usr implements UserDetails{
+
+    @Id
+    @Column
+    private String userId;
 
     @Column
     private String displayName;
 
+    @Serial
     private static final long serialVersionUID = 0L;
 
     @Column
     private String username;
 
-    @Id
     @Column
     private String email;
 
@@ -40,10 +46,12 @@ public class Usr implements UserDetails {
     private LocalDate creationDate;
 
     @OneToMany(mappedBy = "userId")
-    private List<CardRating> ratings;
+    private transient List<CardRating> ratings;
 
     @JsonIgnore
     @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "usr_roles", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "role")
     @SuppressWarnings("serial")
     private List<String> roles = new ArrayList<>();
 
@@ -58,12 +66,13 @@ public class Usr implements UserDetails {
      * @param email Email des Nutzers.
      * @param password Passwort des Nutzers.
      */
-    public Usr(final String username, final String email, final String password,  final String displayName) {
+    public Usr(final String username, final String email, final String password,  final String displayName,final String userId) {
         this.username = username;
         this.email = email;
         this.password = password;
         this.creationDate = LocalDate.now();
         this.displayName = displayName;
+        this.userId = userId;
     }
 
     public void addRole(String role) {

@@ -19,18 +19,29 @@ public class UserServiceImpl implements UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    /** loads User by ID (email). */
+    /** loads User by ID. */
     @Override
     public Usr loadUserByUsername(final String email) throws UsernameNotFoundException {
-        return userRepository.findById(email)
-        .orElseThrow(() -> new UsernameNotFoundException(email + " not found."));
+        Iterable<Usr> users = userRepository.findAll();
+        for (Usr user : users) {
+            if (user.getEmail().equals(email)) {
+                return user;
+            }
+        }
+        throw new UsernameNotFoundException(email + " not found.");
+    }
+
+    public Usr loadUserByID(final String userID) throws UsernameNotFoundException {
+         return userRepository.findById(userID)
+         .orElseThrow(() -> new UsernameNotFoundException(userID + " not found."));
     }
 
     @Override
     public Usr createUser(final String username, final String email,
-                          final String password,  final String nickname, final String... roles) {
+                          final String password,  final String nickname,final String... roles) {
         String encodedPassword = passwordEncoder.encode(password);
-        final Usr usr = new Usr(username, email, encodedPassword, nickname);
+        String userId = getFreeID();
+        final Usr usr = new Usr(username, email, encodedPassword, nickname,userId);
         for (final String role : roles) {
             usr.addRole(role);
         }
@@ -39,12 +50,28 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean exists(String email) {
-        try {
-            loadUserByUsername(email);
-            return true;
-        } catch (UsernameNotFoundException e) {
-            return false;
+    public String getFreeID(){
+        Long counter = 0L;
+        while(true) {
+            try{
+                loadUserByID(String.valueOf(counter));
+                counter++;
+            }
+            catch (UsernameNotFoundException e) {
+                break;
+            }
         }
+        return String.valueOf(counter);
+
+    }
+
+    @Override
+    public boolean exists_email(String email) {
+        for(Usr usr : userRepository.findAll()) {
+            if(usr.getEmail().equals(email)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

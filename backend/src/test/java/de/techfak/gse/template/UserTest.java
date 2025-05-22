@@ -8,7 +8,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class UserTest {
     @Test
     void createUser() {
-        Usr usr = new Usr("test", "test@mail.com", "{bcrypt}$2a$10$WoG5Z4YN9Z37EWyNCkltyeFr6PtrSXSLMeFWOeDUwcanht5CIJgPa", "test");
+        Usr usr = new Usr("test", "test@mail.com", "{bcrypt}$2a$10$WoG5Z4YN9Z37EWyNCkltyeFr6PtrSXSLMeFWOeDUwcanht5CIJgPa", "test","1");
 
         assertThat(usr.getUsername()).isEqualTo("test");
         assertThat(usr.getEmail()).isEqualTo("test@mail.com");

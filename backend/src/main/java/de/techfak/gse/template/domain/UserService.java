@@ -8,9 +8,11 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 * */
 public interface UserService extends UserDetailsService {
     @Override
-    Usr loadUserByUsername(String username) throws UsernameNotFoundException;
+    Usr loadUserByUsername(String email) throws UsernameNotFoundException;
 
-    Usr createUser(String username, String email, String password, String displayName, String... roles);
+    Usr createUser(String username, String email, String password, String displayName,String... roles);
 
-    boolean exists(String email);
+    boolean exists_email(String email);
+
+    String getFreeID();
 }

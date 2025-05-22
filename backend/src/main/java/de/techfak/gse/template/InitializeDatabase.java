@@ -27,7 +27,7 @@ public class InitializeDatabase implements InitializingBean {
         } catch (UsernameNotFoundException ex) {
             userService.createUser("test",
                     testEmail,
-                    "{bcrypt}$2a$10$WoG5Z4YN9Z37EWyNCkltyeFr6PtrSXSLMeFWOeDUwcanht5CIJgPa", "ROLE_USER");
+                    "password","test" ,"ROLE_USER");
         }
     }
 }

@@ -24,6 +24,6 @@ public class UsrController {
 
     @GetMapping("/exists")
     public boolean exists(@RequestParam String email) {
-        return userService.exists(email);
+        return userService.exists_email(email);
     }
 }
