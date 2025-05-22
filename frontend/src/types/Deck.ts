@@ -3,4 +3,5 @@ export default interface Deck {
   stapel_id: number;
   author_id: number;
   visibility: boolean;
+  cards: number[];
 }

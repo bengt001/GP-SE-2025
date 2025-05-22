@@ -15,11 +15,13 @@ export const useDeckStore = defineStore('decks', {
       const deckId = this.decks.length + 1 //TODO deckID aus backend bekommen
       const authorID = 1 //TODO authorID aus backebnd bekommen
       const visible = true //TODO im backend visibility des decks setzen
+      const cards_arr = [1,2,3,4,5]
       const newDeck: Deck = {
         title: deckname,
         author_id: authorID,
         stapel_id: deckId,
-        visibility: visible
+        visibility: visible,
+        cards: cards_arr,
       }
       this.decks.push(newDeck)
       localStorage.setItem('decks', JSON.stringify(this.decks));
@@ -65,15 +67,25 @@ export const useDeckStore = defineStore('decks', {
     getCardArray(): number[][]{
       const CardArray:number[][] = []
       for(const deck of this.decks){
-        const TempArray:number[] = []
-        TempArray.push(deck.stapel_id*2)      //TODO grüne KArten aus backend
-        TempArray.push(deck.stapel_id)    //TODO grgelbe KArten aus backend
-        TempArray.push(deck.stapel_id*2)    //TODO orange KArten aus backend
-        TempArray.push(deck.stapel_id)    //TODO rote KArten aus backend
-        TempArray.push(deck.stapel_id)    //TODO grau KArten aus backend
-        CardArray.push(TempArray)
+        CardArray.push(deck.cards)
       }
       return CardArray
+    },
+    resetCards(deckName : string): void{
+      for(const deck of this.decks){
+        if(deck.title === deckName){
+          let cardNumber : number = 0
+          cardNumber = this.getCardNumber(deck.cards)
+          deck.cards = [0,0,0,0,cardNumber]         //TODO im backend deck resetten
+        }
+      }
+    },
+    getCardNumber(cards:number[]):number{
+      let count:number = 0
+      for(const card of cards){
+        count += card
+      }
+      return count
     },
     get_my_active_decks(): void{
       //MOCK um es zu leeren
@@ -94,11 +106,13 @@ export const useDeckStore = defineStore('decks', {
       const deckId = this.decks.length + 1 //TODO deckID aus backend bekommen
       const authorID = 1 //TODO authorID aus backebnd bekommen
       const visible = true //TODO im backend visibility des decks setzen
+      const cards_arr = [1,2,3,4,5] //TODO aus dem backend bekommen
       const newDeck: Deck = {
         title: "StrafrechtAT (Lexmea)",
         author_id: authorID,
         stapel_id: deckId,
-        visibility: visible
+        visibility: visible,
+        cards: cards_arr
       }
       this.decks.push(newDeck)
       localStorage.setItem('decks', JSON.stringify(this.decks));
