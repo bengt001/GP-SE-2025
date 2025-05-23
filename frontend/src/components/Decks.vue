@@ -16,6 +16,7 @@ const decks = computed(() => DeckStore.getDecksTitle())
 const faellig = computed(() => DeckStore.getDecksFaellig())
 const deckID = computed(() => DeckStore.getDecksID())
 const cards = computed(() => DeckStore.getCardArray())
+const deckColor = computed(() => DeckStore.getDecksColor())
 const colorNames = ['green', 'yellow', 'orange', 'red', 'grey'];
 
 const dot_menu = ref<boolean[]>([])
@@ -105,6 +106,7 @@ function print_selected() {
             height="400"
             class="d-flex flex-column"
             variant="elevated"
+            :style="{ borderColor: deckColor[n - 1], borderStyle: 'solid', borderWidth: '10px' }"
           >
             <v-card-title class="text-h5">
               {{ decks[n - 1] }}
@@ -118,7 +120,7 @@ function print_selected() {
                 {{ faellig[n - 1] }} heute fällig
                 <div
                   class="progress_bar"
-                  style="display:flex; width:250px; height:10px;  margin:0 auto;"
+                  style="display:flex; width:250px; height:10px;  margin-left: -10px"
                 >
                   <!--                  geht durch liste der cards für den stapel : Aufbau [Anzahl grüne Karten,Anzahl gelbe Karten,Anzahl orange Karten,Anzahl rote Karten,Anzahl graue Karten]-->
                   <div
@@ -206,6 +208,7 @@ function print_selected() {
             height="400"
             class="d-flex flex-column"
             variant="elevated"
+            :style="{ borderColor: deckColor[n - 1], borderStyle: 'solid', borderWidth: '10px' }"
           >
             <v-card-title class="text-h5">
               {{ decks[n-1] }}
@@ -219,7 +222,7 @@ function print_selected() {
                 {{ faellig[n - 1] }} heute fällig
                 <div
                   class="progress_bar"
-                  style="display:flex; width:250px; height:10px;  margin:0 auto;"
+                  style="display:flex; width:250px; height:10px;  margin-left: -10px"
                 >
                   <!--geht durch liste der cards für den stapel : Aufbau [Anzahl grüne Karten,Anzahl gelbe Karten,Anzahl orange Karten,Anzahl rote Karten,Anzahl graue Karten]-->
                   <div

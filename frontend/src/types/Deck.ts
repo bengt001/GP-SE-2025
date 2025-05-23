@@ -4,4 +4,5 @@ export default interface Deck {
   author_id: number;
   visibility: boolean;
   cards: number[];
+  color: string|undefined;
 }
