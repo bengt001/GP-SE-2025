@@ -98,7 +98,7 @@ export const useDeckStore = defineStore('decks', {
       //TODO MOCK entfernen
       //TODO aus de mbackend auslesn welche decks visible sind und die in decks hinzufügen wenn sie noch nicht drin sind
     },
-    reset_decks(): void{
+    reset_decks(): void{//TODO Deck wird nicht in Deck.vue geladen Needs to be fixed
       const counter: number = 0
       while (counter < this.decks.length){
         this.decks.splice(counter ,1)
