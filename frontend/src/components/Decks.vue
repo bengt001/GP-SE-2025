@@ -4,25 +4,40 @@ import {useUserStore} from "@/stores/users";
 import {ref} from "vue";
 import { computed } from 'vue';
 
-import type Deck from "@/types/Deck";
 
 const UserStore = useUserStore()
 const DeckStore = useDeckStore()
+
 const DialogReset = ref(false)
 const DialogDeactivate = ref(false)
+const DialogLearn = ref(false)
+
 const SelectedDeck = ref<boolean[]>([])
 const minOneSelected = ref(false)
-const colorNames = ['green', 'yellow', 'orange', 'red', 'grey'];
+const minOneTypeSelected = ref(false)
 const dot_menu = ref<boolean[]>([])
 const deckToDeactivate = ref('')
 const deckToReset = ref('')
+const definitions = ref(false)
+const problems = ref(false)
+const schema = ref(false)
+
+const colorNames = ['green', 'yellow', 'orange', 'red', 'grey'];
 
 const decks = computed(() => DeckStore.getDecksTitle())
 const faellig = computed(() => DeckStore.getDecksFaellig())
 const deckID = computed(() => DeckStore.getDecksID())
 const cards = computed(() => DeckStore.getCardArray())
 const deckColor = computed(() => DeckStore.getDecksColor())
-
+const selectedTitles = computed(() => {
+  const selected: string[] = []
+  decks.value.forEach((title, index) => {
+    if (SelectedDeck.value[index]) {
+      selected.push(title)
+    }
+  })
+  return selected
+})
 
 watch(
   decks,
@@ -49,6 +64,27 @@ watch(
     { immediate: true }
 )
 
+watch(schema, (newVal) => {
+  if (newVal) {
+    definitions.value = false
+    problems.value = false
+  }
+})
+
+watch([definitions, problems], ([newDefinitions, newProblems]) => {
+  if (newDefinitions || newProblems) {
+    schema.value = false
+  }
+})
+
+watch(
+  [definitions,problems,schema],
+  (newVal) => {
+    minOneTypeSelected.value = newVal.includes(true)
+  },
+  { deep: true }
+)
+
 function openResetDialog(deckTitle: string) {
   deckToReset.value = deckTitle
   DialogReset.value = true
@@ -69,24 +105,27 @@ function deactivateCards() {
   DialogDeactivate.value=false
 }
 
-function printAllActive() {
-  const allDecks: Deck[]  = DeckStore.getDecks()
-  for(const deck of allDecks){
-    console.log(deck.title)
-  }
+function openLearnDialog() {
+  DialogLearn.value = true
 }
 
-function print_selected() {
-  const seleted_id_arr = []
-  let count: number = 0
-  for(const select of SelectedDeck.value){
-    if(select === true){
-      seleted_id_arr.push(deckID.value[count])
+function startLearning() {
+  const selectedIDs: number[] = []
+  for (let i = 0; i < SelectedDeck.value.length; i++) {
+    if (SelectedDeck.value[i]) {
+      selectedIDs.push(deckID.value[i])
     }
-    count ++
   }
-  console.log(seleted_id_arr)
+
+  const selectedMode: string[] = []
+  if (definitions.value) selectedMode.push("definitions")
+  if (problems.value) selectedMode.push("problems")
+  if (schema.value) selectedMode.push("schema")
+
+  console.log("IDS: ", selectedIDs, " MODE: ", selectedMode)
 }
+
+
 
 </script>
 <template>
@@ -340,12 +379,67 @@ function print_selected() {
     </v-card>
   </v-dialog>
 
+  <v-dialog
+    v-model="DialogLearn"
+    max-width="600"
+  >
+    <v-card>
+      <v-card-title>
+        Lernmodus auswahl
+      </v-card-title>
+      <v-card-text>
+        Stapel die du zum lernen ausgewählt hast:
+      </v-card-text>
+      <v-card-text>
+        {{ selectedTitles.join(', ') }}
+      </v-card-text>
+      <v-list>
+        <v-list-item>
+          <v-switch
+            v-model="definitions"
+            color="primary"
+            label="Definitionen"
+            hide-details
+          />
+        </v-list-item>
+        <v-list-item>
+          <v-switch
+            v-model="problems"
+            color="primary"
+            label="Probleme"
+            hide-details
+          />
+        </v-list-item>
+        <v-list-item>
+          <v-switch
+            v-model="schema"
+            color="primary"
+            label="Schema"
+            hide-details
+          />
+        </v-list-item>
+      </v-list>
+
+      <v-card-actions>
+        <v-btn
+          color="primary"
+          :disabled="!minOneTypeSelected"
+          @click="startLearning"
+        >
+          <v-icon start>
+            mdi-school
+          </v-icon>Lernen starten
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+
   <v-btn
     v-if="minOneSelected"
     color="primary"
     class="learn-btn"
     min-height="50px"
-    @click="printAllActive"
+    @click="openLearnDialog"
   >
     <v-icon start>
       mdi-school
