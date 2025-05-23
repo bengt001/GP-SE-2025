@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class UserServiceImpl implements UserService {
+    public final String strNotFound = " not found";
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -28,20 +29,20 @@ public class UserServiceImpl implements UserService {
                 return user;
             }
         }
-        throw new UsernameNotFoundException(email + " not found.");
+        throw new UsernameNotFoundException(email + strNotFound);
     }
 
     public Usr loadUserByID(final String userID) throws UsernameNotFoundException {
          return userRepository.findById(userID)
-         .orElseThrow(() -> new UsernameNotFoundException(userID + " not found."));
+         .orElseThrow(() -> new UsernameNotFoundException(userID + strNotFound));
     }
 
     @Override
     public Usr createUser(final String username, final String email,
-                          final String password,  final String nickname,final String... roles) {
+                          final String password,  final String nickname, final String... roles) {
         String encodedPassword = passwordEncoder.encode(password);
         String userId = getFreeID();
-        final Usr usr = new Usr(username, email, encodedPassword, nickname,userId);
+        final Usr usr = new Usr(username, email, encodedPassword, nickname, userId);
         for (final String role : roles) {
             usr.addRole(role);
         }
@@ -50,14 +51,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String getFreeID(){
+    public String getFreeID() {
         Long counter = 0L;
-        while(true) {
-            try{
+        while (true) {
+            try {
                 loadUserByID(String.valueOf(counter));
                 counter++;
-            }
-            catch (UsernameNotFoundException e) {
+            } catch (UsernameNotFoundException e) {
                 break;
             }
         }
@@ -66,9 +66,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean exists_email(String email) {
-        for(Usr usr : userRepository.findAll()) {
-            if(usr.getEmail().equals(email)) {
+    public boolean existsEmail(String email) {
+        for (Usr usr : userRepository.findAll()) {
+            if (usr.getEmail().equals(email)) {
                 return true;
             }
         }

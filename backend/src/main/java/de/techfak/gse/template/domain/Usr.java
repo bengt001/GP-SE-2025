@@ -9,7 +9,6 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serial;
-import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,7 +20,9 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-public class Usr implements UserDetails{
+public class Usr implements UserDetails {
+    @Serial
+    private static final long serialVersionUID = 0L;
 
     @Id
     @Column
@@ -29,9 +30,6 @@ public class Usr implements UserDetails{
 
     @Column
     private String displayName;
-
-    @Serial
-    private static final long serialVersionUID = 0L;
 
     @Column
     private String username;
@@ -66,7 +64,11 @@ public class Usr implements UserDetails{
      * @param email Email des Nutzers.
      * @param password Passwort des Nutzers.
      */
-    public Usr(final String username, final String email, final String password,  final String displayName,final String userId) {
+    public Usr(final String username,
+               final String email,
+               final String password,
+               final String displayName,
+               final String userId) {
         this.username = username;
         this.email = email;
         this.password = password;
