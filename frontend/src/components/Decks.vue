@@ -10,18 +10,19 @@ const UserStore = useUserStore()
 const DeckStore = useDeckStore()
 const DialogReset = ref(false)
 const DialogDeactivate = ref(false)
-const SelectedCard = ref<boolean[]>([])
+const SelectedDeck = ref<boolean[]>([])
+const minOneSelected = ref(false)
+const colorNames = ['green', 'yellow', 'orange', 'red', 'grey'];
+const dot_menu = ref<boolean[]>([])
+const deckToDeactivate = ref('')
+const deckToReset = ref('')
 
 const decks = computed(() => DeckStore.getDecksTitle())
 const faellig = computed(() => DeckStore.getDecksFaellig())
 const deckID = computed(() => DeckStore.getDecksID())
 const cards = computed(() => DeckStore.getCardArray())
 const deckColor = computed(() => DeckStore.getDecksColor())
-const colorNames = ['green', 'yellow', 'orange', 'red', 'grey'];
 
-const dot_menu = ref<boolean[]>([])
-const deckToDeactivate = ref('')
-const deckToReset = ref('')
 
 watch(
   decks,
@@ -32,9 +33,18 @@ watch(
 )
 
 watch(
+  SelectedDeck,
+  (newVal) => {
+    minOneSelected.value = newVal.includes(true)
+  },
+  { deep: true }
+)
+
+
+watch(
     decks,
     (newDecks) => {
-      SelectedCard.value = Array(newDecks.length).fill(false)
+      SelectedDeck.value = Array(newDecks.length).fill(false)
     },
     { immediate: true }
 )
@@ -69,7 +79,7 @@ function printAllActive() {
 function print_selected() {
   const seleted_id_arr = []
   let count: number = 0
-  for(const select of SelectedCard.value){
+  for(const select of SelectedDeck.value){
     if(select === true){
       seleted_id_arr.push(deckID.value[count])
     }
@@ -80,36 +90,31 @@ function print_selected() {
 
 </script>
 <template>
-  <v-btn @click="print_selected">
-    selected
-  </v-btn>
-  <v-container>
+  <v-container class="overflow-hidden">
     <v-row
       v-if="UserStore.authenticated"
-      no-gutters
     >
       <!--      Dashboard for authenticated User-->
       <v-col
         v-for="n in decks.length"
         :key="n"
         cols="auto"
-        sm="4"
       >
         <v-sheet
-          class="ma-2 pa-2"
+          class="ma-2"
           color="background"
         >
           <v-card
             ref="card"
-            min-width="300"
-            max-width="300"
+            style="width: 300px; height: 400px"
             height="400"
             class="d-flex flex-column"
             variant="elevated"
             :style="{ borderColor: deckColor[n - 1], borderStyle: 'solid', borderWidth: '10px' }"
           >
-            <v-card-title class="text-h5"
-                          style="white-space: normal;"
+            <v-card-title
+              class="text-h5"
+              style="white-space: normal;"
             >
               {{ decks[n - 1] }}
             </v-card-title>
@@ -141,8 +146,8 @@ function print_selected() {
             <v-card-actions class="mt-auto">
               <v-row justify="space-evenly">
                 <v-checkbox
-                  v-model="SelectedCard[n-1]"
-                  label="lernen"
+                  v-model="SelectedDeck[n-1]"
+                  label="zum lernen auswählen"
                   color="lexmea_blue_200"
                 />
 
@@ -191,29 +196,27 @@ function print_selected() {
     <!--      Dashboard for unauthenticated User-->
     <v-row
       v-if="!UserStore.authenticated"
-      no-gutters
     >
       <v-col
         v-for="n in decks.length"
         :key="n"
         cols="auto"
-        sm="4"
       >
         <v-sheet
-          class="ma-2 pa-2"
+          class="ma-2"
           color="background"
         >
           <v-card
             ref="card"
-            min-width="300"
-            max-width="300"
             height="400"
             class="d-flex flex-column"
             variant="elevated"
+            style="width: 300px; height: 400px"
             :style="{ borderColor: deckColor[n - 1], borderStyle: 'solid', borderWidth: '10px' }"
           >
-            <v-card-title class="text-h5"
-            style="white-space: normal;"
+            <v-card-title
+              class="text-h5"
+              style="white-space: normal;"
             >
               {{ decks[n-1] }}
             </v-card-title>
@@ -245,8 +248,8 @@ function print_selected() {
             <v-card-actions class="mt-auto">
               <v-row justify="space-evenly">
                 <v-checkbox
-                  v-model="SelectedCard[n-1]"
-                  label="lernen"
+                  v-model="SelectedDeck[n-1]"
+                  label="zum lernen auswählen"
                   color="lexmea_blue_200"
                 />
                 <v-menu
@@ -336,8 +339,25 @@ function print_selected() {
       </v-card-actions>
     </v-card>
   </v-dialog>
+
+  <v-btn
+    v-if="minOneSelected"
+    color="primary"
+    class="learn-btn"
+    min-height="50px"
+    @click="printAllActive"
+  >
+    <v-icon start>
+      mdi-school
+    </v-icon>
+    lernen
+  </v-btn>
 </template>
 
 <style scoped lang="sass">
-
+.learn-btn
+  position: fixed
+  bottom: 20px
+  right: 20px
+  z-index: 100
 </style>
