@@ -108,7 +108,9 @@ function print_selected() {
             variant="elevated"
             :style="{ borderColor: deckColor[n - 1], borderStyle: 'solid', borderWidth: '10px' }"
           >
-            <v-card-title class="text-h5">
+            <v-card-title class="text-h5"
+                          style="white-space: normal;"
+            >
               {{ decks[n - 1] }}
             </v-card-title>
 
@@ -210,7 +212,9 @@ function print_selected() {
             variant="elevated"
             :style="{ borderColor: deckColor[n - 1], borderStyle: 'solid', borderWidth: '10px' }"
           >
-            <v-card-title class="text-h5">
+            <v-card-title class="text-h5"
+            style="white-space: normal;"
+            >
               {{ decks[n-1] }}
             </v-card-title>
 
