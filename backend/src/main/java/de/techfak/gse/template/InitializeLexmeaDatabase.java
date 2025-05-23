@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.io.InputStream;
 /**
- * Service that initializes the Lexmea database
+ * Service that initializes the Lexmea database.
  */
 @Service
 public class InitializeLexmeaDatabase implements InitializingBean {

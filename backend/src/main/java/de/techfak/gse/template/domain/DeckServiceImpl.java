@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Implementation for the deck service
+ * Implementation for the deck service.
  */
 @Service
 public class DeckServiceImpl implements DeckService {

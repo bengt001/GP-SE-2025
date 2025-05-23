@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Service for managing cards
+ * Service for managing cards.
  */
 public interface CardService {
 

@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Service for managing decks
+ * Service for managing decks.
  */
 public interface DeckService {
     List<Deck> getDecks();

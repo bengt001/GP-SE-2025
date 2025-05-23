@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Entity for description of the card rating
+ * Entity for description of the card rating.
  */
 @Getter
 @Setter

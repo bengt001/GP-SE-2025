@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Implementation of the Card Service
+ * Implementation of the Card Service.
  */
 @Service
 public class CardServiceImpl implements CardService {

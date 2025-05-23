@@ -10,7 +10,7 @@ import java.util.Iterator;
 /**
  * The type Json parser.
  */
-public class JsonParser {
+public final class JsonParser {
 
     private JsonParser() {
     }
