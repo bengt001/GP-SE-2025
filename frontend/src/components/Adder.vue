@@ -785,7 +785,7 @@ const zivilrecht_lexmea_broadcast_own = ref<TreeNode[]>([
 
 function addCards() {
     for(const selecteddeck of selected.value ){
-      deckStore.addDeck(selecteddeck.title)
+      deckStore.addDeck(selecteddeck.title,selecteddeck.color)
     }
     router.go(-1)
 }

@@ -7,7 +7,7 @@ export const useDeckStore = defineStore('decks', {
   }),
 
   actions: {
-    addDeck(deckname: string): void{
+    addDeck(deckname: string,color: string|undefined): void{
       const exists = this.decks.some(deck => deck.title === deckname);
       if (exists){
         return
@@ -22,6 +22,7 @@ export const useDeckStore = defineStore('decks', {
         stapel_id: deckId,
         visibility: visible,
         cards: cards_arr,
+        color: color
       }
       this.decks.push(newDeck)
       localStorage.setItem('decks', JSON.stringify(this.decks));
@@ -112,10 +113,19 @@ export const useDeckStore = defineStore('decks', {
         author_id: authorID,
         stapel_id: deckId,
         visibility: visible,
-        cards: cards_arr
+        cards: cards_arr,
+        color: "#03364D"
       }
       this.decks.push(newDeck)
       localStorage.setItem('decks', JSON.stringify(this.decks));
+    },
+    getDecksColor(): string[]{
+      const ColorArr:string[] = []
+      for(const deck of this.decks){
+        const color: string|undefined = deck.color
+        ColorArr.push(color ?? "")
+      }
+      return ColorArr
     }
 
   },
