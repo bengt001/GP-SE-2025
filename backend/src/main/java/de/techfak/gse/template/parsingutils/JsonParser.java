@@ -1,4 +1,4 @@
-package de.techfak.gse.template.parsingUtils;
+package de.techfak.gse.template.parsingutils;
 
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -12,6 +12,8 @@ import java.util.Iterator;
  */
 public class JsonParser {
 
+    private JsonParser() {
+    }
     /**
      * Find path with field and value. This function is recursive recursionPath and allPaths need to be defined before
      *
@@ -68,8 +70,8 @@ public class JsonParser {
      * @param fieldname     the fieldname
      * @return the array list
      */
-    public static ArrayList<String> extractContentAsStringFromPath
-    (JsonNode jsonContent, ArrayList<Object> recursionPath, String fieldname) {
+    public static ArrayList<String> extractContentAsStringFromPath(
+            JsonNode jsonContent, ArrayList<Object> recursionPath, String fieldname) {
         ArrayList<String> stringList = new ArrayList<>();
         JsonNode currentNode = jsonContent;
         for (int i = 0; i < recursionPath.size(); i++) {

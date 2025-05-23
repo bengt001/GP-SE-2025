@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Implementation of the Card Service
+ */
 @Service
 public class CardServiceImpl implements CardService {
     private final CardRepository cardRepository;

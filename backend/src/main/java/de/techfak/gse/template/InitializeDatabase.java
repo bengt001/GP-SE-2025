@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class InitializeDatabase implements InitializingBean {
     /** test mail die vom Standartnutzer genutzt wird.*/
+    String test = "test";
     String testEmail = "test@mail.com";
     private final UserService userService;
 
@@ -25,9 +26,9 @@ public class InitializeDatabase implements InitializingBean {
         try {
             userService.loadUserByUsername(testEmail);
         } catch (UsernameNotFoundException ex) {
-            userService.createUser("test",
+            userService.createUser(test,
                     testEmail,
-                    "password","test" ,"ROLE_USER");
+                    "password", test, "ROLE_USER");
         }
     }
 }

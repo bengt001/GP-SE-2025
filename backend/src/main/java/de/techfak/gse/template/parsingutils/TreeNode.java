@@ -1,4 +1,4 @@
-package de.techfak.gse.template.parsingUtils;
+package de.techfak.gse.template.parsingutils;
 
 import java.io.Serializable;
 import java.util.ArrayList;

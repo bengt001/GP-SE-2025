@@ -8,6 +8,9 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Entity representing a deck.
+ */
 @Getter
 @Setter
 @Entity
@@ -32,6 +35,7 @@ public class Deck {
     }
 
     /**
+     * New deck with specified content.
      * @param visibility
      * @param fieldOfLaw
      */

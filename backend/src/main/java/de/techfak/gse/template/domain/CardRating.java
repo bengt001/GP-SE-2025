@@ -6,6 +6,9 @@ import java.time.LocalDate;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Entity for description of the card rating
+ */
 @Getter
 @Setter
 @Entity
@@ -29,6 +32,7 @@ protected CardRating() {
 }
 
     /**
+     * New card rating with specified content.
      * @param userId
      * @param cardId
      * @param deckId

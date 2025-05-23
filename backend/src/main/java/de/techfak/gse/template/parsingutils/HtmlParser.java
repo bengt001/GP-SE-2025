@@ -1,4 +1,4 @@
-package de.techfak.gse.template.parsingUtils;
+package de.techfak.gse.template.parsingutils;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

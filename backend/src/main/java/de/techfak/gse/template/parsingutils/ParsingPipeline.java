@@ -1,4 +1,4 @@
-package de.techfak.gse.template.parsingUtils;
+package de.techfak.gse.template.parsingutils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -12,7 +12,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
-
+/**
+ * Pipeline for parsing operations.
+ */
 public class ParsingPipeline {
 
     private final CardService cardService;
@@ -23,7 +25,11 @@ public class ParsingPipeline {
         this.cardService = cardService;
         this.deckService = deckService;
     }
-
+    /**
+     * Imports Lexmea data into the database from a JSON input stream.
+     *
+     * @param is the input stream containing the JSON data
+     */
     public void importLexmeaToDatabase(InputStream is) {
         try (BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
 
@@ -42,9 +48,9 @@ public class ParsingPipeline {
                 for (ArrayList<Object> path : allPaths) {
                     createDeckWithCards(path, root);
                 }
-            } else {
+            } //else {
                 //Error
-            }
+           // }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -57,6 +63,7 @@ public class ParsingPipeline {
         schemaHtml.set(0, schemaHtml.get(0).replace("\n", "\\n"));
         //System.out.println(schemaHtml.getFirst());
         if (rechtgebietList.isEmpty() || schemaHtml.isEmpty()) {
+            System.out.println('E');
             //Error muss aber nich umbedingt den ganzen prozess abrechen
         } else {
             //Build deck and cards

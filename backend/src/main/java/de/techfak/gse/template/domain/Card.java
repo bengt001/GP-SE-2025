@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Entity representing a card.
+ */
 @Getter
 @Setter
 @Entity
@@ -23,6 +26,7 @@ public class Card {
     }
 
     /**
+     * New card with specified content.
      * @param content
      * @param cardType
      * @param deck

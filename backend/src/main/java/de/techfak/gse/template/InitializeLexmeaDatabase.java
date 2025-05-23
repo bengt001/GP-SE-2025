@@ -2,14 +2,16 @@ package de.techfak.gse.template;
 
 import de.techfak.gse.template.domain.CardService;
 import de.techfak.gse.template.domain.DeckService;
-import de.techfak.gse.template.parsingUtils.ParsingPipeline;
+import de.techfak.gse.template.parsingutils.ParsingPipeline;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.InputStream;
-
+/**
+ * Service that initializes the Lexmea database
+ */
 @Service
 public class InitializeLexmeaDatabase implements InitializingBean {
 
