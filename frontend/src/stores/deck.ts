@@ -98,7 +98,7 @@ export const useDeckStore = defineStore('decks', {
       //TODO MOCK entfernen
       //TODO aus de mbackend auslesn welche decks visible sind und die in decks hinzufügen wenn sie noch nicht drin sind
     },
-    reset_decks(): void{//TODO Deck wird nicht in Deck.vue geladen Needs to be fixed
+    reset_decks(): void{
       const counter: number = 0
       while (counter < this.decks.length){
         this.decks.splice(counter ,1)
@@ -109,7 +109,7 @@ export const useDeckStore = defineStore('decks', {
       const visible = true //TODO im backend visibility des decks setzen
       const cards_arr = [1,2,3,4,5] //TODO aus dem backend bekommen
       const newDeck: Deck = {
-        title: "StrafrechtAT (Lexmea)",
+        title: "Strafrecht AT (Lexmea)",
         author_id: authorID,
         stapel_id: deckId,
         visibility: visible,
