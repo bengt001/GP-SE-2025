@@ -1,5 +1,5 @@
 <template>
-  <v-responsive class="border rounded">
+  <v-responsive>
     <v-app>
       <v-app-bar color="primary">
         <v-app-bar-nav-icon
