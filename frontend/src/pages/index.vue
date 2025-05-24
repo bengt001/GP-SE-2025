@@ -1,4 +1,5 @@
 <template>
+  <Searchbar />
   <Decks />
   <Dashboard />
 </template>
