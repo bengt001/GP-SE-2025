@@ -112,7 +112,7 @@ const subheader_tabs = ref([
   {
     title: 'Karten hinzufügen',
     icon: 'mdi-plus-box-multiple',
-    to: ' ',
+    to: '/adderpage',
   },
   {
     title: 'Statistiken',
