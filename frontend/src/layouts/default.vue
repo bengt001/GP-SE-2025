@@ -1,5 +1,5 @@
 <template>
-  <v-responsive>
+  <v-responsive class="border rounded">
     <v-app>
       <v-app-bar color="primary">
         <v-app-bar-nav-icon
@@ -56,6 +56,7 @@
           </router-link>
         </div>
       </v-app-bar>
+
       <v-navigation-drawer
         v-model="drawer"
         :location="$vuetify.display.mobile ? 'bottom' : undefined"
@@ -95,11 +96,7 @@
   </v-responsive>
 </template>
 
-
-<script
-  lang="ts"
-  setup
->
+<script lang="ts" setup>
 import {useUserStore} from "@/stores/users";
 
 const userStore = useUserStore();
