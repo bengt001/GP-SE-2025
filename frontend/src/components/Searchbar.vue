@@ -1,5 +1,17 @@
-<script setup lang="ts">
-
+<script lang="ts">
+export default {
+  emits: ['changeValue'],
+  data () {
+    return {
+      searchValue: ""
+    }
+  },
+  methods: {
+    changeValue() {
+      this.$emit("changeValue", this.searchValue)
+    }
+  }
+}
 </script>
 
 <template>
@@ -13,6 +25,7 @@
     <template #text>
       <div class="px-4">
         <v-text-field
+          v-model="searchValue"
           density="compact"
           placeholder="Suchen"
           prepend-inner-icon="mdi-magnify"
@@ -21,6 +34,7 @@
           flat
           hide-details
           single-line
+          @input="changeValue"
         />
       </div>
     </template>

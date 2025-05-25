@@ -22,6 +22,8 @@ const definitions = ref(false)
 const problems = ref(false)
 const schema = ref(false)
 
+const searchValue = ref("")
+
 const colorNames = ['green', 'yellow', 'orange', 'red', 'grey'];
 
 const decks = computed(() => DeckStore.getDecksTitle())
@@ -29,6 +31,17 @@ const faellig = computed(() => DeckStore.getDecksFaellig())
 const deckID = computed(() => DeckStore.getDecksID())
 const cards = computed(() => DeckStore.getCardArray())
 const deckColor = computed(() => DeckStore.getDecksColor())
+
+const toDisplay = computed(() => {
+  const items: string[] = [];
+  for (let i = 0; i < decks.value.length; i++) {
+    if (decks.value[i].includes(searchValue.value)) {
+      items.push(decks.value[i])
+    }
+  }
+  return items;
+});
+
 const selectedTitles = computed(() => {
   const selected: string[] = []
   decks.value.forEach((title, index) => {
@@ -129,13 +142,14 @@ function startLearning() {
 
 </script>
 <template>
+  <Searchbar @change-value="searchValue = $event" />
   <v-container class="overflow-hidden">
     <v-row
       v-if="UserStore.authenticated"
     >
       <!--      Dashboard for authenticated User-->
       <v-col
-        v-for="n in decks.length"
+        v-for="n in toDisplay.length"
         :key="n"
         cols="auto"
       >
@@ -155,7 +169,7 @@ function startLearning() {
               class="text-h5"
               style="white-space: normal;"
             >
-              {{ decks[n - 1] }}
+              {{ toDisplay[n - 1] }}
             </v-card-title>
 
             <v-card-text class="text-center">
@@ -208,7 +222,7 @@ function startLearning() {
                           class="align-content-center"
                           variant="flat"
                           color="red_darkest"
-                          @click="() => openResetDialog(decks[n - 1])"
+                          @click="() => openResetDialog(toDisplay[n - 1])"
                         >
                           Reset
                         </v-btn>
@@ -218,7 +232,7 @@ function startLearning() {
                           class="align-content-center"
                           variant="flat"
                           color="orange_darkest"
-                          @click="() => openDeactivateDialog(decks[n - 1])"
+                          @click="() => openDeactivateDialog(toDisplay[n - 1])"
                         >
                           Deaktivieren
                         </v-btn>
@@ -237,7 +251,7 @@ function startLearning() {
       v-if="!UserStore.authenticated"
     >
       <v-col
-        v-for="n in decks.length"
+        v-for="n in toDisplay.length"
         :key="n"
         cols="auto"
       >
@@ -257,7 +271,7 @@ function startLearning() {
               class="text-h5"
               style="white-space: normal;"
             >
-              {{ decks[n-1] }}
+              {{ toDisplay[n-1] }}
             </v-card-title>
 
             <v-card-text class="text-center">
@@ -309,7 +323,7 @@ function startLearning() {
                           class="align-content-center"
                           variant="flat"
                           color="red_darkest"
-                          @click="() => openResetDialog(decks[n - 1])"
+                          @click="() => openResetDialog(toDisplay[n - 1])"
                         >
                           Reset
                         </v-btn>
@@ -319,7 +333,7 @@ function startLearning() {
                           class="align-content-center"
                           variant="flat"
                           color="orange_darkest"
-                          @click="() => openDeactivateDialog(decks[n - 1])"
+                          @click="() => openDeactivateDialog(toDisplay[n - 1])"
                         >
                           Deaktivieren
                         </v-btn>
