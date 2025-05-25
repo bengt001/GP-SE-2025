@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import de.techfak.gse.template.domain.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,10 +14,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
+
 /**
  * Pipeline for parsing operations.
  */
 public class ParsingPipeline {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ParsingPipeline.class);
+    private static final String ERROR_MSG = "Deck couldnt be created";
 
     private final CardService cardService;
     private final DeckService deckService;
@@ -25,6 +31,7 @@ public class ParsingPipeline {
         this.cardService = cardService;
         this.deckService = deckService;
     }
+
     /**
      * Imports Lexmea data into the database from a JSON input stream.
      *
@@ -42,29 +49,30 @@ public class ParsingPipeline {
                 ArrayList<Object> recursionPath = new ArrayList<>();
                 ArrayList<ArrayList<Object>> allPaths = new ArrayList<>();
                 JsonParser.findPathWithFieldAndValue(root, "type", "schema", recursionPath, allPaths);
-                System.out.println(allPaths.size());
-                //System.out.println("#######################################################
-                // ###################################");
+                LOGGER.debug("allPathsSize: {}", allPaths.size());
                 for (ArrayList<Object> path : allPaths) {
-                    createDeckWithCards(path, root);
+                    try {
+                        createDeckWithCards(path, root);
+                    } catch (DeckCreationFailedException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
-            } //else {
-                //Error
-           // }
+            } else {
+                LOGGER.debug("empty root");
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void createDeckWithCards(ArrayList<Object> path, JsonNode root) {
+    private void createDeckWithCards(ArrayList<Object> path, JsonNode root) throws DeckCreationFailedException {
         ObjectMapper mapper = new ObjectMapper();
         ArrayList<String> rechtgebietList = JsonParser.extractContentAsStringFromPath(root, path, "name");
         ArrayList<String> schemaHtml = JsonParser.extractContentAsStringFromPath(root, path, "text");
         schemaHtml.set(0, schemaHtml.get(0).replace("\n", "\\n"));
-        //System.out.println(schemaHtml.getFirst());
         if (rechtgebietList.isEmpty() || schemaHtml.isEmpty()) {
-            System.out.println('E');
-            //Error muss aber nich umbedingt den ganzen prozess abrechen
+            LOGGER.error("no Content");
+            throw new DeckCreationFailedException(ERROR_MSG);
         } else {
             //Build deck and cards
             //first build cards if there are no cards no deck is build
@@ -72,50 +80,45 @@ public class ParsingPipeline {
             ArrayList<String[]> definitionBoxes = HtmlParser.getDefinitionBoxes(schemaHtml.getFirst());
             TreeNode<String> aufdeckCard = HtmlParser.getTableOfContentsAsTree(schemaHtml.getFirst());
             if (problemBoxes.isEmpty() && definitionBoxes.isEmpty() && !aufdeckCard.hasOtherData()) {
-                //Error no cards could be generated
-                System.out.println("lul");
+                LOGGER.error("no cards could be generated");
+                throw new DeckCreationFailedException(ERROR_MSG);
             } else {
                 Deck currentDeck = deckService.addDeck(true, rechtgebietList);
                 for (String[] content : problemBoxes) {
                     try {
                         String jsonArray = mapper.writeValueAsString(content);
-                        //System.out.println(jsonArray);
+                        LOGGER.debug(jsonArray);
                         cardService.addCard(jsonArray, "Probleme", currentDeck);
                     } catch (JsonProcessingException e) {
-                        //more like a single card failed what do we do then?
-                        // deck couldnt be created exeption
+                        LOGGER.error("JsonProcessingException: Probleme card fail");
                         throw new RuntimeException(e);
                     }
                 }
                 for (String[] content : definitionBoxes) {
                     try {
                         String jsonArray = mapper.writeValueAsString(content);
-                        //System.out.println(jsonArray);
+                        LOGGER.debug(jsonArray);
                         cardService.addCard(jsonArray, "Definitionen", currentDeck);
                     } catch (JsonProcessingException e) {
-                        //more like a single card failed what do we do then?
-                        // deck couldnt be created exeption
+                        LOGGER.error("JsonProcessingException: Definitionen card fail");
                         throw new RuntimeException(e);
                     }
                 }
-
                 try {
                     String jsonArray = mapper.writeValueAsString(aufdeckCard);
                     System.out.println(jsonArray);
                     if (aufdeckCard.hasOtherData()) {
-                        //one of these is broken
-                        //System.out.println(jsonArray);
+                        LOGGER.debug(jsonArray);
                         cardService.addCard(jsonArray, "Aufdeckkarte", currentDeck);
+                    } else {
+                        LOGGER.debug("Tree structure doesnt have enough content to build a card");
                     }
 
                 } catch (JsonProcessingException e) {
-                    //more like a single card failed what do we do then?
-                    // deck couldnt be created exeption
+                    LOGGER.error("JsonProcessingException: Aufdeckkarte card fail");
                     throw new RuntimeException(e);
                 }
-
-                //build Deck with rechtgebietList
-                //Merge is needed to complete
+                //Would need to check if empty to delet an empty deck
             }
 
         }
@@ -124,9 +127,8 @@ public class ParsingPipeline {
     private static void printAllPaths(ArrayList<ArrayList<Object>> allPaths) {
         for (ArrayList<Object> path : allPaths) {
             for (Object obj : path) {
-                System.out.print(obj.toString() + " | ");
+                LOGGER.debug("{} | ", obj.toString());
             }
-            System.out.println();
         }
     }
 }

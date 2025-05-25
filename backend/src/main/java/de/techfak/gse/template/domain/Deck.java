@@ -36,6 +36,7 @@ public class Deck {
 
     /**
      * New deck with specified content.
+     *
      * @param visibility
      * @param fieldOfLaw
      */
@@ -44,7 +45,10 @@ public class Deck {
         this.fieldOfLaw = fieldOfLaw;
         this.publishDate = LocalDate.now();
     }
+
     public void updateDate() {
         this.publishDate = LocalDate.now();
     }
+
+    //Kirill: ich würde gerne eine isEmpty() Funktion haben. Die soll nachgucken ob das Deck karten hat
 }
