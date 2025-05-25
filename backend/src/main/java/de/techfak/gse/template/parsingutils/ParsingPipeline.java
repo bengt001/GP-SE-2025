@@ -54,7 +54,7 @@ public class ParsingPipeline {
                     try {
                         createDeckWithCards(path, root);
                     } catch (DeckCreationFailedException e) {
-                        throw new RuntimeException(e);
+                        LOGGER.debug("Deck failed to build");
                     }
                 }
             } else {
