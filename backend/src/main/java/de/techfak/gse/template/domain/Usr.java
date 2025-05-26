@@ -63,6 +63,8 @@ public class Usr implements UserDetails {
      * @param username Nutzername des Nutzers.
      * @param email Email des Nutzers.
      * @param password Passwort des Nutzers.
+     * @param displayName Der Display Name des Nutzers
+     * @param userId Die Id des Nutzers
      */
     public Usr(final String username,
                final String email,
