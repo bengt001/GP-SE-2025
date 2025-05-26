@@ -68,6 +68,7 @@ function menuButton() {
     selected_oeffrecht.value= ''
     selected_zivilrecht.value= ''
   }
+  selected.value = []
 
 }
 
