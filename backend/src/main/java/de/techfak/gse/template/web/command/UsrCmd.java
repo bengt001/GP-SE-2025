@@ -1,4 +1,4 @@
-package de.techfak.gse.template.web;
+package de.techfak.gse.template.web.command;
 
 /**
  * Usr Record was zum Auslesen aus dem Backend genutzt wird.
