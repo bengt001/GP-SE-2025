@@ -25,7 +25,7 @@ public class HtmlParser {
     private static final String NEWLINE = "\n";
 
     /**
-     * This should not be used
+     * This should not be used.
      */
     protected HtmlParser() {
     }

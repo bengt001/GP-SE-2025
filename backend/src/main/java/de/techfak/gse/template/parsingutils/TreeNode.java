@@ -14,11 +14,14 @@ import java.util.List;
  * @param <T> the type parameter
  */
 public class TreeNode<T extends Serializable> implements Serializable {
+
     @Serial
     private static final long serialVersionUID = 1L;
+    private static final Logger LOGGER = LoggerFactory.getLogger(TreeNode.class);
+
     private T data;
     private ArrayList<TreeNode<T>> children;
-    private static final  Logger LOGGER = LoggerFactory.getLogger(TreeNode.class);
+
 
     /**
      * Instantiates a new Tree node.

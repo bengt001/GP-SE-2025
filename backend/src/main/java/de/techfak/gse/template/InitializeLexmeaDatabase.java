@@ -3,6 +3,9 @@ package de.techfak.gse.template;
 import de.techfak.gse.template.domain.CardService;
 import de.techfak.gse.template.domain.DeckService;
 import de.techfak.gse.template.parsingutils.ParsingPipeline;
+import de.techfak.gse.template.parsingutils.TreeNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +17,8 @@ import java.io.InputStream;
  */
 @Service
 public class InitializeLexmeaDatabase implements InitializingBean {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(InitializeLexmeaDatabase.class);
 
     private final CardService cardService;
     private final DeckService deckService;
@@ -39,7 +44,7 @@ public class InitializeLexmeaDatabase implements InitializingBean {
             assert is != null;
             pipeline.importLexmeaToDatabase(is);
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error("afterPropertiesSet: IOException");
             throw new RuntimeException(e);
         }
 
