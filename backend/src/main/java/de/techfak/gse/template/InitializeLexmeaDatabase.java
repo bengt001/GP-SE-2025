@@ -3,7 +3,6 @@ package de.techfak.gse.template;
 import de.techfak.gse.template.domain.CardService;
 import de.techfak.gse.template.domain.DeckService;
 import de.techfak.gse.template.parsingutils.ParsingPipeline;
-import de.techfak.gse.template.parsingutils.TreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
