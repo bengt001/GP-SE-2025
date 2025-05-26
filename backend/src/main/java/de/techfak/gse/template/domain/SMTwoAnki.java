@@ -1,0 +1,86 @@
+package de.techfak.gse.template.domain;
+
+/**
+ * SuperMemory2 Anki algorithm.
+ */
+public class SMTwoAnki implements de.techfak.gse.template.domain.SpacedRepetitionAlgorithm {
+    public static final int DIVIDER = 100;
+    public static final int RATING_MIN = 0;
+    public static final int RATING_MAX = 3;
+    public static final int INITIAL_INTERVAL = 0;
+    public static final int AGAIN_CASE = 0;
+    public static final int HARD_CASE = 1;
+    public static final int GOOD_CASE = 2;
+    public static final int EASY_CASE = 3;
+    public static final int AGAIN_EF_PENALTY = 20;
+    public static final float HARD_EF_PENALTY = 15;
+    public static final int HARD_INTERVAL_INCREASE = 120;
+    public static final int EASY_EF_REWARD = 15;
+    public static final int EASY_INTERVAL_BONUS = 2;
+
+
+    /**
+     * Implementation of the SM2 Anki style algorithm.
+     * This implementation uses a rating of 0 to 3 (four cases) named AGAIN, HARD, GOOD, EASY.
+     * The number of repetitions will always be increased by one.
+     * AGAIN case:
+     * The EF (easinessFactor) decreases by 20 points (20%).
+     * The interval resets to the initial interval 0, so the next interval is 0 days aka immediately.
+     * HARD case:
+     * The EF decreases by 15 points (15%).
+     * The interval is multiplied by 1.2.
+     * GOOD case:
+     * The EF stays the same.
+     * The interval is multiplied by the EF.
+     * EASY case:
+     * The EF increases by 15 points (15%).
+     * The Interval is multiplied by teh EF and an bonus of 2 (two days) is added.
+     * @param sraValues current sraValues
+     * @param rating Rating given
+     * @return SraValues calculated with the new rating.
+     */
+    @Override
+    public SraValues updateValues(SraValues sraValues, int rating) {
+
+        if (rating < RATING_MIN || rating > RATING_MAX) {
+            throw new IllegalArgumentException("Rating must be between " + RATING_MIN + " and " + RATING_MAX);
+        }
+
+        int newInterval;
+        float newEasinessFactor;
+        switch (rating) {
+            case AGAIN_CASE:
+                if (sraValues.getEasinessFactor() > AGAIN_EF_PENALTY) {
+                    newEasinessFactor = sraValues.getEasinessFactor() - AGAIN_EF_PENALTY;
+                } else {
+                    newEasinessFactor = 0;
+                }
+                newInterval = INITIAL_INTERVAL;
+                break;
+            case HARD_CASE:
+                if (sraValues.getEasinessFactor() > HARD_EF_PENALTY) {
+                    newEasinessFactor = sraValues.getEasinessFactor() - HARD_EF_PENALTY;
+                } else {
+                    newEasinessFactor = 0;
+                }
+                newInterval = sraValues.getInterval() * HARD_INTERVAL_INCREASE / DIVIDER;
+                break;
+            case GOOD_CASE:
+                newEasinessFactor = sraValues.getEasinessFactor();
+                newInterval = (int) (sraValues.getInterval() * sraValues.getEasinessFactor() / DIVIDER);
+                if (newInterval < 1) {
+                    newInterval = 1;
+                }
+                break;
+            case EASY_CASE:
+                newEasinessFactor = sraValues.getEasinessFactor() + EASY_EF_REWARD;
+                newInterval = (int) (sraValues.getInterval() * sraValues.getEasinessFactor() / DIVIDER)
+                        + EASY_INTERVAL_BONUS;
+                break;
+            default:
+                newInterval = sraValues.getInterval();
+                newEasinessFactor = sraValues.getEasinessFactor();
+        }
+        return new SraValues(sraValues.getRepetitions() + 1, newInterval, newEasinessFactor);
+    }
+}
