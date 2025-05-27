@@ -3,6 +3,7 @@ import {useDeckStore} from "@/stores/deck";
 import {useUserStore} from "@/stores/users";
 import {ref} from "vue";
 import { computed } from 'vue';
+import type Deck from "@/types/Deck"
 
 
 const UserStore = useUserStore()
@@ -24,23 +25,20 @@ const schema = ref(false)
 
 const colorNames = ['green', 'yellow', 'orange', 'red', 'grey'];
 
-const decks = computed(() => DeckStore.getDecksTitle())
-const faellig = computed(() => DeckStore.getDecksFaellig())
-const deckID = computed(() => DeckStore.getDecksID())
-const cards = computed(() => DeckStore.getCardArray())
-const deckColor = computed(() => DeckStore.getDecksColor())
-const selectedTitles = computed(() => {
-  const selected: string[] = []
-  decks.value.forEach((title, index) => {
+const allDecks = computed(() => DeckStore.getAllDecks())
+
+const selectedDecks = computed(() => {
+  const selected: Deck[] = []
+  allDecks.value.forEach((deck, index) => {
     if (SelectedDeck.value[index]) {
-      selected.push(title)
+      selected.push(deck)
     }
   })
   return selected
 })
 
 watch(
-  decks,
+  allDecks,
   (newDecks) => {
     dot_menu.value = Array(newDecks.length).fill(false)
   },
@@ -57,7 +55,7 @@ watch(
 
 
 watch(
-    decks,
+    allDecks,
     (newDecks) => {
       SelectedDeck.value = Array(newDecks.length).fill(false)
     },
@@ -113,7 +111,7 @@ function startLearning() {
   const selectedIDs: number[] = []
   for (let i = 0; i < SelectedDeck.value.length; i++) {
     if (SelectedDeck.value[i]) {
-      selectedIDs.push(deckID.value[i])
+      selectedIDs.push(allDecks.value[i].stapel_id)
     }
   }
 
@@ -135,7 +133,7 @@ function startLearning() {
     >
       <!--      Dashboard for authenticated User-->
       <v-col
-        v-for="n in decks.length"
+        v-for="n in allDecks.length"
         :key="n"
         cols="auto"
       >
@@ -149,13 +147,13 @@ function startLearning() {
             height="400"
             class="d-flex flex-column"
             variant="elevated"
-            :style="{ borderColor: deckColor[n - 1], borderStyle: 'solid', borderWidth: '10px' }"
+            :style="{ borderColor: allDecks[n - 1].color, borderStyle: 'solid', borderWidth: '10px' }"
           >
             <v-card-title
               class="text-h5"
               style="white-space: normal;"
             >
-              {{ decks[n - 1] }}
+              {{ allDecks[n-1].title }}
             </v-card-title>
 
             <v-card-text class="text-center">
@@ -163,14 +161,14 @@ function startLearning() {
                 class="text-h6"
                 cols="auto"
               >
-                {{ faellig[n - 1] }} heute fällig
+                {{ DeckStore.getFaellig(allDecks[n - 1]) }} heute fällig
                 <div
                   class="progress_bar"
                   style="display:flex; width:250px; height:10px;  margin-left: -10px"
                 >
                   <!--                  geht durch liste der cards für den stapel : Aufbau [Anzahl grüne Karten,Anzahl gelbe Karten,Anzahl orange Karten,Anzahl rote Karten,Anzahl graue Karten]-->
                   <div
-                    v-for="(count, color_index) in cards[n-1]"
+                    v-for="(count, color_index) in allDecks[n-1].cards"
                     :key="color_index"
                     :style="{
                       backgroundColor: colorNames[color_index],
@@ -208,7 +206,7 @@ function startLearning() {
                           class="align-content-center"
                           variant="flat"
                           color="red_darkest"
-                          @click="() => openResetDialog(decks[n - 1])"
+                          @click="() => openResetDialog(allDecks[n - 1].title)"
                         >
                           Reset
                         </v-btn>
@@ -218,7 +216,7 @@ function startLearning() {
                           class="align-content-center"
                           variant="flat"
                           color="orange_darkest"
-                          @click="() => openDeactivateDialog(decks[n - 1])"
+                          @click="() => openDeactivateDialog(allDecks[n - 1].title)"
                         >
                           Deaktivieren
                         </v-btn>
@@ -237,7 +235,7 @@ function startLearning() {
       v-if="!UserStore.authenticated"
     >
       <v-col
-        v-for="n in decks.length"
+        v-for="n in allDecks.length"
         :key="n"
         cols="auto"
       >
@@ -251,13 +249,13 @@ function startLearning() {
             class="d-flex flex-column"
             variant="elevated"
             style="width: 300px; height: 400px"
-            :style="{ borderColor: deckColor[n - 1], borderStyle: 'solid', borderWidth: '10px' }"
+            :style="{ borderColor: allDecks[n - 1].color, borderStyle: 'solid', borderWidth: '10px' }"
           >
             <v-card-title
               class="text-h5"
               style="white-space: normal;"
             >
-              {{ decks[n-1] }}
+              {{ allDecks[n-1].title }}
             </v-card-title>
 
             <v-card-text class="text-center">
@@ -265,14 +263,14 @@ function startLearning() {
                 class="text-h6"
                 cols="auto"
               >
-                {{ faellig[n - 1] }} heute fällig
+                {{ DeckStore.getFaellig(allDecks[n - 1]) }} heute fällig
                 <div
                   class="progress_bar"
                   style="display:flex; width:250px; height:10px;  margin-left: -10px"
                 >
                   <!--geht durch liste der cards für den stapel : Aufbau [Anzahl grüne Karten,Anzahl gelbe Karten,Anzahl orange Karten,Anzahl rote Karten,Anzahl graue Karten]-->
                   <div
-                    v-for="(count, color_index) in cards[n-1]"
+                    v-for="(count, color_index) in allDecks[n-1].cards"
                     :key="color_index"
                     :style="{
                       backgroundColor: colorNames[color_index],
@@ -309,7 +307,7 @@ function startLearning() {
                           class="align-content-center"
                           variant="flat"
                           color="red_darkest"
-                          @click="() => openResetDialog(decks[n - 1])"
+                          @click="() => openResetDialog(allDecks[n - 1].title)"
                         >
                           Reset
                         </v-btn>
@@ -319,7 +317,7 @@ function startLearning() {
                           class="align-content-center"
                           variant="flat"
                           color="orange_darkest"
-                          @click="() => openDeactivateDialog(decks[n - 1])"
+                          @click="() => openDeactivateDialog(allDecks[n - 1].title)"
                         >
                           Deaktivieren
                         </v-btn>
@@ -391,7 +389,7 @@ function startLearning() {
         Stapel die du zum lernen ausgewählt hast:
       </v-card-text>
       <v-card-text>
-        {{ selectedTitles.join(', ') }}
+        {{ DeckStore.getTitleDecks(selectedDecks) }}
       </v-card-text>
       <v-list>
         <v-list-item>

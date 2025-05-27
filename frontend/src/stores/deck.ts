@@ -41,6 +41,9 @@ export const useDeckStore = defineStore('decks', {
       }
     },
 
+    getAllDecks(): Deck[]{
+      return this.decks
+    },
 
     getDecksTitle(): string[]{
       const TitleArr:string[] = []
@@ -49,26 +52,8 @@ export const useDeckStore = defineStore('decks', {
       }
       return TitleArr
     },
-    getDecksID(): number[]{
-      const IdArr:number[] = []
-      for(const deck of this.decks){
-        IdArr.push(deck.stapel_id)
-      }
-      return IdArr
-    },
-    getDecksFaellig(): number[]{
-      const FaelligArr:number[] = []
-      for(const deck of this.decks){
-        FaelligArr.push(deck.stapel_id) //TODO auslesen aus backend wieviele Karten fällig sind
-      }
-      return FaelligArr
-    },
-    getCardArray(): number[][]{
-      const CardArray:number[][] = []
-      for(const deck of this.decks){
-        CardArray.push(deck.cards)
-      }
-      return CardArray
+    getFaellig(deck: Deck): number{
+      return deck.stapel_id
     },
     resetCards(deckName : string): void{
       for(const deck of this.decks){
