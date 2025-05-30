@@ -54,7 +54,7 @@ public class Usr implements UserDetails {
     private List<String> roles = new ArrayList<>();
 
     @ManyToMany(mappedBy = "users")
-    private List<Deck> decks = new ArrayList<>();
+    private transient List<Deck> decks = new ArrayList<>();
 
     /** JPA constructor. */
     protected Usr() {

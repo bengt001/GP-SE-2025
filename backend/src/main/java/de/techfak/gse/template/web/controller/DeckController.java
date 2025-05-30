@@ -155,7 +155,7 @@ public class DeckController {
     }
 
     /**
-     * API Endpoint for sending a updateCard Patch-Request
+     * API Endpoint for sending a updateCard Patch-Request.
      *
      * @param deckId the deckId for the to be updated card
      * @param cardId the cardId for the to be updated card
@@ -164,14 +164,15 @@ public class DeckController {
      */
     @PatchMapping("/usr/decks/{deckId:\\d+}/{cardId:\\d+}")
     @Secured("ROLE_USER")
-    public Card updateCard(@PathVariable final long deckId, @PathVariable final long cardId, @RequestBody final Card card) {
+    public Card updateCard(@PathVariable final long deckId, @PathVariable final long cardId,
+                           @RequestBody final Card card) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Usr usr = userService.loadUserByUsername(auth.getName());
         return deckService.updateCard(usr, deckId, cardId, card).orElseThrow(BadRequestException::new);
     }
 
     /**
-     * API Endpoint for sending a updateDeck Patch-Request
+     * API Endpoint for sending a updateDeck Patch-Request.
      *
      * @param deckId the deckId that shall be updated
      * @param deck   the updated version of the deck
