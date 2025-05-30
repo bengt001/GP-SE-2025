@@ -23,14 +23,33 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 public class DeckControllerTest {
-    final List<Deck> DECKS = List.of(new Deck((long) 1, 1, LocalDate.now(), true),
-            new Deck((long) 2, 2, LocalDate.now(), false),
-            new Deck((long) 3, 2, LocalDate.now(), true));
-    final Deck DECK_SINGLE = new Deck(5L, 1, LocalDate.now(), true);
+    final Deck deck1 = new Deck(true, List.of("Test"), 1);
+    final Deck deck2 = new Deck(true, List.of("Test"), 2);
+    final Deck deck3 = new Deck(false, List.of("Test"), 1);
 
-    final List<Card> CARDS = List.of(new Card((long) 1, "Tolle Karte", "Karte"),
-            new Card((long) 2, "Super Karte", "Karte"),
-            new Card((long) 3, "Blöde Karte", "Karte"));
+    {
+        deck1.setDeckId(1L);
+        deck1.updateDate();
+        deck2.setDeckId(2L);
+        deck2.updateDate();
+        deck3.setDeckId(3L);
+        deck3.updateDate();
+    }
+    final List<Deck> DECKS = List.of(deck1, deck2, deck3);
+
+    final Deck DECK_SINGLE = new Deck(false, List.of("Test"), 5);
+
+    {
+        DECK_SINGLE.setDeckId(5L);
+        DECK_SINGLE.setPublishDate(LocalDate.now());
+    }
+    final List<Card> CARDS = List.of(
+            new Card("Tolle Karte", "Karte", DECK_SINGLE),
+            new Card("Super Karte", "Karte", DECK_SINGLE),
+            new Card("Blöde Karte", "Karte", DECK_SINGLE)
+    );
+
+
 
     private AutoCloseable closeable;
 
@@ -101,7 +120,9 @@ public class DeckControllerTest {
         when(authentication.getName()).thenReturn(username);
         when(userService.loadUserByUsername(username)).thenReturn(mockUser);
 
-        Deck aNewDeck = new Deck( authorId, true);
+        Deck aNewDeck = new Deck(true, List.of("Test"), authorId);
+        aNewDeck.setDeckId(1L);
+        aNewDeck.updateDate();
         when(deckService.getNewUserDeck(mockUser, templateId)).thenReturn(Optional.of(aNewDeck));
 
         Deck aResultingDeck = deckController.createNewDeck(templateId);

@@ -20,17 +20,37 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 public class DeckControllerTest {
-    final List<Deck> DECKS = List.of(new Deck((long) 1, 1, LocalDate.now(), true),
-            new Deck((long) 2, 2, LocalDate.now(), false),
-            new Deck((long) 3, 2, LocalDate.now(), true));
-    final Deck DECK = new Deck((long) 1, 1, LocalDate.now(), true);
+    final Deck deck1 = new Deck(true, List.of("Test"), 1);
+    final Deck deck2 = new Deck(false, List.of("Test"), 2);
+    final Deck deck3 = new Deck(true, List.of("Test"), 2);
 
-    final List<Card> CARDS = List.of(new Card((long) 1, "Tolle Karte", "Karte"),
-            new Card((long) 2, "Super Karte", "Karte"),
-            new Card((long) 3, "Blöde Karte", "Karte"));
-    final Card CARD = new Card((long) 1, "Tolle Karte", "Karte");
+    {
+        deck1.setDeckId(1L);
+        deck1.setPublishDate(LocalDate.now());
 
-    final Usr TESTUSR = new Usr("testuser", "test@mytest.com", "{bcrypt}$2a$10$WoG5Z4YN9Z37EWyNCkltyeFr6PtrSXSLMeFWOeDUwcanht5CIJgPa");
+        deck2.setDeckId(2L);
+        deck2.setPublishDate(LocalDate.now());
+
+        deck3.setDeckId(3L);
+        deck3.setPublishDate(LocalDate.now());
+    }
+
+    final List<Deck> DECKS = List.of(deck1, deck2, deck3);
+
+    final Deck DECK = new Deck(true, List.of("Test"), 1);
+    {
+        DECK.setDeckId(1L);
+        DECK.setPublishDate(LocalDate.now());
+    }
+
+    final Card card1 = new Card("Karte","Tolle Karte", deck1);
+    final Card card2 = new Card( "Karte", "Super Karte", deck2);
+    final Card card3 = new Card( "Karte","Blöde Karte", deck3);
+
+    final List<Card> CARDS = List.of(card1, card2, card3);
+    final Card CARD = card1;
+
+    final Usr TESTUSR = new Usr("testuser", "test@mytest.com", "{bcrypt}$2a$10$WoG5Z4YN9Z37EWyNCkltyeFr6PtrSXSLMeFWOeDUwcanht5CIJgPa", "TEST", "1");
 
     private AutoCloseable closeable;
 

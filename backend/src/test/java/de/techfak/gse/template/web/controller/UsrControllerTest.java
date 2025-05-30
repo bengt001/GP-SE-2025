@@ -21,7 +21,7 @@ import static org.mockito.Mockito.when;
 
 public class UsrControllerTest {
 
-    final Usr TESTUSR = new Usr("testuser", "test@mytest.com", "{bcrypt}$2a$10$WoG5Z4YN9Z37EWyNCkltyeFr6PtrSXSLMeFWOeDUwcanht5CIJgPa");
+    final Usr TESTUSR = new Usr("testuser", "test@mytest.com", "{bcrypt}$2a$10$WoG5Z4YN9Z37EWyNCkltyeFr6PtrSXSLMeFWOeDUwcanht5CIJgPa","TEST", "1");
 
     private AutoCloseable closeable;
 
@@ -39,7 +39,7 @@ public class UsrControllerTest {
         SecurityContextHolder.setContext(securityContext);
 
 
-        when(userService.exists("test@mail.com")).thenReturn(true);
+        when(userService.existsEmail("test@mail.com")).thenReturn(true);
 
 
         when(authentication.getName()).thenReturn("testuser");
