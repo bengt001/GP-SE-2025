@@ -8,8 +8,8 @@ import java.util.Optional;
  */
 public interface DeckService {
     List<Deck> getDecks();
-    Optional<Deck> getDeck(String id);
+    Optional<Deck> getDeck(Long id);
     Deck addDeck(Boolean visibility, List<String> fieldOfLaw);
-    Deck updateDeck(String id, Boolean visibility, List<String> fieldOfLaw);
+    Deck updateDeck(Long id, Boolean visibility, List<String> fieldOfLaw);
 
 }

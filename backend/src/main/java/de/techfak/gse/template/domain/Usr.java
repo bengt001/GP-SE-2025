@@ -31,7 +31,7 @@ public class Usr implements UserDetails {
     @Column
     private String displayName;
 
-    @Column
+    @Column(unique = true, nullable = false)
     private String username;
 
     @Column
@@ -52,6 +52,9 @@ public class Usr implements UserDetails {
     @Column(name = "role")
     @SuppressWarnings("serial")
     private List<String> roles = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "users")
+    private List<Deck> decks = new ArrayList<>();
 
     /** JPA constructor. */
     protected Usr() {

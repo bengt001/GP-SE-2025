@@ -3,6 +3,7 @@ package de.techfak.gse.template.domain;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
@@ -24,6 +25,17 @@ public class Deck {
     private LocalDate publishDate;
     @Column
     private Boolean visibility;
+
+    @OneToMany(mappedBy = "deck")
+    private List<Card> cards;
+
+    @ManyToMany
+    @JoinTable(
+            name = "deck_user",
+            joinColumns = @JoinColumn(name = "deck_Id"),
+            inverseJoinColumns = @JoinColumn(name = "user_Id")
+    )
+    private List<Usr> users = new ArrayList<>();
 
     @ElementCollection
     @CollectionTable(name = "deckField", joinColumns = @JoinColumn(name = "deckId"))
@@ -50,5 +62,7 @@ public class Deck {
         this.publishDate = LocalDate.now();
     }
 
-    //Kirill: ich würde gerne eine isEmpty() Funktion haben. Die soll nachgucken ob das Deck karten hat
+    public boolean isEmpty() {
+        return cards == null || cards.isEmpty();
+    }
 }

@@ -20,6 +20,7 @@ public class DeckController {
 
     private final DeckService deckService;
     private final UserService userService;
+    private final CardService cardService;
 
     /**
      * Constructor for the Deck Controller.
@@ -27,9 +28,10 @@ public class DeckController {
      * @param userService An implementation of the UserService
      */
     @Autowired
-    public DeckController(DeckService deckService, UserService userService) {
+    public DeckController(DeckService deckService, UserService userService, CardService cardService) {
         this.deckService = deckService;
         this.userService = userService;
+        this.cardService = cardService;
     }
 
     /**
@@ -38,7 +40,7 @@ public class DeckController {
      */
     @GetMapping("/decks")
     public List<Deck> getAllDecks() {
-        return deckService.getAllDecks();
+        return deckService.getDecks();
     }
 
     /**
@@ -47,8 +49,8 @@ public class DeckController {
      * @return A Deck, if no deck with this id exists a BadRequestException.
      */
     @GetMapping("/decks/{deckId:\\d+}")
-    public Deck getDeckById(@PathVariable("deckId") final long deckId) {
-        return deckService.getDeckById(deckId).orElseThrow(BadRequestException::new);
+    public Deck getDeckById(@PathVariable("deckId") final Long deckId) {
+        return deckService.getDeck(deckId).orElseThrow(BadRequestException::new);
     }
 
     /**
@@ -58,18 +60,17 @@ public class DeckController {
      */
     @GetMapping("/decks/{deckId:\\d+}/cards")
     public List<Card> getCards(@PathVariable("deckId") final long deckId) {
-        return deckService.getCards(deckId);
+        return cardService.getCardsByDeckId(deckId);
     }
 
     /**
      * API Endpoint to get a Card by its id.
-     * @param deckId of the deck the card is in.
      * @param cardId of the card you want to get.
      * @return a single Card.
      */
     @GetMapping("/decks/{deckId:\\d+}/cards/{cardId:\\d+}")
-    public Card getCardById(@PathVariable("deckId") final long deckId, @PathVariable("cardId") final long cardId) {
-        return deckService.getCardById(deckId, cardId).orElseThrow(BadRequestException::new);
+    public Card getCardById(@PathVariable("cardId") final long cardId) {
+        return cardService.getCard(cardId).orElseThrow(BadRequestException::new);
     }
 
     /**

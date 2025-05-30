@@ -1,5 +1,6 @@
 package de.techfak.gse.template.domain;
 
+import de.techfak.gse.template.web.exception.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,11 +30,12 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public Optional<Card> getCard(final String id) {
+    public Optional<Card> getCard(final Long id) {
         final Long deckId = Long.valueOf(id);
 
         return cardRepository.findById(deckId);
     }
+
     @Override
     public Card addCard(final String content, final String cardType, final Deck deck) {
         final Card card = new Card(content, cardType, deck);
@@ -41,10 +43,10 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public Card updateCard(final String id, final String content, final String cardType, final Deck deck) {
+    public Card updateCard(final Long id, final String content, final String cardType, final Deck deck) {
         final Long cardId = Long.valueOf(id);
         final Card card = cardRepository.findById(cardId)
-                .orElseThrow();
+                .orElseThrow(BadRequestException::new);
         // hier muss eine Fehlermeldung rein
 
         card.setContent(content);
@@ -52,5 +54,18 @@ public class CardServiceImpl implements CardService {
         card.setDeck(deck);
 
         return cardRepository.save(card);
+    }
+
+    @Override
+    public List<Card> getCardsByDeckId(Long deckId) {
+        List<Card> result = new ArrayList<>();
+
+        for (Card card : cardRepository.findAll()) {
+            if (card.getDeck() != null && deckId.equals(card.getDeck().getDeckId())) {
+                result.add(card);
+            }
+        }
+
+        return result;
     }
 }

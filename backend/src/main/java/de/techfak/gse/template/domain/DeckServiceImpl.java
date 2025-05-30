@@ -1,5 +1,6 @@
 package de.techfak.gse.template.domain;
 
+import de.techfak.gse.template.web.exception.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +29,7 @@ public class DeckServiceImpl implements DeckService {
         return decks;
     }
     @Override
-    public Optional<Deck> getDeck(final String id) {
+    public Optional<Deck> getDeck(final Long id) {
         final Long deckId = Long.valueOf(id);
 
         return deckRepository.findById(deckId);
@@ -40,10 +41,10 @@ public class DeckServiceImpl implements DeckService {
     }
 
     @Override
-    public Deck updateDeck(final String id, final Boolean visibility, final List<String> fieldOfLaw) {
+    public Deck updateDeck(final Long id, final Boolean visibility, final List<String> fieldOfLaw) {
         final Long deckId = Long.valueOf(id);
         final Deck deck = deckRepository.findById(deckId)
-                .orElseThrow();
+                .orElseThrow(BadRequestException::new);
         // hier muss eine Fehlermeldung rein
         deck.setVisibility(visibility);
         deck.setFieldOfLaw(fieldOfLaw);
