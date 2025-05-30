@@ -40,6 +40,10 @@ public class DeckControllerTest {
     @Mock
     private UserService userService;
 
+    @Mock
+    private CardService cardService;
+
+
     @BeforeEach
     void setUp() {
         closeable = MockitoAnnotations.openMocks(this);
@@ -53,7 +57,7 @@ public class DeckControllerTest {
         when(deckService.getAllDecks()).thenReturn(DECKS);
         when(deckService.getDeckById(1)).thenReturn(Optional.of(DECK));
         when(deckService.getCards(1)).thenReturn(CARDS);
-        when(deckService.getCardById(1, 1)).thenReturn(Optional.of(CARD));
+        when(deckService.getCardByIdFromDeck(1, 1)).thenReturn(Optional.of(CARD));
         when(deckService.getUserDecks(TESTUSR)).thenReturn(DECKS);
 
         when(userService.loadUserByUsername("testuser")).thenReturn(TESTUSR);
@@ -66,27 +70,27 @@ public class DeckControllerTest {
 
     @Test
     void getAllDecks_success() {
-        DeckController deckController = new DeckController(deckService, userService);
+        DeckController deckController = new DeckController(deckService, userService, cardService);
         List<Deck> decks = deckController.getAllDecks();
 
         assertThat(decks.size()).isEqualTo(3);
-        assertThat(decks.get(0).getId()).isEqualTo(1);
-        assertThat(decks.get(1).getAuthor_id()).isEqualTo(2);
+        assertThat(decks.get(0).getDeckId()).isEqualTo(1);
+        assertThat(decks.get(1).getAuthorId()).isEqualTo(2);
         assertThat(decks.get(2).getVisibility()).isEqualTo(true);
     }
 
     @Test
     void getDeckById_success() {
-        DeckController deckController = new DeckController(deckService, userService);
+        DeckController deckController = new DeckController(deckService, userService, cardService);
 
-        Deck deck = deckController.getDeckById(1);
+        Deck deck = deckController.getDeckById(1L);
 
-        assertThat(deck.getId()).isEqualTo(1);
+        assertThat(deck.getDeckId()).isEqualTo(1);
     }
 
     @Test
     void getCards_success() {
-        DeckController deckController = new DeckController(deckService, userService);
+        DeckController deckController = new DeckController(deckService, userService, cardService);
 
         List<Card> cards = deckController.getCards(1);
 
@@ -97,37 +101,37 @@ public class DeckControllerTest {
 
     @Test
     void getCardById_success() {
-        DeckController deckController = new DeckController(deckService, userService);
+        DeckController deckController = new DeckController(deckService, userService, cardService);
 
-        Card card = deckController.getCardById(1, 1);
+        Card card = deckController.getCardById(1L);
 
         assertThat(card).isNotNull();
-        assertThat(card.getCard_id()).isEqualTo(1);
+        assertThat(card.getCardId()).isEqualTo(1);
         assertThat(card.getContent()).isEqualTo("Tolle Karte");
     }
 
     @Test
     void getUserDecks_success() {
-        DeckController deckController = new DeckController(deckService, userService);
+        DeckController deckController = new DeckController(deckService, userService, cardService);
         List<Deck> decks = deckController.getUserDecks();
         assertThat(decks.size()).isEqualTo(3);
-        assertThat(decks.get(0).getId()).isEqualTo(1);
-        assertThat(decks.get(1).getAuthor_id()).isEqualTo(2);
+        assertThat(decks.get(0).getDeckId()).isEqualTo(1);
+        assertThat(decks.get(1).getAuthorId()).isEqualTo(2);
         assertThat(decks.get(2).getVisibility()).isEqualTo(true);
     }
 
     @Test
     void getUserDeckById_success() {
-        DeckController deckController = new DeckController(deckService, userService);
+        DeckController deckController = new DeckController(deckService, userService, cardService);
 
-        Deck deck = deckController.getDeckById(1);
+        Deck deck = deckController.getDeckById(1L);
 
-        assertThat(deck.getId()).isEqualTo(1);
+        assertThat(deck.getDeckId()).isEqualTo(1);
     }
 
     @Test
     void getUserCards_success() {
-        DeckController deckController = new DeckController(deckService, userService);
+        DeckController deckController = new DeckController(deckService, userService, cardService);
 
         List<Card> cards = deckController.getCards(1);
 
@@ -137,12 +141,12 @@ public class DeckControllerTest {
 
     @Test
     void getUserCardById_success() {
-        DeckController deckController = new DeckController(deckService, userService);
+        DeckController deckController = new DeckController(deckService, userService, cardService);
 
-        Card card = deckController.getCardById(1, 1);
+        Card card = deckController.getCardById(1);
 
         assertThat(card).isNotNull();
-        assertThat(card.getCard_id()).isEqualTo(1);
+        assertThat(card.getCardId()).isEqualTo(1);
         assertThat(card.getContent()).isEqualTo("Tolle Karte");
     }
 

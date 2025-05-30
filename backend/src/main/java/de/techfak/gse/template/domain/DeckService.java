@@ -7,9 +7,10 @@ import java.util.Optional;
  * Service for managing decks.
  */
 public interface DeckService {
-    List<Deck> getDecks();
     Optional<Deck> getDeck(Long id);
+
     Deck addDeck(Boolean visibility, List<String> fieldOfLaw);
+
     Deck updateDeck(Long id, Boolean visibility, List<String> fieldOfLaw);
 
     List<Deck> getAllDecks();
@@ -22,13 +23,13 @@ public interface DeckService {
 
     List<Card> getCards(long deckId);
 
-    Optional<Card> getCardById(long deckId,long id);
+    Optional<Card> getCardByIdFromDeck(long deckId, long id);
 
     List<Card> getUserCards(Usr usr, long deckId);
 
     Optional<Card> updateCard(Usr usr, long deckId, long cardId, Card updatedCard);
 
-    Optional<Card> getUseCardById(Usr usr, long deckId,long id);
+    Optional<Card> getUseCardById(Usr usr, long deckId, long id);
 
     Optional<Deck> getNewUserDeck(Usr usr, long templateDeckId);
 

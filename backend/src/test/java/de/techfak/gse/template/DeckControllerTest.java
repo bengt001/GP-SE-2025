@@ -101,13 +101,13 @@ public class DeckControllerTest {
         when(authentication.getName()).thenReturn(username);
         when(userService.loadUserByUsername(username)).thenReturn(mockUser);
 
-        Deck aNewDeck = new Deck(newDeckId, authorId, LocalDate.now(), true);
+        Deck aNewDeck = new Deck( authorId, true);
         when(deckService.getNewUserDeck(mockUser, templateId)).thenReturn(Optional.of(aNewDeck));
 
         Deck aResultingDeck = deckController.createNewDeck(templateId);
 
         assertThat(aResultingDeck).isNotNull();
-        assertThat(aResultingDeck.getId()).isEqualTo(newDeckId);
+        assertThat(aResultingDeck.getDeckId()).isEqualTo(newDeckId);
 
         verify(authentication).getName();
         verify(userService).loadUserByUsername(username);

@@ -42,6 +42,9 @@ public class Deck {
     @Column(name = "fieldOfLaw")
     private List<String> fieldOfLaw;
 
+    /**
+     * Instantiates a new Deck.
+     */
     protected Deck() {
 
     }
@@ -49,8 +52,22 @@ public class Deck {
     /**
      * New deck with specified content.
      *
-     * @param visibility
-     * @param fieldOfLaw
+     * @param visibility the visibility
+     * @param fieldOfLaw the field of law
+     * @param authorId   the author id
+     */
+    public Deck(Boolean visibility, List<String> fieldOfLaw, int authorId) {
+        this.visibility = visibility;
+        this.fieldOfLaw = fieldOfLaw;
+        this.authorId = authorId;
+        this.publishDate = LocalDate.now();
+    }
+
+    /**
+     * Instantiates a new Deck.
+     *
+     * @param visibility the visibility
+     * @param fieldOfLaw the field of law
      */
     public Deck(Boolean visibility, List<String> fieldOfLaw) {
         this.visibility = visibility;
@@ -58,10 +75,18 @@ public class Deck {
         this.publishDate = LocalDate.now();
     }
 
+    /**
+     * Update date.
+     */
     public void updateDate() {
         this.publishDate = LocalDate.now();
     }
 
+    /**
+     * Is empty boolean.
+     *
+     * @return the boolean
+     */
     public boolean isEmpty() {
         return cards == null || cards.isEmpty();
     }
