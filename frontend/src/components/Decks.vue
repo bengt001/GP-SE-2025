@@ -105,6 +105,7 @@ function deactivateCards() {
 
 function openLearnDialog() {
   DialogLearn.value = true
+  console.log( DeckStore.getTitleOfSelected(selectedDecks.value))
 }
 
 function startLearning() {
@@ -389,7 +390,7 @@ function startLearning() {
         Stapel die du zum lernen ausgewählt hast:
       </v-card-text>
       <v-card-text>
-        {{ DeckStore.getTitleDecks(selectedDecks) }}
+        {{ DeckStore.getTitleOfSelected(selectedDecks) }}
       </v-card-text>
       <v-list>
         <v-list-item>

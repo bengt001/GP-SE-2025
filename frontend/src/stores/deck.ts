@@ -44,7 +44,13 @@ export const useDeckStore = defineStore('decks', {
     getAllDecks(): Deck[]{
       return this.decks
     },
-
+    getTitleOfSelected(selected :Deck[]): string{
+      const selectedTitles = []
+      for (const deck of selected){
+        selectedTitles.push(deck.title)
+      }
+      return selectedTitles.join(",")
+    },
     getDecksTitle(): string[]{
       const TitleArr:string[] = []
       for(const deck of this.decks){
