@@ -142,6 +142,7 @@ function startLearning() {
 
 </script>
 <template>
+  <Searchbar @change-value="searchValue=$event"></Searchbar>
   <v-container class="overflow-hidden">
     <v-row
       v-if="UserStore.authenticated"
@@ -168,7 +169,7 @@ function startLearning() {
               class="text-h5"
               style="white-space: normal;"
             >
-              {{ toDisplay[n - 1] }}
+              {{ toDisplay[n - 1].title }}
             </v-card-title>
 
             <v-card-text class="text-center">
@@ -221,7 +222,7 @@ function startLearning() {
                           class="align-content-center"
                           variant="flat"
                           color="red_darkest"
-                          @click="() => openResetDialog(toDisplay[n - 1])"
+                          @click="() => openResetDialog(toDisplay[n - 1].title)"
                         >
                           Reset
                         </v-btn>
@@ -231,7 +232,7 @@ function startLearning() {
                           class="align-content-center"
                           variant="flat"
                           color="orange_darkest"
-                          @click="() => openDeactivateDialog(toDisplay[n - 1])"
+                          @click="() => openDeactivateDialog(toDisplay[n - 1].title)"
                         >
                           Deaktivieren
                         </v-btn>
@@ -270,7 +271,7 @@ function startLearning() {
               class="text-h5"
               style="white-space: normal;"
             >
-              {{ toDisplay[n-1] }}
+              {{ toDisplay[n-1].title }}
             </v-card-title>
 
             <v-card-text class="text-center">
@@ -322,7 +323,7 @@ function startLearning() {
                           class="align-content-center"
                           variant="flat"
                           color="red_darkest"
-                          @click="() => openResetDialog(toDisplay[n - 1])"
+                          @click="() => openResetDialog(toDisplay[n - 1].title)"
                         >
                           Reset
                         </v-btn>
@@ -332,7 +333,7 @@ function startLearning() {
                           class="align-content-center"
                           variant="flat"
                           color="orange_darkest"
-                          @click="() => openDeactivateDialog(toDisplay[n - 1])"
+                          @click="() => openDeactivateDialog(toDisplay[n - 1].title)"
                         >
                           Deaktivieren
                         </v-btn>
