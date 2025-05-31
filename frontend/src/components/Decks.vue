@@ -4,10 +4,12 @@ import {useUserStore} from "@/stores/users";
 import {ref} from "vue";
 import { computed } from 'vue';
 import type Deck from "@/types/Deck"
+import {useCardStore} from "@/stores/card";
 
 
 const UserStore = useUserStore()
 const DeckStore = useDeckStore()
+const CardStore = useCardStore()
 
 const DialogReset = ref(false)
 const DialogDeactivate = ref(false)
@@ -121,7 +123,7 @@ function startLearning() {
   if (problems.value) selectedMode.push("problems")
   if (schema.value) selectedMode.push("schema")
 
-  console.log("IDS: ", selectedIDs, " MODE: ", selectedMode)
+  CardStore.loadCards(selectedIDs,selectedMode)
 }
 
 
@@ -185,7 +187,7 @@ function startLearning() {
               <v-row justify="space-evenly">
                 <v-checkbox
                   v-model="SelectedDeck[n-1]"
-                  label="zum lernen auswählen"
+                  label="Zum Lernen auswählen"
                   color="lexmea_blue_200"
                 />
 

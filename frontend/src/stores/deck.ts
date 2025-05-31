@@ -51,13 +51,6 @@ export const useDeckStore = defineStore('decks', {
       }
       return selectedTitles.join(",")
     },
-    getDecksTitle(): string[]{
-      const TitleArr:string[] = []
-      for(const deck of this.decks){
-        TitleArr.push(deck.title)
-      }
-      return TitleArr
-    },
     getFaellig(deck: Deck): number{
       return deck.stapel_id
     },
