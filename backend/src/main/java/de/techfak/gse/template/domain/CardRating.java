@@ -12,29 +12,23 @@ import lombok.Setter;
 @Setter
 @Entity
 public class CardRating {
-
     @Id
     @GeneratedValue
     private Long id;
-
     @ManyToOne
     private Usr userId;
-
     @ManyToOne
     private Card cardId;
-
     @ManyToOne
     private Deck deckId;
-
     @Column
     private LocalDate lastDateRated;
-
     @Column
     private int rating;
 
-    protected CardRating() {
+protected CardRating() {
 
-    }
+}
 
     /**
      * New card rating with specified content.

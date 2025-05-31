@@ -1,31 +1,28 @@
 package de.techfak.gse.template.domain;
 
 import jakarta.persistence.*;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 
 /**
  * Entity representing a deck.
  */
-
 @Getter
 @Setter
 @Entity
 public class Deck {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long deckId;
-
     @Column
     private Integer authorId;
-
     @Column
     private LocalDate publishDate;
-
     @Column
     private Boolean visibility;
 

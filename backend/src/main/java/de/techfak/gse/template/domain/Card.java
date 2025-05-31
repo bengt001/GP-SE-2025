@@ -38,5 +38,5 @@ public class Card {
         this.cardType = cardType;
         this.deck = deck;
     }
-
 }
+
