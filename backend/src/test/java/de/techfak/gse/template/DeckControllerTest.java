@@ -112,7 +112,7 @@ public class DeckControllerTest {
 
         String username = "testuser";
         long templateId = 1L;
-        long newDeckId = 101L;
+        long newDeckId = 1L;
         int authorId = 2;
 
         Usr mockUser = mock(Usr.class);

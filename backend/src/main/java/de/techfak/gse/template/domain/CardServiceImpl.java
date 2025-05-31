@@ -56,7 +56,6 @@ public class CardServiceImpl implements CardService {
     @Override
     public List<Card> getCardsByDeckId(Long deckId) {
         List<Card> result = new ArrayList<>();
-
         for (Card card : cardRepository.findAll()) {
             if (card.getDeck() != null && deckId.equals(card.getDeck().getDeckId())) {
                 result.add(card);
