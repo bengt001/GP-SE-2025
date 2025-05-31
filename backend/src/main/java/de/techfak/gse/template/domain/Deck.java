@@ -1,5 +1,6 @@
 package de.techfak.gse.template.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -26,7 +27,10 @@ public class Deck {
     @Column
     private Boolean visibility;
 
+
+    //Or JsonIgnore
     @OneToMany(mappedBy = "deck")
+    @JsonManagedReference
     private List<Card> cards;
 
     @ManyToMany

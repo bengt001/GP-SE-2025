@@ -69,13 +69,13 @@ public class ParsingPipeline {
         ObjectMapper mapper = new ObjectMapper();
         ArrayList<String> rechtgebietList = JsonParser.extractContentAsStringFromPath(root, path, "name");
         ArrayList<String> schemaHtml = JsonParser.extractContentAsStringFromPath(root, path, "text");
-        schemaHtml.set(0, schemaHtml.get(0).replace("\n", "\\n"));
         if (rechtgebietList.isEmpty() || schemaHtml.isEmpty()) {
             LOGGER.error("no Content");
             throw new DeckCreationFailedException(ERROR_MSG);
         } else {
             //Build deck and cards
             //first build cards if there are no cards no deck is build
+            schemaHtml.set(0, schemaHtml.get(0).replace("\n", "\\n"));
             ArrayList<String[]> problemBoxes = HtmlParser.getProblemBoxes(schemaHtml.getFirst());
             ArrayList<String[]> definitionBoxes = HtmlParser.getDefinitionBoxes(schemaHtml.getFirst());
             TreeNode<String> aufdeckCard = HtmlParser.getTableOfContentsAsTree(schemaHtml.getFirst());
@@ -124,7 +124,7 @@ public class ParsingPipeline {
         }
     }
 
-    private static void printAllPaths(ArrayList<ArrayList<Object>> allPaths) {
+    private static void logAllPaths(ArrayList<ArrayList<Object>> allPaths) {
         for (ArrayList<Object> path : allPaths) {
             for (Object obj : path) {
                 LOGGER.debug("{} | ", obj.toString());

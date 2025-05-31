@@ -65,6 +65,7 @@ public class HtmlParser {
 
     /**
      * Gets definition boxes.
+     * Bis auf eine die mit : gesplited werden muss.
      *
      * @param html the html
      * @return the definition boxes

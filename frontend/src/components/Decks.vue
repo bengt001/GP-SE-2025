@@ -5,6 +5,7 @@ import {ref} from "vue";
 import { computed } from 'vue';
 import type Deck from "@/types/Deck"
 import {useCardStore} from "@/stores/card";
+import axios from "../api/config";
 
 
 const UserStore = useUserStore()
@@ -118,6 +119,9 @@ function deactivateCards() {
 }
 
 function openLearnDialog() {
+
+  const result = axios.get("/api/decks");
+  result.then((x) => console.log(x))
   DialogLearn.value = true
   console.log( DeckStore.getTitleOfSelected(selectedDecks.value))
 }
