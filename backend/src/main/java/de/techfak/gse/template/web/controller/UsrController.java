@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin
 @RequestMapping("/api")
 public class UsrController {
-    private UserService userService;
+    private final UserService userService;
 
     @Autowired
     public UsrController(UserService userService) {
@@ -26,6 +26,6 @@ public class UsrController {
 
     @GetMapping("/exists")
     public boolean exists(@RequestParam String email) {
-        return userService.exists(email);
+        return userService.existsEmail(email);
     }
 }
