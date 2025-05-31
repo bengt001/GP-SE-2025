@@ -60,6 +60,9 @@ public class DeckControllerTest {
     private UserService userService;
 
     @Mock
+    private CardService cardService;
+
+    @Mock
     private Authentication authentication;
 
     @Mock
@@ -87,7 +90,7 @@ public class DeckControllerTest {
 
     @Test
     void getDeckById() {
-        when(deckService.getDeckById(5L)).thenReturn(Optional.of(DECK_SINGLE));
+        when(deckService.getDeck(5L)).thenReturn(Optional.of(DECK_SINGLE));
         Deck deck = deckController.getDeckById(5L);
         assertThat(deck).isEqualTo(DECK_SINGLE);
     }
@@ -95,7 +98,7 @@ public class DeckControllerTest {
     @Test
     void getCards() {
 
-        when(deckService.getCards(1L)).thenReturn(CARDS);
+        when(cardService.getCardsByDeckId(1L)).thenReturn(CARDS);
         List<Card> cards = deckController.getCards(1L);
         assertThat(cards).isEqualTo(CARDS);
     }
@@ -121,7 +124,7 @@ public class DeckControllerTest {
         when(userService.loadUserByUsername(username)).thenReturn(mockUser);
 
         Deck aNewDeck = new Deck(true, List.of("Test"), authorId);
-        aNewDeck.setDeckId(1L);
+        aNewDeck.setDeckId(newDeckId);
         aNewDeck.updateDate();
         when(deckService.getNewUserDeck(mockUser, templateId)).thenReturn(Optional.of(aNewDeck));
 
