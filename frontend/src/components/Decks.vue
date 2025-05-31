@@ -142,7 +142,7 @@ function startLearning() {
 
 </script>
 <template>
-  <Searchbar @change-value="searchValue=$event"></Searchbar>
+  <Searchbar @change-value="searchValue=$event" />
   <v-container class="overflow-hidden">
     <v-row
       v-if="UserStore.authenticated"

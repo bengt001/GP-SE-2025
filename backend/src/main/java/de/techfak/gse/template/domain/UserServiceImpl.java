@@ -10,9 +10,9 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class UserServiceImpl implements UserService {
+    public final String strNotFound = " not found";
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    public final String strNotFound = " not found";
 
     @Autowired
     public UserServiceImpl(final UserRepository userRepository, final PasswordEncoder passwordEncoder) {
@@ -20,20 +20,22 @@ public class UserServiceImpl implements UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    /** loads User by ID (email). */
+    /** loads User by ID. */
     @Override
     public Usr loadUserByUsername(final String email) throws UsernameNotFoundException {
-        return userRepository.findById(email)
-        .orElseThrow(() -> new UsernameNotFoundException(email + strNotFound));
+        Iterable<Usr> users = userRepository.findAll();
+        for (Usr user : users) {
+            if (user.getEmail().equals(email)) {
+                return user;
+            }
+        }
+        throw new UsernameNotFoundException(email + strNotFound);
     }
-
-
 
     public Usr loadUserByID(final String userID) throws UsernameNotFoundException {
-        return userRepository.findById(userID)
-                .orElseThrow(() -> new UsernameNotFoundException(userID + strNotFound));
+         return userRepository.findById(userID)
+         .orElseThrow(() -> new UsernameNotFoundException(userID + strNotFound));
     }
-
 
     @Override
     public Usr createUser(final String username, final String email,
@@ -44,6 +46,7 @@ public class UserServiceImpl implements UserService {
         for (final String role : roles) {
             usr.addRole(role);
         }
+
         return userRepository.save(usr);
     }
 
@@ -59,15 +62,16 @@ public class UserServiceImpl implements UserService {
             }
         }
         return String.valueOf(counter);
+
     }
 
     @Override
     public boolean existsEmail(String email) {
-        try {
-            loadUserByUsername(email);
-            return true;
-        } catch (UsernameNotFoundException e) {
-            return false;
+        for (Usr usr : userRepository.findAll()) {
+            if (usr.getEmail().equals(email)) {
+                return true;
+            }
         }
+        return false;
     }
 }

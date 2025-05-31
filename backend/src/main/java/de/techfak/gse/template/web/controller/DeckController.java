@@ -1,4 +1,5 @@
 package de.techfak.gse.template.web.controller;
+
 import de.techfak.gse.template.domain.*;
 import de.techfak.gse.template.web.exception.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -6,18 +7,21 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+
 import java.util.List;
 
 /**
  * DeckController to handle API requests.
  */
-
 @RestController
 @RequestMapping("/api")
 public class DeckController {
+
     private final DeckService deckService;
     private final UserService userService;
     private final CardService cardService;
+
     /**
      * Constructor for the Deck Controller.
      *
@@ -30,6 +34,7 @@ public class DeckController {
         this.userService = userService;
         this.cardService = cardService;
     }
+
     /**
      * API Endpoint to get all decks that are available.
      *
@@ -183,4 +188,3 @@ public class DeckController {
         return deckService.updateDeck(usr, deckId, deck).orElseThrow(BadRequestException::new);
     }
 }
-

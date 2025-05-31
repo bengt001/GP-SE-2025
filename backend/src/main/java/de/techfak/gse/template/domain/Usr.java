@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
+
 import java.io.Serial;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -20,7 +21,6 @@ import java.util.List;
 @Setter
 @Entity
 public class Usr implements UserDetails {
-
     @Serial
     private static final long serialVersionUID = 0L;
 
@@ -74,7 +74,6 @@ public class Usr implements UserDetails {
                final String password,
                final String displayName,
                final String userId) {
-
         this.username = username;
         this.email = email;
         this.password = password;
@@ -91,20 +90,6 @@ public class Usr implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return AuthorityUtils.createAuthorityList(this.roles.toArray(new String[0]));
-    }
-
-    @Override
-    public String getPassword() {
-        return this.password;
-    }
-
-    @Override
-    public String getUsername() {
-        return this.username;
-    }
-
-    public String getEmail() {
-        return this.email;
     }
 
     @JsonIgnore
