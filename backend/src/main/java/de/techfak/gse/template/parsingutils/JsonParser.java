@@ -68,7 +68,9 @@ public final class JsonParser {
 
 
     /**
-     * Extract content as string from path array list.
+     * Extract content as string list from path array list.
+     * If the function fails at a specific point it returns an empty list.
+     * If it doesn't find anything it returns an empty list.
      *
      * @param jsonContent   the json content
      * @param recursionPath the recursion path
@@ -81,18 +83,22 @@ public final class JsonParser {
         JsonNode currentNode = jsonContent;
         for (int i = 0; i < recursionPath.size(); i++) {
             if (currentNode == null) {
-                break;
+                return new ArrayList<>();
             }
             if (recursionPath.get(i) instanceof String) {
                 currentNode = currentNode.get((String) recursionPath.get(i));
-                if (currentNode.has(fieldname)) {
+                if (currentNode == null) {
+                    return new ArrayList<>();
+                } else if (currentNode.has(fieldname)) {
                     JsonNode nameNode = currentNode.get(fieldname);
                     stringList.add(nameNode.asText());
                     LOGGER.debug(nameNode.toString());
                 }
             } else if (recursionPath.get(i) instanceof Integer) {
                 currentNode = currentNode.get((Integer) recursionPath.get(i));
-                if (currentNode.has(fieldname)) {
+                if (currentNode == null) {
+                    return new ArrayList<>();
+                } else if (currentNode.has(fieldname)) {
                     JsonNode nameNode = currentNode.get(fieldname);
                     stringList.add(nameNode.asText());
                     LOGGER.debug(nameNode.toString());
@@ -100,6 +106,7 @@ public final class JsonParser {
             } else {
                 //throw new IllegalArgumentException; maybe not
                 LOGGER.error("Path element must be String or Integer");
+                return new ArrayList<>();
             }
 
         }
