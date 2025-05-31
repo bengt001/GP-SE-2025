@@ -60,6 +60,9 @@ public class DeckControllerTest {
     private UserService userService;
 
     @Mock
+    private CardService cardService;
+
+    @Mock
     private Authentication authentication;
 
     @Mock
@@ -95,7 +98,7 @@ public class DeckControllerTest {
     @Test
     void getCards() {
 
-        when(deckService.getCards(1L)).thenReturn(CARDS);
+        when(cardService.getCardsByDeckId(1L)).thenReturn(CARDS);
         List<Card> cards = deckController.getCards(1L);
         assertThat(cards).isEqualTo(CARDS);
     }
