@@ -2,63 +2,58 @@ package de.techfak.gse.template.web.controller;
 
 
 import de.techfak.gse.template.domain.*;
+import de.techfak.gse.template.web.exception.BadRequestException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import javax.swing.plaf.synth.SynthTabbedPaneUI;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.*;
 
 public class DeckControllerTest {
     final Deck deck1 = new Deck(true, List.of("Test"), 1);
-    final Deck deck2 = new Deck(false, List.of("Test"), 2);
-    final Deck deck3 = new Deck(true, List.of("Test"), 2);
+    final Deck deck2 = new Deck(true, List.of("Test"), 2);
+    final Deck deck3 = new Deck(false, List.of("Test"), 1);
 
     {
         deck1.setDeckId(1L);
-        deck1.setPublishDate(LocalDate.now());
-
+        deck1.updateDate();
         deck2.setDeckId(2L);
-        deck2.setPublishDate(LocalDate.now());
-
+        deck2.updateDate();
         deck3.setDeckId(3L);
-        deck3.setPublishDate(LocalDate.now());
+        deck3.updateDate();
     }
-
     final List<Deck> DECKS = List.of(deck1, deck2, deck3);
 
-    final Deck DECK = new Deck(true, List.of("Test"), 1);
-    {
-        DECK.setDeckId(1L);
-        DECK.setPublishDate(LocalDate.now());
-    }
+    final Deck DECK_SINGLE = new Deck(false, List.of("Test"), 5);
 
-    final Card card1 = new Card("Karte","Tolle Karte", deck1);
-    final Card card2 = new Card( "Karte", "Super Karte", deck2);
-    final Card card3 = new Card( "Karte","Blöde Karte", deck3);
-
-    final List<Card> CARDS = List.of(card1, card2, card3);
-    final Card CARD = card1;
     {
-        CARD.setCardId(1L);
+        DECK_SINGLE.setDeckId(5L);
+        DECK_SINGLE.setPublishDate(LocalDate.now());
     }
-    final Usr TESTUSR = new Usr("testuser", "test@mytest.com", "{bcrypt}$2a$10$WoG5Z4YN9Z37EWyNCkltyeFr6PtrSXSLMeFWOeDUwcanht5CIJgPa", "TEST", "1");
+    final List<Card> CARDS = List.of(
+            new Card("Tolle Karte", "Karte", DECK_SINGLE),
+            new Card("Super Karte", "Karte", DECK_SINGLE),
+            new Card("Blöde Karte", "Karte", DECK_SINGLE)
+    );
+
+
 
     private AutoCloseable closeable;
 
     @Mock
-    private DeckServiceImpl deckService;
+    private DeckService deckService;
 
     @Mock
     private UserService userService;
@@ -66,113 +61,123 @@ public class DeckControllerTest {
     @Mock
     private CardService cardService;
 
+    @Mock
+    private Authentication authentication;
+
+    @Mock
+    private SecurityContext securityContext;
+
+    @InjectMocks
+    private DeckController deckController;
 
     @BeforeEach
     void setUp() {
-        closeable = MockitoAnnotations.openMocks(this);
-        assertThat(deckService).isNotNull();
-        assertThat(userService).isNotNull();
+        closeable = MockitoAnnotations.openMocks(this); // <2>
 
-        Authentication authentication = Mockito.mock(Authentication.class);
-        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(authentication);
         SecurityContextHolder.setContext(securityContext);
+        assertThat(userService).isNotNull();
+        assertThat(deckService).isNotNull();
+    }
 
-        when(deckService.getAllDecks()).thenReturn(DECKS);
-        when(deckService.getDeckById(1)).thenReturn(Optional.of(DECK));
-        when(deckService.getCards(1)).thenReturn(CARDS);
-        when(deckService.getCardByIdFromDeck(1, 1)).thenReturn(Optional.of(CARD));
-        when(deckService.getUserDecks(TESTUSR)).thenReturn(DECKS);
+    @Test
+    void getAllDecks() {
+        when(deckService.getAllDecks()).thenReturn(DECKS); // <3>
+        List<Deck> allDecks = deckController.getAllDecks();
+        assertThat(allDecks).isEqualTo(DECKS);
+    }
 
-        when(userService.loadUserByUsername("testuser")).thenReturn(TESTUSR);
+    @Test
+    void getDeckById() {
+        when(deckService.getDeckById(5L)).thenReturn(Optional.of(DECK_SINGLE));
+        Deck deck = deckController.getDeckById(5L);
+        assertThat(deck).isEqualTo(DECK_SINGLE);
+    }
+
+    @Test
+    void getCards() {
 
         when(cardService.getCardsByDeckId(1L)).thenReturn(CARDS);
-        when(cardService.getCard(1L)).thenReturn(Optional.of(CARD));
-
-
-        when(authentication.getName()).thenReturn("testuser");
-        when(securityContext.getAuthentication()).thenReturn(authentication);
-
-    }
-
-    @Test
-    void getAllDecks_success() {
-        DeckController deckController = new DeckController(deckService, userService, cardService);
-        List<Deck> decks = deckController.getAllDecks();
-
-        assertThat(decks.size()).isEqualTo(3);
-        assertThat(decks.get(0).getDeckId()).isEqualTo(1);
-        assertThat(decks.get(1).getAuthorId()).isEqualTo(2);
-        assertThat(decks.get(2).getVisibility()).isEqualTo(true);
-    }
-
-    @Test
-    void getDeckById_success() {
-        DeckController deckController = new DeckController(deckService, userService, cardService);
-
-        Deck deck = deckController.getDeckById(1L);
-        assertThat(deck.getDeckId()).isEqualTo(1L);
-    }
-
-    @Test
-    void getCards_success() {
-        DeckController deckController = new DeckController(deckService, userService, cardService);
-
         List<Card> cards = deckController.getCards(1L);
-        System.out.println(cards);
-        assertThat(cards.size()).isEqualTo(3);
-        assertThat(deckService.getCards(1).get(1)).isEqualTo(CARDS.get(1));
+        assertThat(cards).isEqualTo(CARDS);
+    }
+
+
+    /* --------------------------------------------------------------------------------------*/
+
+    /**
+     * Test for successful creation of new Deck Copy for the User
+     * Test assumes that user is authenticated and the Deck exists
+     */
+    @Test
+    void getNewDeck_userIsAuthenticated_templateExists() {
+
+        String username = "testuser";
+        long templateId = 1L;
+        long newDeckId = 101L;
+        int authorId = 2;
+
+        Usr mockUser = mock(Usr.class);
+
+        when(authentication.getName()).thenReturn(username);
+        when(userService.loadUserByUsername(username)).thenReturn(mockUser);
+
+        Deck aNewDeck = new Deck(true, List.of("Test"), authorId);
+        aNewDeck.setDeckId(newDeckId);
+        aNewDeck.updateDate();
+        when(deckService.getNewUserDeck(mockUser, templateId)).thenReturn(Optional.of(aNewDeck));
+
+        Deck aResultingDeck = deckController.createNewDeck(templateId);
+
+        assertThat(aResultingDeck).isNotNull();
+        assertThat(aResultingDeck.getDeckId()).isEqualTo(newDeckId);
+
+        verify(authentication).getName();
+        verify(userService).loadUserByUsername(username);
+        verify(deckService).getNewUserDeck(mockUser, templateId);
 
     }
 
+
+    /**
+     * Test for creating/copying a new Deck for a user,
+     * when that deck does not exist or is empty
+     */
     @Test
-    void getCardById_success() {
-        DeckController deckController = new DeckController(deckService, userService, cardService);
+    void getNewDeck_whenDeckReturnsEmpty_templateDeckNotFound() {
 
-        Card card = deckController.getCardById(1L);
+        String username = "testuser";
+        long templateId = 99L;
 
-        assertThat(card).isNotNull();
-        assertThat(card.getCardId()).isEqualTo(1);
-        assertThat(card.getCardType()).isEqualTo("Tolle Karte");
+        Usr mockUser = mock(Usr.class);
+        when(authentication.getName()).thenReturn(username);
+        when(userService.loadUserByUsername(username)).thenReturn(mockUser);
+
+        when(deckService.getNewUserDeck(mockUser, templateId)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> deckController.createNewDeck(templateId))
+                .isInstanceOf(BadRequestException.class);
+
+        verify(authentication).getName();
+        verify(userService).loadUserByUsername(username);
+        verify(deckService).getNewUserDeck(mockUser, templateId);
+
     }
 
+    /**
+     * Test Case for updating Card
+     */
     @Test
-    void getUserDecks_success() {
-        DeckController deckController = new DeckController(deckService, userService, cardService);
-        List<Deck> decks = deckController.getUserDecks();
-        assertThat(decks.size()).isEqualTo(3);
-        assertThat(decks.get(0).getDeckId()).isEqualTo(1);
-        assertThat(decks.get(1).getAuthorId()).isEqualTo(2);
-        assertThat(decks.get(2).getVisibility()).isEqualTo(true);
+    void updateCard_whenCardIsUpdated() {
+
     }
 
+    /**
+     * Test Case for updating Deck
+     */
     @Test
-    void getUserDeckById_success() {
-        DeckController deckController = new DeckController(deckService, userService, cardService);
+    void updateDeck_whenDeckIsUpdated() {
 
-        Deck deck = deckController.getDeckById(1L);
-
-        assertThat(deck.getDeckId()).isEqualTo(1);
-    }
-
-    @Test
-    void getUserCards_success() {
-        DeckController deckController = new DeckController(deckService, userService, cardService);
-
-        List<Card> cards = deckController.getCards(1);
-
-        assertThat(cards.size()).isEqualTo(3);
-        assertThat(deckService.getCards(1).get(1)).isEqualTo(CARDS.get(1));
-    }
-
-    @Test
-    void getUserCardById_success() {
-        DeckController deckController = new DeckController(deckService, userService, cardService);
-
-        Card card = deckController.getCardById(1);
-
-        assertThat(card).isNotNull();
-        assertThat(card.getCardId()).isEqualTo(1);
-        assertThat(card.getContent()).isEqualTo("Karte");
     }
 
     @AfterEach

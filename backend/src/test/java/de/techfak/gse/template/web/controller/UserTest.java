@@ -1,4 +1,4 @@
-package de.techfak.gse.template;
+package de.techfak.gse.template.web.controller;
 
 import de.techfak.gse.template.domain.Usr;
 import org.junit.jupiter.api.Test;

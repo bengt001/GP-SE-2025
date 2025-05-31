@@ -88,6 +88,18 @@ public class Usr implements UserDetails {
 
     @JsonIgnore
     @Override
+    public String getUsername() {
+        return this.username;
+    }
+
+    @JsonIgnore
+    @Override
+    public String getPassword() {
+        return this.password;
+    }
+
+    @JsonIgnore
+    @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return AuthorityUtils.createAuthorityList(this.roles.toArray(new String[0]));
     }
