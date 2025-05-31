@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * DeckController to handle API requests.
@@ -54,7 +55,13 @@ public class DeckController {
 
     @GetMapping("/decks/{deckId:\\d+}")
     public Deck getDeckById(@PathVariable("deckId") final Long deckId) {
-        return deckService.getDeck(deckId).orElseThrow(BadRequestException::new);
+        Optional<Deck> deck = deckService.getDeckById(deckId);
+        if (deck.isPresent()) {
+            return deck.get();
+        }
+        else{
+            throw new BadRequestException();
+        }
     }
 
     /**

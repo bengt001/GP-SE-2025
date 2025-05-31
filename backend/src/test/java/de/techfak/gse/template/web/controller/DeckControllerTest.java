@@ -12,6 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import javax.swing.plaf.synth.SynthTabbedPaneUI;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -49,7 +50,9 @@ public class DeckControllerTest {
 
     final List<Card> CARDS = List.of(card1, card2, card3);
     final Card CARD = card1;
-
+    {
+        CARD.setCardId(1L);
+    }
     final Usr TESTUSR = new Usr("testuser", "test@mytest.com", "{bcrypt}$2a$10$WoG5Z4YN9Z37EWyNCkltyeFr6PtrSXSLMeFWOeDUwcanht5CIJgPa", "TEST", "1");
 
     private AutoCloseable closeable;
@@ -82,6 +85,9 @@ public class DeckControllerTest {
 
         when(userService.loadUserByUsername("testuser")).thenReturn(TESTUSR);
 
+        when(cardService.getCardsByDeckId(1L)).thenReturn(CARDS);
+        when(cardService.getCard(1L)).thenReturn(Optional.of(CARD));
+
 
         when(authentication.getName()).thenReturn("testuser");
         when(securityContext.getAuthentication()).thenReturn(authentication);
@@ -104,16 +110,15 @@ public class DeckControllerTest {
         DeckController deckController = new DeckController(deckService, userService, cardService);
 
         Deck deck = deckController.getDeckById(1L);
-
-        assertThat(deck.getDeckId()).isEqualTo(1);
+        assertThat(deck.getDeckId()).isEqualTo(1L);
     }
 
     @Test
     void getCards_success() {
         DeckController deckController = new DeckController(deckService, userService, cardService);
 
-        List<Card> cards = deckController.getCards(1);
-
+        List<Card> cards = deckController.getCards(1L);
+        System.out.println(cards);
         assertThat(cards.size()).isEqualTo(3);
         assertThat(deckService.getCards(1).get(1)).isEqualTo(CARDS.get(1));
 
@@ -127,7 +132,7 @@ public class DeckControllerTest {
 
         assertThat(card).isNotNull();
         assertThat(card.getCardId()).isEqualTo(1);
-        assertThat(card.getContent()).isEqualTo("Tolle Karte");
+        assertThat(card.getCardType()).isEqualTo("Tolle Karte");
     }
 
     @Test
@@ -167,7 +172,7 @@ public class DeckControllerTest {
 
         assertThat(card).isNotNull();
         assertThat(card.getCardId()).isEqualTo(1);
-        assertThat(card.getContent()).isEqualTo("Tolle Karte");
+        assertThat(card.getContent()).isEqualTo("Karte");
     }
 
     @AfterEach
