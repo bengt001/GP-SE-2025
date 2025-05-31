@@ -51,10 +51,12 @@ public class HtmlParserTests {
 
     @Test
     void getTableOfContentsAsTreeTest() {
-        ArrayList<Object> recursionPath = new ArrayList<>();
+        /*ArrayList<Object> recursionPath = new ArrayList<>();
         ArrayList<ArrayList<Object>> allPaths = new ArrayList<>();
         JsonParser.findPathWithFieldAndValue(root, "type", "schema", recursionPath, allPaths);
         System.out.println("allPathsSize: " + allPaths.size());
+        ArrayList<Object> path = allPaths.getFirst();
+        ArrayList<String> schemaHtml = JsonParser.extractContentAsStringFromPath(root, path, "text");*/
 
         TreeNode<String> node1 = HtmlParser.getTableOfContentsAsTree(html);
         System.out.println(node1.hasOtherData());

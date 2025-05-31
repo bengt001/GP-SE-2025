@@ -1,5 +1,6 @@
 package de.techfak.gse.template.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,8 +19,11 @@ public class Card {
     private String content;
     @Column
     private String cardType;
+
+    //JsonIgnore
     @ManyToOne
     @JoinColumn(name = "deckId")
+    @JsonBackReference
     private Deck deck;
 
     protected Card() {
@@ -27,6 +31,7 @@ public class Card {
 
     /**
      * New card with specified content.
+     *
      * @param content
      * @param cardType
      * @param deck
