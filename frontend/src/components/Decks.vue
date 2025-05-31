@@ -25,9 +25,21 @@ const definitions = ref(false)
 const problems = ref(false)
 const schema = ref(false)
 
+const searchValue = ref("")
+
 const colorNames = ['green', 'yellow', 'orange', 'red', 'grey'];
 
 const allDecks = computed(() => DeckStore.getAllDecks())
+
+const toDisplay = computed(() => {
+  const items: Deck[] = [];
+  for (let i = 0; i < allDecks.value.length; i++) {
+    if (allDecks.value[i].title.includes(searchValue.value)) {
+      items.push(allDecks.value[i])
+    }
+  }
+  return items;
+});
 
 const selectedDecks = computed(() => {
   const selected: Deck[] = []
@@ -136,7 +148,7 @@ function startLearning() {
     >
       <!--      Dashboard for authenticated User-->
       <v-col
-        v-for="n in allDecks.length"
+        v-for="n in toDisplay.length"
         :key="n"
         cols="auto"
       >
@@ -150,13 +162,13 @@ function startLearning() {
             height="400"
             class="d-flex flex-column"
             variant="elevated"
-            :style="{ borderColor: allDecks[n - 1].color, borderStyle: 'solid', borderWidth: '10px' }"
+            :style="{ borderColor: toDisplay[n - 1].color, borderStyle: 'solid', borderWidth: '10px' }"
           >
             <v-card-title
               class="text-h5"
               style="white-space: normal;"
             >
-              {{ allDecks[n-1].title }}
+              {{ toDisplay[n - 1] }}
             </v-card-title>
 
             <v-card-text class="text-center">
@@ -164,14 +176,14 @@ function startLearning() {
                 class="text-h6"
                 cols="auto"
               >
-                {{ DeckStore.getFaellig(allDecks[n - 1]) }} heute fällig
+                {{ DeckStore.getFaellig(toDisplay[n - 1]) }} heute fällig
                 <div
                   class="progress_bar"
                   style="display:flex; width:250px; height:10px;  margin-left: -10px"
                 >
                   <!--                  geht durch liste der cards für den stapel : Aufbau [Anzahl grüne Karten,Anzahl gelbe Karten,Anzahl orange Karten,Anzahl rote Karten,Anzahl graue Karten]-->
                   <div
-                    v-for="(count, color_index) in allDecks[n-1].cards"
+                    v-for="(count, color_index) in toDisplay[n-1].cards"
                     :key="color_index"
                     :style="{
                       backgroundColor: colorNames[color_index],
@@ -209,7 +221,7 @@ function startLearning() {
                           class="align-content-center"
                           variant="flat"
                           color="red_darkest"
-                          @click="() => openResetDialog(allDecks[n - 1].title)"
+                          @click="() => openResetDialog(toDisplay[n - 1])"
                         >
                           Reset
                         </v-btn>
@@ -219,7 +231,7 @@ function startLearning() {
                           class="align-content-center"
                           variant="flat"
                           color="orange_darkest"
-                          @click="() => openDeactivateDialog(allDecks[n - 1].title)"
+                          @click="() => openDeactivateDialog(toDisplay[n - 1])"
                         >
                           Deaktivieren
                         </v-btn>
@@ -238,7 +250,7 @@ function startLearning() {
       v-if="!UserStore.authenticated"
     >
       <v-col
-        v-for="n in allDecks.length"
+        v-for="n in toDisplay.length"
         :key="n"
         cols="auto"
       >
@@ -252,13 +264,13 @@ function startLearning() {
             class="d-flex flex-column"
             variant="elevated"
             style="width: 300px; height: 400px"
-            :style="{ borderColor: allDecks[n - 1].color, borderStyle: 'solid', borderWidth: '10px' }"
+            :style="{ borderColor: toDisplay[n - 1].color, borderStyle: 'solid', borderWidth: '10px' }"
           >
             <v-card-title
               class="text-h5"
               style="white-space: normal;"
             >
-              {{ allDecks[n-1].title }}
+              {{ toDisplay[n-1] }}
             </v-card-title>
 
             <v-card-text class="text-center">
@@ -266,14 +278,14 @@ function startLearning() {
                 class="text-h6"
                 cols="auto"
               >
-                {{ DeckStore.getFaellig(allDecks[n - 1]) }} heute fällig
+                {{ DeckStore.getFaellig(toDisplay[n - 1]) }} heute fällig
                 <div
                   class="progress_bar"
                   style="display:flex; width:250px; height:10px;  margin-left: -10px"
                 >
                   <!--geht durch liste der cards für den stapel : Aufbau [Anzahl grüne Karten,Anzahl gelbe Karten,Anzahl orange Karten,Anzahl rote Karten,Anzahl graue Karten]-->
                   <div
-                    v-for="(count, color_index) in allDecks[n-1].cards"
+                    v-for="(count, color_index) in toDisplay[n-1].cards"
                     :key="color_index"
                     :style="{
                       backgroundColor: colorNames[color_index],
@@ -310,7 +322,7 @@ function startLearning() {
                           class="align-content-center"
                           variant="flat"
                           color="red_darkest"
-                          @click="() => openResetDialog(allDecks[n - 1].title)"
+                          @click="() => openResetDialog(toDisplay[n - 1])"
                         >
                           Reset
                         </v-btn>
@@ -320,7 +332,7 @@ function startLearning() {
                           class="align-content-center"
                           variant="flat"
                           color="orange_darkest"
-                          @click="() => openDeactivateDialog(allDecks[n - 1].title)"
+                          @click="() => openDeactivateDialog(toDisplay[n - 1])"
                         >
                           Deaktivieren
                         </v-btn>

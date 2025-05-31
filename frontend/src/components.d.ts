@@ -17,5 +17,6 @@ declare module 'vue' {
     ProfileForm: typeof import('./components/ProfileForm.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    Searchbar: typeof import('./components/Searchbar.vue')['default']
   }
 }
