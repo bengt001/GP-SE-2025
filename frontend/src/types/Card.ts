@@ -3,4 +3,5 @@ export default interface Card {
   type : string,
   title : string,
   text : string,
+  deckId : number
 }
