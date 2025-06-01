@@ -110,8 +110,8 @@ public class DeckServiceImpl implements DeckService {
     }
 
     @Override
-    public Deck addDeck(final Boolean visibility, final List<String> fieldOfLaw) {
-        final Deck deck = new Deck(visibility, fieldOfLaw);
+    public Deck addDeck(final Boolean visibility, final List<String> fieldOfLaw, int deckId) {
+        final Deck deck = new Deck(visibility, fieldOfLaw, deckId);
         return deckRepository.save(deck);
     }
 
@@ -125,6 +125,17 @@ public class DeckServiceImpl implements DeckService {
         deck.setFieldOfLaw(fieldOfLaw);
 
         return deckRepository.save(deck);
+    }
+
+
+    @Override
+    public Optional<Deck> deleteDeck(long deckId) {
+        Optional<Deck> tempDeck = deckRepository.findById(deckId);
+        if (tempDeck.isPresent()) {
+            deckRepository.delete(tempDeck.get());
+            return tempDeck;
+        }
+        return Optional.empty();
     }
 
 }
