@@ -16,11 +16,14 @@ import java.util.Optional;
 public class DeckServiceImpl implements DeckService {
     private final DeckRepository deckRepository;
     private final CardRepository cardRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public DeckServiceImpl(DeckRepository deckRepository, CardRepository cardRepository) {
+    public DeckServiceImpl(DeckRepository deckRepository, CardRepository cardRepository,
+                           UserRepository userRepository) {
         this.deckRepository = deckRepository;
         this.cardRepository = cardRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -83,11 +86,17 @@ public class DeckServiceImpl implements DeckService {
         return cardRepository.findCardByIdAndDeckId(cardId, deckId);
     }
 
-    //KIRILL: I  dont even know what this is supposed to do.
+    //KIRILL: I  don't even know what this is supposed to do.
     //KIRILL: Why would a user create a deck
     @Override
     public Optional<Deck> getNewUserDeck(Usr usr, long templateDeckId) {
-        return getUserDeckById(usr, templateDeckId);
+        Optional<Deck> tempDeck = getDeck(templateDeckId);
+        if (tempDeck.isPresent()) {
+            usr.getDecks().add(tempDeck.get());
+            userRepository.save(usr);
+            return tempDeck;
+        }
+        return tempDeck;
     }
 
 

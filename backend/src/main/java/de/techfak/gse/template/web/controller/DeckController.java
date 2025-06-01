@@ -58,8 +58,7 @@ public class DeckController {
         Optional<Deck> deck = deckService.getDeckById(deckId);
         if (deck.isPresent()) {
             return deck.get();
-        }
-        else{
+        } else {
             throw new BadRequestException();
         }
     }
@@ -149,6 +148,7 @@ public class DeckController {
     /**
      * Kirill: I dont understand what this function is even supposed to do.
      * Kirill: This just copies a deck, if you wanted to create a new deck, you would need to
+     * Kirill: I will just repurpose this for linking a deck to a user
      * do something else.
      * API Endpoint for creating a new user deck as POST-Request
      *
@@ -160,6 +160,7 @@ public class DeckController {
     public Deck createNewDeck(@PathVariable final long deckId) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Usr usr = userService.loadUserByUsername(auth.getName());
+
         return deckService.getNewUserDeck(usr, deckId).orElseThrow(BadRequestException::new);
     }
 
