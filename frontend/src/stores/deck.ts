@@ -1,5 +1,6 @@
 import {defineStore} from 'pinia'
 import type Deck from "@/types/Deck";
+import axios from "../api/config";
 
 export const useDeckStore = defineStore('decks', {
   state: () => ({
@@ -7,20 +8,43 @@ export const useDeckStore = defineStore('decks', {
   }),
 
   actions: {
-    addDeck(deckname: string,color: string|undefined): void{
+    async addDeck(deckname: string,color: string|undefined): Promise<void>{
       const exists = this.decks.some(deck => deck.title === deckname);
       if (exists){
         return
       }
-      const deckId = this.decks.length + 1 //TODO deckID aus backend bekommen
-      const authorID = 1 //TODO authorID aus backebnd bekommen
-      const visible = true //TODO im backend visibility des decks setzen
-      const cards_arr = [0,0,0,0,5]
+      const nameSplit = deckname.split(" (")
+      let authorID = 0
+      switch (nameSplit[1]){
+        case "Broadcast)":
+          authorID = 1
+          break
+        case "Lexmea)":
+          authorID = 2
+          break
+        case "Eigener Stapel)":
+          authorID = 3
+          break
+        default:
+          break
+      }
+
+      const IDlist = []
+      const response = await axios.get('api/decks')
+      const allDecks = response.data
+      for(const deck of allDecks){
+        if(deck.fieldOfLaw.includes(nameSplit[0]) && deck.authorId === authorID){
+          IDlist.push(deck.deckId)
+        }
+      }
+
+
+
+      const cards_arr = [0,0,0,0,5]  //TODO ratings aus backend
       const newDeck: Deck = {
         title: deckname,
         author_id: authorID,
-        stapel_id: deckId,
-        visibility: visible,
+        stapel_id: IDlist,
         cards: cards_arr,
         color: color
       }
@@ -28,10 +52,11 @@ export const useDeckStore = defineStore('decks', {
       localStorage.setItem('decks', JSON.stringify(this.decks));
     },
 
+    //TODO ENTFERNEN nur für Präsentation
     setProgress(deckID : number[]): void{
       for(const ID of deckID){
         for(const deck of this.decks){
-          if(deck.stapel_id === ID){
+          if(deck.stapel_id.includes(ID)){
             deck.cards = [1,2,1,1,0]
           }
         }
@@ -43,9 +68,8 @@ export const useDeckStore = defineStore('decks', {
       while(counter < this.decks.length){
         const deck = this.decks[counter]
         if (deck.title === deckname) {
-          deck.visibility = false //TODO im backend auf false setzen
           this.decks.splice(counter,1)
-          localStorage.setItem('decks', JSON.stringify(this.decks));
+          localStorage.setItem('decks', JSON.stringify(this.decks)); //TODO im backend vom user entfernen
         }
         counter++
       }
@@ -62,7 +86,7 @@ export const useDeckStore = defineStore('decks', {
       return selectedTitles.join(",")
     },
     getFaellig(deck: Deck): number{
-      return deck.stapel_id
+      return deck.stapel_id[0]
     },
     resetCards(deckName : string): void{
       for(const deck of this.decks){
@@ -88,23 +112,28 @@ export const useDeckStore = defineStore('decks', {
         localStorage.setItem('decks',JSON.stringify(this.decks))
       }
       //TODO MOCK entfernen
-      //TODO aus de mbackend auslesn welche decks visible sind und die in decks hinzufügen wenn sie noch nicht drin sind
     },
-    reset_decks(): void{
+    async reset_decks(): Promise<void>{
       const counter: number = 0
       while (counter < this.decks.length){
         this.decks.splice(counter ,1)
         localStorage.setItem('decks',JSON.stringify(this.decks))
       }
-      const deckId = this.decks.length + 1 //TODO deckID aus backend bekommen
-      const authorID = 1 //TODO authorID aus backebnd bekommen
-      const visible = true //TODO im backend visibility des decks setzen
+
+      const IDlist = []
+      const response = await axios.get('api/decks')
+      const allDecks = response.data
+      for(const deck of allDecks){
+        if(deck.fieldOfLaw.includes("Strafrecht AT") && deck.authorId === 2){
+          IDlist.push(deck.deckId)
+        }
+      }
+
       const cards_arr = [0,0,0,0,5] //TODO aus dem backend bekommen
       const newDeck: Deck = {
         title: "Strafrecht AT (Lexmea)",
-        author_id: authorID,
-        stapel_id: deckId,
-        visibility: visible,
+        author_id: 2,
+        stapel_id: IDlist,
         cards: cards_arr,
         color: "#03364D"
       }
