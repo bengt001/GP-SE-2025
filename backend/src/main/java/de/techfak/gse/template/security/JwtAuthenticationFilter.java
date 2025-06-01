@@ -1,5 +1,6 @@
 package de.techfak.gse.template.security;
 
+import de.techfak.gse.template.domain.Usr;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.FilterChain;
@@ -54,6 +55,9 @@ public final class JwtAuthenticationFilter extends UsernamePasswordAuthenticatio
     protected void successfulAuthentication(final HttpServletRequest request, final HttpServletResponse response,
                                             final FilterChain filterChain, final Authentication authentication) {
         UserDetails user = (UserDetails) authentication.getPrincipal();
+        // LARA: Mail ist einzigartiger Wert, unten bei subject wurde Username übergeben, deshalb konnten User nicht
+        // gefunden werden
+        Usr usr = (Usr) user;
 
         List<String> roles = user.getAuthorities()
                 .stream()
@@ -68,7 +72,7 @@ public final class JwtAuthenticationFilter extends UsernamePasswordAuthenticatio
                 .issuer(securityConstants.getTokenIssuer())
                 .audience().add(securityConstants.getTokenAudience())
                 .and()
-                .subject(user.getUsername())
+                .subject(usr.getEmail())
                 .expiration(new Date(System.currentTimeMillis() + TEN_DAYS_IN_MILLIS))
                 // + 10 Tage
                 .claim("rol", roles)
