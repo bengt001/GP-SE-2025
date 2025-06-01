@@ -15,7 +15,7 @@ export const useDeckStore = defineStore('decks', {
       const deckId = this.decks.length + 1 //TODO deckID aus backend bekommen
       const authorID = 1 //TODO authorID aus backebnd bekommen
       const visible = true //TODO im backend visibility des decks setzen
-      const cards_arr = [1,2,3,4,5]
+      const cards_arr = [0,0,0,0,5]
       const newDeck: Deck = {
         title: deckname,
         author_id: authorID,
@@ -26,6 +26,16 @@ export const useDeckStore = defineStore('decks', {
       }
       this.decks.push(newDeck)
       localStorage.setItem('decks', JSON.stringify(this.decks));
+    },
+
+    setProgress(deckID : number[]): void{
+      for(const ID of deckID){
+        for(const deck of this.decks){
+          if(deck.stapel_id === ID){
+            deck.cards = [1,2,1,1,0]
+          }
+        }
+      }
     },
 
     deactivateDeck(deckname: string): void{
@@ -89,7 +99,7 @@ export const useDeckStore = defineStore('decks', {
       const deckId = this.decks.length + 1 //TODO deckID aus backend bekommen
       const authorID = 1 //TODO authorID aus backebnd bekommen
       const visible = true //TODO im backend visibility des decks setzen
-      const cards_arr = [1,2,3,4,5] //TODO aus dem backend bekommen
+      const cards_arr = [0,0,0,0,5] //TODO aus dem backend bekommen
       const newDeck: Deck = {
         title: "Strafrecht AT (Lexmea)",
         author_id: authorID,
