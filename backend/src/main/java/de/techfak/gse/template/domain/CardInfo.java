@@ -1,7 +1,9 @@
 package de.techfak.gse.template.domain;
 
 import jakarta.persistence.*;
+
 import java.time.LocalDate;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,7 +13,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-public class CardRating {
+public class CardInfo {
     @Id
     @GeneratedValue
     private Long id;
@@ -23,21 +25,24 @@ public class CardRating {
     private Deck deckId;
     @Column
     private LocalDate lastDateRated;
+    @Lob
+    private String editedContent;
     @Column
     private int rating;
 
-protected CardRating() {
+    protected CardInfo() {
 
-}
+    }
 
     /**
      * New card rating with specified content.
+     *
      * @param userId
      * @param cardId
      * @param deckId
      * @param rating
      */
-    public CardRating(Usr userId, Card cardId, Deck deckId, int rating) {
+    public CardInfo(Usr userId, Card cardId, Deck deckId, int rating) {
         this.userId = userId;
         this.cardId = cardId;
         this.deckId = deckId;

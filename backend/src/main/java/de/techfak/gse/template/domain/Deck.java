@@ -24,6 +24,7 @@ public class Deck {
     private Integer authorId;
     @Column
     private LocalDate publishDate;
+    //Visibility is useless should be deleted
     @Column
     private Boolean visibility;
 
