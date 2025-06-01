@@ -7,6 +7,12 @@
     min-height="400"
     @click="reveal = true"
   >
+    <v-card-text>
+      <p class="text-center">
+        {{ testDeckName }}
+      </p>
+    </v-card-text>
+
     <p
       v-if="card"
       class="text-center text-decoration-underline"
@@ -58,4 +64,5 @@ const route = useRoute<'/cards/[id]/'>()
 const id = route.params.id
 const card = cardStore.findCardById(parseInt(id))
 const reveal = ref(false)
+const testDeckName = "deck name" //TODO: load deck name
 </script>
