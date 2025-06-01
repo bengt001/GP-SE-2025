@@ -120,8 +120,7 @@ function deactivateCards() {
 
 function openLearnDialog() {
 
-  const result = axios.get("/api/decks");
-  result.then((x) => console.log(x))
+
   DialogLearn.value = true
   console.log( DeckStore.getTitleOfSelected(selectedDecks.value))
 }
@@ -132,6 +131,7 @@ function startLearning() {
     if (SelectedDeck.value[i]) {
       selectedIDs.push(allDecks.value[i].stapel_id)
     }
+    DeckStore.setProgress(selectedIDs)
   }
 
   const selectedMode: string[] = []
@@ -306,7 +306,7 @@ function startLearning() {
               <v-row justify="space-evenly">
                 <v-checkbox
                   v-model="SelectedDeck[n-1]"
-                  label="zum lernen auswählen"
+                  label="Zum Lernen auswählen"
                   color="lexmea_blue_200"
                 />
                 <v-menu
