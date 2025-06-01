@@ -20,6 +20,9 @@ const lexmea = ref(true)
 const own = ref(false)
 const broad = ref(false)
 
+const addDecksSnack = ref(false)
+
+
 type TreeNode = {
   id: number;
   title: string;
@@ -784,11 +787,16 @@ const zivilrecht_lexmea_broadcast_own = ref<TreeNode[]>([
   }
 ])
 
-function addCards() {
-    for(const selecteddeck of selected.value ){
-      deckStore.addDeck(selecteddeck.title,selecteddeck.color)
-    }
+function addDecks() {
+  for (const selecteddeck of selected.value) {
+    deckStore.addDeck(selecteddeck.title, selecteddeck.color)
+  }
+  addDecksSnack.value = true
+  setTimeout(() => {
     router.go(-1)
+  }, 1000)
+
+
 }
 
 const trees = [
@@ -924,7 +932,7 @@ const zivilrechtTree = computed(() => {
         <v-row dense>
           <v-btn
             variant="outlined"
-            @click="addCards"
+            @click="addDecks"
           >
             Karteikarten aktivieren
           </v-btn>
@@ -985,8 +993,24 @@ const zivilrechtTree = computed(() => {
       </v-card-actions>
     </v-card>
   </v-responsive>
+
+  <v-snackbar
+    v-model="addDecksSnack"
+    :timeout="1000"
+    class="elevation-24"
+    color="primary"
+  >
+    <v-progress-circular
+      indeterminate
+    />
+    Decks werden hinzugefügt
+  </v-snackbar>
 </template>
 
 <style scoped lang="sass">
+
+.v-progress-circular
+  margin: 2rem
+
 
 </style>
