@@ -2,7 +2,6 @@ package parsingutils;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.techfak.gse.template.TemplateApplication;
 import de.techfak.gse.template.parsingutils.JsonParser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

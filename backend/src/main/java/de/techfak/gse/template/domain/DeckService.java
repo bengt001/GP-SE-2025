@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface DeckService {
     Optional<Deck> getDeck(Long id);
 
-    Deck addDeck(Boolean visibility, List<String> fieldOfLaw);
+    Deck addDeck(Boolean visibility, List<String> fieldOfLaw, int userId);
 
     Deck updateDeck(Long id, Boolean visibility, List<String> fieldOfLaw);
 
@@ -34,5 +34,7 @@ public interface DeckService {
     Optional<Deck> getNewUserDeck(Usr usr, long templateDeckId);
 
     Optional<Deck> updateDeck(Usr usr, long deckId, Deck updatedDeck);
+
+    Optional<Deck> deleteDeck(long deckId);
 
 }
