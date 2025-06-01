@@ -24,12 +24,5 @@ public class InitializeDatabase implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() {
-        try {
-            userService.loadUserByUsername(testEmail);
-        } catch (UsernameNotFoundException ex) {
-            userService.createUser(test,
-                    testEmail,
-                    "password", test, "ROLE_USER");
-        }
     }
 }
