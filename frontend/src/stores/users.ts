@@ -49,6 +49,7 @@ export const useUserStore = defineStore('users', {
         this.authenticated = false;
         this.email = '';
         this.username = '';
+        localStorage.removeItem('token')
       },
 
       emailTaken(email: string): Promise<boolean> {
