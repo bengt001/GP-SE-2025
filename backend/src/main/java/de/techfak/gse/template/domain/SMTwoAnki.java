@@ -50,37 +50,37 @@ public class SMTwoAnki implements de.techfak.gse.template.domain.SpacedRepetitio
         float newEasinessFactor;
         switch (rating) {
             case AGAIN_CASE:
-                if (sraValues.getEasinessFactor() > AGAIN_EF_PENALTY) {
-                    newEasinessFactor = sraValues.getEasinessFactor() - AGAIN_EF_PENALTY;
+                if (sraValues.easinessFactor() > AGAIN_EF_PENALTY) {
+                    newEasinessFactor = sraValues.easinessFactor() - AGAIN_EF_PENALTY;
                 } else {
                     newEasinessFactor = 0;
                 }
                 newInterval = INITIAL_INTERVAL;
                 break;
             case HARD_CASE:
-                if (sraValues.getEasinessFactor() > HARD_EF_PENALTY) {
-                    newEasinessFactor = sraValues.getEasinessFactor() - HARD_EF_PENALTY;
+                if (sraValues.easinessFactor() > HARD_EF_PENALTY) {
+                    newEasinessFactor = sraValues.easinessFactor() - HARD_EF_PENALTY;
                 } else {
                     newEasinessFactor = 0;
                 }
-                newInterval = sraValues.getInterval() * HARD_INTERVAL_INCREASE / DIVIDER;
+                newInterval = sraValues.interval() * HARD_INTERVAL_INCREASE / DIVIDER;
                 break;
             case GOOD_CASE:
-                newEasinessFactor = sraValues.getEasinessFactor();
-                newInterval = (int) (sraValues.getInterval() * sraValues.getEasinessFactor() / DIVIDER);
+                newEasinessFactor = sraValues.easinessFactor();
+                newInterval = (int) (sraValues.interval() * sraValues.easinessFactor() / DIVIDER);
                 if (newInterval < 1) {
                     newInterval = 1;
                 }
                 break;
             case EASY_CASE:
-                newEasinessFactor = sraValues.getEasinessFactor() + EASY_EF_REWARD;
-                newInterval = (int) (sraValues.getInterval() * sraValues.getEasinessFactor() / DIVIDER)
+                newEasinessFactor = sraValues.easinessFactor() + EASY_EF_REWARD;
+                newInterval = (int) (sraValues.interval() * sraValues.easinessFactor() / DIVIDER)
                         + EASY_INTERVAL_BONUS;
                 break;
             default:
-                newInterval = sraValues.getInterval();
-                newEasinessFactor = sraValues.getEasinessFactor();
+                newInterval = sraValues.interval();
+                newEasinessFactor = sraValues.easinessFactor();
         }
-        return new SraValues(sraValues.getRepetitions() + 1, newInterval, newEasinessFactor);
+        return new SraValues(sraValues.repetitions() + 1, newInterval, newEasinessFactor);
     }
 }
