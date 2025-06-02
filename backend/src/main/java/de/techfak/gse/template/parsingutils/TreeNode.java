@@ -1,5 +1,9 @@
-package de.techfak.gse.template.parsingUtils;
+package de.techfak.gse.template.parsingutils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,9 +14,14 @@ import java.util.List;
  * @param <T> the type parameter
  */
 public class TreeNode<T extends Serializable> implements Serializable {
+
+    @Serial
     private static final long serialVersionUID = 1L;
+    private static final Logger LOGGER = LoggerFactory.getLogger(TreeNode.class);
+
     private T data;
     private ArrayList<TreeNode<T>> children;
+
 
     /**
      * Instantiates a new Tree node.
@@ -54,18 +63,19 @@ public class TreeNode<T extends Serializable> implements Serializable {
     /**
      * Print tree.
      */
-    public void printTree() {
-        printTree("", true);
+    public void logTree(String source) {
+        logTree("", true, source);
     }
 
-    private void printTree(String prefix, boolean isTail) {
-        System.out.println(prefix + (isTail ? "└── " : "├── ") + data);
+    @SuppressWarnings("checkstyle:MultipleStringLiterals")
+    private void logTree(String prefix, boolean isTail, String source) {
+        LOGGER.debug("{}{}{}", prefix, isTail ? "└── " : "├── ", data);
         for (int i = 0; i < children.size() - 1; i++) {
-            children.get(i).printTree(prefix + (isTail ? "    " : "│   "), false);
+            children.get(i).logTree(prefix + (isTail ? "    " : "│   "), false, source);
         }
         if (!children.isEmpty()) {
             children.getLast()
-                    .printTree(prefix + (isTail ? "    " : "│   "), true);
+                    .logTree(prefix + (isTail ? "    " : "│   "), true, source);
         }
     }
 

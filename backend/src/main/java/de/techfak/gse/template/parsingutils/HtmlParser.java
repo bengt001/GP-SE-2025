@@ -1,9 +1,11 @@
-package de.techfak.gse.template.parsingUtils;
+package de.techfak.gse.template.parsingutils;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -14,6 +16,7 @@ import java.util.regex.Pattern;
  */
 public class HtmlParser {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(HtmlParser.class);
 
     private static final String BACKSLASH_N = "\\\\n ";
     private static final String BACKSLASH_N_WITHOUT_SPACE = "\\\\n";
@@ -22,7 +25,7 @@ public class HtmlParser {
     private static final String NEWLINE = "\n";
 
     /**
-     * Instantiates a new Html parser.
+     * This should not be used.
      */
     protected HtmlParser() {
     }
@@ -39,7 +42,7 @@ public class HtmlParser {
         Elements problemSections = doc.select("section[data-style=problem]");
         ArrayList<String[]> problemBoxes = new ArrayList<>();
         for (Element section : problemSections) {
-
+            LOGGER.debug(section.text());
             String text = section.text();
             text = text.replaceFirst(BACKSLASH_N, "");
             String[] frontBack = text.split(TRIPLE_BACKSLASH_N);
@@ -49,15 +52,10 @@ public class HtmlParser {
                 frontBack[1] = frontBack[1].replaceAll(BACKSLASH_N_WITHOUT_SPACE, NEWLINE);
                 frontBack[1] = frontBack[1].replaceAll(NEWLINE + NEWLINE, "");
                 frontBack[0] = frontBack[0].replaceAll(BACKSLASH_N, NEWLINE);
-                //Needs to be replaced with robust loging
-                //System.out.println("############################################################################");
-                //System.out.println(frontBack[0]);
-                //System.out.println("----------------------------------------------------------------------------");
-                //System.out.println(frontBack[1]);
-                //System.out.println("#############################################################################");
+                logBoxes(frontBack[0], frontBack[1], "ProblemBox");
                 problemBoxes.add(frontBack);
             } else {
-                System.out.print("getProblemBoxes: Broken Split");
+                LOGGER.debug("getProblemBoxes: Broken Split | Text: {}", text);
             }
 
         }
@@ -67,6 +65,7 @@ public class HtmlParser {
 
     /**
      * Gets definition boxes.
+     * Bis auf eine die mit : gesplited werden muss.
      *
      * @param html the html
      * @return the definition boxes
@@ -76,7 +75,7 @@ public class HtmlParser {
         Elements problemSections = doc.select("section[data-style=definition]");
         ArrayList<String[]> definitionBoxes = new ArrayList<>();
         for (Element section : problemSections) {
-            //System.out.println(section.text());
+            LOGGER.debug(section.text());
             String text = section.text();
             text = text.replaceFirst(BACKSLASH_N, "");
             String[] frontBack = text.split(" = ");
@@ -86,15 +85,10 @@ public class HtmlParser {
                 frontBack[1] = frontBack[1].replaceAll(BACKSLASH_N, NEWLINE);
                 frontBack[1] = frontBack[1].replaceAll(NEWLINE + NEWLINE, "");
                 frontBack[0] = frontBack[0].replaceAll(BACKSLASH_N, NEWLINE);
-                //Needs to be replaced with robust loging
-                //System.out.println("############################################################################");
-                //System.out.println(frontBack[0]);
-                //System.out.println("----------------------------------------------------------------------------");
-                //System.out.println(frontBack[1]);
-                //System.out.println("#############################################################################");
+                logBoxes(frontBack[0], frontBack[1], "DefinitionBox");
                 definitionBoxes.add(frontBack);
             } else {
-                System.out.print("getDefinitionBoxes: Broken Split");
+                LOGGER.debug("getDefinitionBoxes: Broken Split | Text: {}", text);
             }
 
         }
@@ -120,12 +114,11 @@ public class HtmlParser {
             String number = matcher.group(1);
             stringContents[i] = headerSections.get(i).text();
             stringOrder[i] = Integer.parseInt(number);
-            //System.out.println(headerSections.get(i).outerHtml());
-            //System.out.println("Found heading number: " + number);
+            LOGGER.debug("{} | Found heading number: {}", headerSections.get(i).outerHtml(), number);
         }
         ArrayList<TreeNode<String>> allNonRootNodes = new ArrayList<>();
         for (int i = 0; i < stringContents.length; i++) {
-            TreeNode<String> currentNode = new TreeNode<String>(stringContents[i]);
+            TreeNode<String> currentNode = new TreeNode<>(stringContents[i]);
             allNonRootNodes.add(i, currentNode);
             if (stringOrder[i] <= 1) {
                 headerTree.addChild(currentNode);
@@ -134,16 +127,21 @@ public class HtmlParser {
 
                 for (int j = i; j >= 0; j--) {
                     if (currentOrder > stringOrder[j]) {
-                        //System.out.println(currentOrder + " " + j + " " + stringOrder[j]);
+                        LOGGER.debug("{} {} {}", currentOrder, j, stringOrder[j]);
                         allNonRootNodes.get(j).addChild(currentNode);
                         break;
                     }
                 }
             }
         }
-        //headerTree.printTree();
+        headerTree.logTree("getTableOfContentsAsTree");
         return headerTree;
     }
 
+    private static void logBoxes(String top, String bottom, String boxtype) {
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("boxtype: {}\nTop: {}\nBottom: {}", boxtype, top, bottom);
+        }
+    }
 
 }

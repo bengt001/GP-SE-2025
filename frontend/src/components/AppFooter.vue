@@ -1,5 +1,8 @@
 <template>
-  <v-footer height="40" app>
+  <v-footer
+    height="40"
+    app
+  >
     <p> Hi, ich bin ein Footer! </p>
   </v-footer>
 </template>

@@ -1,5 +1,6 @@
 package de.techfak.gse.template.domain;
 
+import de.techfak.gse.template.web.exception.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -7,6 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Implementation of the Card Service.
+ */
 @Service
 public class CardServiceImpl implements CardService {
     private final CardRepository cardRepository;
@@ -26,11 +30,10 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public Optional<Card> getCard(final String id) {
-        final Long deckId = Long.valueOf(id);
-
-        return cardRepository.findById(deckId);
+    public Optional<Card> getCard(Long id) {
+        return cardRepository.findById(id);
     }
+
     @Override
     public Card addCard(final String content, final String cardType, final Deck deck) {
         final Card card = new Card(content, cardType, deck);
@@ -38,10 +41,9 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public Card updateCard(final String id, final String content, final String cardType, final Deck deck) {
-        final Long cardId = Long.valueOf(id);
-        final Card card = cardRepository.findById(cardId)
-                .orElseThrow();
+    public Card updateCard(final Long id, final String content, final String cardType, final Deck deck) {
+        final Card card = cardRepository.findById(id)
+                .orElseThrow(BadRequestException::new);
         // hier muss eine Fehlermeldung rein
 
         card.setContent(content);
@@ -49,5 +51,17 @@ public class CardServiceImpl implements CardService {
         card.setDeck(deck);
 
         return cardRepository.save(card);
+    }
+
+    @Override
+    public List<Card> getCardsByDeckId(Long deckId) {
+        List<Card> result = new ArrayList<>();
+        for (Card card : cardRepository.findAll()) {
+            if (card.getDeck() != null && deckId.equals(card.getDeck().getDeckId())) {
+                result.add(card);
+            }
+        }
+
+        return result;
     }
 }
