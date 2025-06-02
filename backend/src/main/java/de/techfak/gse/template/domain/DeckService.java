@@ -13,6 +13,7 @@ public interface DeckService {
 
     Deck updateDeck(Long id, Boolean visibility, List<String> fieldOfLaw);
 
+
     List<Deck> getAllDecks();
 
     Optional<Deck> getDeckById(long id);

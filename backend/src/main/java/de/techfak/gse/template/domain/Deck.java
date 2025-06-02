@@ -34,7 +34,9 @@ public class Deck {
     @JsonManagedReference
     private List<Card> cards;
 
-    @ManyToMany
+
+    //Fetch type eager is like really bad, the reason for this that User should be the owner side, but isn't.
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "deck_user",
             joinColumns = @JoinColumn(name = "deck_Id"),

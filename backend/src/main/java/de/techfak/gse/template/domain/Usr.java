@@ -77,7 +77,7 @@ public class Usr implements UserDetails {
                final String password,
                final String displayName,
                final String userId) {
-        this.username = username;
+        this.username = email;
         this.email = email;
         this.password = password;
         this.creationDate = LocalDate.now();

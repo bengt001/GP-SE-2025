@@ -90,6 +90,7 @@ public class InitializeLexmeaDatabase implements InitializingBean {
                 LOGGER.error("afterPropertiesSet: IOException");
                 throw new RuntimeException(e);
             }
+            deckService.getNewUserDeck(user1, 1);
         }
 
 

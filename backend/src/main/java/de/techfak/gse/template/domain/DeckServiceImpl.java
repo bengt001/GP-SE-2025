@@ -81,8 +81,10 @@ public class DeckServiceImpl implements DeckService {
     }
 
     //KIRILL: users dont have unique cards?
+    //KIRILL: I will assume that i will give you the cardInfo
     @Override
     public Optional<Card> getUseCardById(Usr usr, long deckId, long cardId) {
+        String userID = usr.getUserId();
         return cardRepository.findCardByIdAndDeckId(cardId, deckId);
     }
 
@@ -90,10 +92,13 @@ public class DeckServiceImpl implements DeckService {
     //KIRILL: Why would a user create a deck
     @Override
     public Optional<Deck> getNewUserDeck(Usr usr, long templateDeckId) {
+        //System.out.println("AARGSJNDFNKSFKSDLFBSKJDBNFLSDFSDFÖPISDFSDFSFSDFSKDFNSDFÖSDFOSDFNJSNDFJSD");
         Optional<Deck> tempDeck = getDeck(templateDeckId);
         if (tempDeck.isPresent()) {
-            usr.getDecks().add(tempDeck.get());
-            userRepository.save(usr);
+            System.out.println("AARGSJNDFNKSFKSDLFBSKJDBNFLSDFSDFÖPISDFSDFSFSDFSKDFNSDFÖSDFOSDFNJSNDFJSD");
+            tempDeck.get().getUsers().add(usr);
+            deckRepository.save(tempDeck.get());
+            //userRepository.save(usr);//this needs to be saved in deck as it is the owner
             return tempDeck;
         }
         return tempDeck;
