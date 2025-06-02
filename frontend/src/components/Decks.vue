@@ -42,7 +42,7 @@ const toDisplay = computed(() => {
   return items;
 });
 
-const selectedDecks = computed(() => {
+const selectedDecksTitle = computed(() => {
   const selected: Deck[] = []
   allDecks.value.forEach((deck, index) => {
     if (SelectedDeck.value[index]) {
@@ -120,18 +120,21 @@ function deactivateCards() {
 
 function openLearnDialog() {
 
-  const result = axios.get("/api/decks");
-  result.then((x) => console.log(x))
+
   DialogLearn.value = true
-  console.log( DeckStore.getTitleOfSelected(selectedDecks.value))
+  console.log( DeckStore.getTitleOfSelected(selectedDecksTitle.value))
 }
 
 function startLearning() {
-  const selectedIDs: number[] = []
+  let selectedIDs: number[] = []
+  const result = axios.get("/api/decks/2");
+  result.then((x) => console.log(x))
+
   for (let i = 0; i < SelectedDeck.value.length; i++) {
     if (SelectedDeck.value[i]) {
-      selectedIDs.push(allDecks.value[i].stapel_id)
+      selectedIDs = selectedIDs.concat(allDecks.value[i].stapel_id);
     }
+    DeckStore.setProgress(selectedIDs)
   }
 
   const selectedMode: string[] = []
@@ -306,7 +309,7 @@ function startLearning() {
               <v-row justify="space-evenly">
                 <v-checkbox
                   v-model="SelectedDeck[n-1]"
-                  label="zum lernen auswählen"
+                  label="Zum Lernen auswählen"
                   color="lexmea_blue_200"
                 />
                 <v-menu
@@ -409,7 +412,7 @@ function startLearning() {
         Stapel die du zum lernen ausgewählt hast:
       </v-card-text>
       <v-card-text>
-        {{ DeckStore.getTitleOfSelected(selectedDecks) }}
+        {{ DeckStore.getTitleOfSelected(selectedDecksTitle) }}
       </v-card-text>
       <v-list>
         <v-list-item>

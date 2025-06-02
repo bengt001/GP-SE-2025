@@ -16,11 +16,14 @@ import java.util.Optional;
 public class DeckServiceImpl implements DeckService {
     private final DeckRepository deckRepository;
     private final CardRepository cardRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public DeckServiceImpl(DeckRepository deckRepository, CardRepository cardRepository) {
+    public DeckServiceImpl(DeckRepository deckRepository, CardRepository cardRepository,
+                           UserRepository userRepository) {
         this.deckRepository = deckRepository;
         this.cardRepository = cardRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -78,16 +81,27 @@ public class DeckServiceImpl implements DeckService {
     }
 
     //KIRILL: users dont have unique cards?
+    //KIRILL: I will assume that i will give you the cardInfo
     @Override
     public Optional<Card> getUseCardById(Usr usr, long deckId, long cardId) {
+        String userID = usr.getUserId();
         return cardRepository.findCardByIdAndDeckId(cardId, deckId);
     }
 
-    //KIRILL: I  dont even know what this is supposed to do.
+    //KIRILL: I  don't even know what this is supposed to do.
     //KIRILL: Why would a user create a deck
     @Override
     public Optional<Deck> getNewUserDeck(Usr usr, long templateDeckId) {
-        return getUserDeckById(usr, templateDeckId);
+        //System.out.println("AARGSJNDFNKSFKSDLFBSKJDBNFLSDFSDFÖPISDFSDFSFSDFSKDFNSDFÖSDFOSDFNJSNDFJSD");
+        Optional<Deck> tempDeck = getDeck(templateDeckId);
+        if (tempDeck.isPresent()) {
+            System.out.println("AARGSJNDFNKSFKSDLFBSKJDBNFLSDFSDFÖPISDFSDFSFSDFSKDFNSDFÖSDFOSDFNJSNDFJSD");
+            tempDeck.get().getUsers().add(usr);
+            deckRepository.save(tempDeck.get());
+            //userRepository.save(usr);//this needs to be saved in deck as it is the owner
+            return tempDeck;
+        }
+        return tempDeck;
     }
 
 
@@ -110,8 +124,8 @@ public class DeckServiceImpl implements DeckService {
     }
 
     @Override
-    public Deck addDeck(final Boolean visibility, final List<String> fieldOfLaw) {
-        final Deck deck = new Deck(visibility, fieldOfLaw);
+    public Deck addDeck(final Boolean visibility, final List<String> fieldOfLaw, int deckId) {
+        final Deck deck = new Deck(visibility, fieldOfLaw, deckId);
         return deckRepository.save(deck);
     }
 
@@ -125,6 +139,17 @@ public class DeckServiceImpl implements DeckService {
         deck.setFieldOfLaw(fieldOfLaw);
 
         return deckRepository.save(deck);
+    }
+
+
+    @Override
+    public Optional<Deck> deleteDeck(long deckId) {
+        Optional<Deck> tempDeck = deckRepository.findById(deckId);
+        if (tempDeck.isPresent()) {
+            deckRepository.delete(tempDeck.get());
+            return tempDeck;
+        }
+        return Optional.empty();
     }
 
 }
