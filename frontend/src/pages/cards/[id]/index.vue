@@ -79,11 +79,47 @@
         class="text-center"
       >
         <v-btn
+          v-if="!reveal"
           color="primary"
           @click="showAnswer"
         >
           Antwort anzeigen
         </v-btn>
+
+        <v-row
+          v-else
+          align-content="center"
+        >
+          <v-spacer />
+          <v-btn
+            icon
+            color="red"
+          >
+            <v-icon>mdi-alpha-x</v-icon>
+          </v-btn>
+          <v-spacer />
+          <v-btn
+            icon
+            color="orange"
+          >
+            <v-icon>mdi-help</v-icon>
+          </v-btn>
+          <v-spacer />
+          <v-btn
+            icon
+            color="yellow"
+          >
+            <v-icon>mdi-check</v-icon>
+          </v-btn>
+          <v-spacer />
+          <v-btn
+            icon
+            color="green"
+          >
+            <v-icon>mdi-check-all</v-icon>
+          </v-btn>
+          <v-spacer />
+        </v-row>
       </v-col>
 
       <v-col
