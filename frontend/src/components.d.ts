@@ -9,7 +9,6 @@ declare module 'vue' {
   export interface GlobalComponents {
     Adder: typeof import('./components/Adder.vue')['default']
     AppFooter: typeof import('./components/AppFooter.vue')['default']
-    Cards: typeof import('./components/Cards.vue')['default']
     Decks: typeof import('./components/Decks.vue')['default']
     HelloWorld: typeof import('./components/HelloWorld.vue')['default']
     LoginForm: typeof import('./components/LoginForm.vue')['default']
