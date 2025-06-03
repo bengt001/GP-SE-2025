@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import {useUserStore} from "@/stores/users"
+import {useDeckStore} from "@/stores/deck";
 
+const deckStore = useDeckStore()
 const userStore = useUserStore()
 const email = ref('')
 const username = ref('')
@@ -32,6 +34,7 @@ function login() {
     login_snack.value = false
     loginSuccess_snack.value = true
     userStore.setNameEmail(username.value, email.value);
+    deckStore.get_my_active_decks()
     setTimeout(() => {
       router.push('/')
     }, 1000)
