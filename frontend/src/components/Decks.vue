@@ -127,7 +127,7 @@ function openLearnDialog() {
 
 function startLearning() {
   let selectedIDs: number[] = []
-  const result = axios.get("/api/decks/2");
+  const result = axios.get("/api/decks");
   result.then((x) => console.log(x))
 
   for (let i = 0; i < SelectedDeck.value.length; i++) {

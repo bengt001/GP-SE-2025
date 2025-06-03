@@ -25,7 +25,7 @@ export const useCardStore = defineStore('card', {
       return this.cards.find((card) => card.id === id)
     },
     loadCards(ids: number[],modes: string[]){
-      for (const id in ids){
+      for (const id of ids){
         console.log(id,modes)  //TODO passende Karten aus dem backend laden
       }
     }
