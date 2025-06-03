@@ -5,5 +5,5 @@ package de.techfak.gse.template.domain;
  */
 public interface SpacedRepetitionAlgorithm {
 
-    SraValues updateValues(SraValues sraValues, int rating);
+    SraValues updateValues(SraValues sraValues, Rating rating);
 }

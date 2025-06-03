@@ -9,6 +9,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.util.Dictionary;
 import java.util.List;
 import java.util.Optional;
 
@@ -182,7 +183,7 @@ public class DeckController {
     }
 
     /**
-     * API Endpoint for sending a updateCard Patch-Request.
+     * API Endpoint for sending a rankCard Patch-Request.
      *
      * @param deckId the deckId for the to be updated card
      * @param cardId the cardId for the to be updated card
@@ -191,11 +192,11 @@ public class DeckController {
      */
     @PatchMapping("/usr/decks/{deckId:\\d+}/{cardId:\\d+}/rank")
     @Secured("ROLE_USER")
-    public Card rankCard(@PathVariable final long deckId, @PathVariable final long cardId,
-                           @RequestBody final int rating) {
+    public CardInfo rankCard(@PathVariable final long deckId, @PathVariable final long cardId,
+                           @RequestBody final String rating) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Usr usr = userService.loadUserByUsername(auth.getName());
-        return deckService.rankCard(usr, deckId, cardId, rating).orElseThrow(BadRequestException::new);
+        return deckService.rankCard(usr, deckId, cardId, Rating.getRating(rating)).orElseThrow(BadRequestException::new);
     }
 
     /**
@@ -211,5 +212,20 @@ public class DeckController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Usr usr = userService.loadUserByUsername(auth.getName());
         return deckService.updateDeck(usr, deckId, deck).orElseThrow(BadRequestException::new);
+    }
+
+    /**
+     * API Endpoint for sending a updateDeck Patch-Request.
+     *
+     * @param deckId the deckId that shall be updated
+     * @param deck   the updated version of the deck
+     * @return an updated Version of the Deck
+     */
+    @PatchMapping("/usr/decks/{deckId:d\\+}/info")
+    @Secured("ROLE_USER")
+    public Dictionary<Rating, Long> deckInfo(@PathVariable final long deckId, @RequestBody final Deck deck) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Usr usr = userService.loadUserByUsername(auth.getName());
+        return deckService.getDeckInfo(usr, deckId);
     }
 }

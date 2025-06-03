@@ -28,7 +28,7 @@ public class CardInfo {
     @Lob
     private String editedContent;
     @Column
-    private int rating;
+    private Rating rating;
     @Column
     private SraValues sraValues;
 
@@ -44,7 +44,7 @@ public class CardInfo {
      * @param deckId
      * @param rating
      */
-    public CardInfo(Usr userId, Card cardId, Deck deckId, int rating) {
+    public CardInfo(Usr userId, Card cardId, Deck deckId, Rating rating) {
         this.userId = userId;
         this.cardId = cardId;
         this.deckId = deckId;

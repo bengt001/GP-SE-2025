@@ -5,13 +5,7 @@ package de.techfak.gse.template.domain;
  */
 public class SMTwoAnki implements de.techfak.gse.template.domain.SpacedRepetitionAlgorithm {
     public static final int DIVIDER = 100;
-    public static final int RATING_MIN = 0;
-    public static final int RATING_MAX = 3;
     public static final int INITIAL_INTERVAL = 0;
-    public static final int AGAIN_CASE = 0;
-    public static final int HARD_CASE = 1;
-    public static final int GOOD_CASE = 2;
-    public static final int EASY_CASE = 3;
     public static final int AGAIN_EF_PENALTY = 20;
     public static final float HARD_EF_PENALTY = 15;
     public static final int HARD_INTERVAL_INCREASE = 120;
@@ -40,16 +34,12 @@ public class SMTwoAnki implements de.techfak.gse.template.domain.SpacedRepetitio
      * @return SraValues calculated with the new rating.
      */
     @Override
-    public SraValues updateValues(SraValues sraValues, int rating) {
-
-        if (rating < RATING_MIN || rating > RATING_MAX) {
-            throw new IllegalArgumentException("Rating must be between " + RATING_MIN + " and " + RATING_MAX);
-        }
+    public SraValues updateValues(SraValues sraValues, Rating rating) {
 
         int newInterval;
         float newEasinessFactor;
         switch (rating) {
-            case AGAIN_CASE:
+            case AGAIN:
                 if (sraValues.easinessFactor() > AGAIN_EF_PENALTY) {
                     newEasinessFactor = sraValues.easinessFactor() - AGAIN_EF_PENALTY;
                 } else {
@@ -57,7 +47,7 @@ public class SMTwoAnki implements de.techfak.gse.template.domain.SpacedRepetitio
                 }
                 newInterval = INITIAL_INTERVAL;
                 break;
-            case HARD_CASE:
+            case HARD:
                 if (sraValues.easinessFactor() > HARD_EF_PENALTY) {
                     newEasinessFactor = sraValues.easinessFactor() - HARD_EF_PENALTY;
                 } else {
@@ -65,18 +55,19 @@ public class SMTwoAnki implements de.techfak.gse.template.domain.SpacedRepetitio
                 }
                 newInterval = sraValues.interval() * HARD_INTERVAL_INCREASE / DIVIDER;
                 break;
-            case GOOD_CASE:
+            case GOOD:
                 newEasinessFactor = sraValues.easinessFactor();
                 newInterval = (int) (sraValues.interval() * sraValues.easinessFactor() / DIVIDER);
                 if (newInterval < 1) {
                     newInterval = 1;
                 }
                 break;
-            case EASY_CASE:
+            case EASY:
                 newEasinessFactor = sraValues.easinessFactor() + EASY_EF_REWARD;
                 newInterval = (int) (sraValues.interval() * sraValues.easinessFactor() / DIVIDER)
                         + EASY_INTERVAL_BONUS;
                 break;
+            case NOT_LEARNED:
             default:
                 newInterval = sraValues.interval();
                 newEasinessFactor = sraValues.easinessFactor();

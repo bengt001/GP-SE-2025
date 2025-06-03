@@ -5,10 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Implementation for the deck service.
@@ -164,7 +161,7 @@ public class DeckServiceImpl implements DeckService {
      * @return an updated value of the CardInfo.
      */
     @Override
-    public Optional<CardInfo> rankCard(Usr usr, long deckId, long cardId, int rating) {
+    public Optional<CardInfo> rankCard(Usr usr, long deckId, long cardId, Rating rating) {
         Optional<CardInfo> tempCardInfo = cardInfoRepository.findCardInfoByCardIdAndUserId(cardId, usr.getUserId());
         return tempCardInfo.map(cardInfo -> {
             cardInfo.setRating(rating);
@@ -174,4 +171,13 @@ public class DeckServiceImpl implements DeckService {
         });
     }
 
+    @Override
+    public Dictionary<Rating, Long> getDeckInfo(Usr usr, long deckId) {
+        Dictionary<Rating, Long> ratingCount = new Hashtable<>();
+        for (Rating rating : Rating.values()) {
+            ratingCount.put(rating, cardInfoRepository.countByDeckIdAndRatingEqualsAndUserIdEquals(
+                    deckId, rating, usr.getUserId()));
+        }
+        return ratingCount;
+    }
 }

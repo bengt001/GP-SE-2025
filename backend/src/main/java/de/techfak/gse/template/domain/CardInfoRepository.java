@@ -20,4 +20,6 @@ public interface CardInfoRepository extends CrudRepository<CardInfo, Long> {
     @Query("SELECT ci FROM CardInfo ci WHERE ci.cardId = :cardId AND ci.userId = :userId")
     Optional<CardInfo> findCardInfoByCardIdAndUserId(@Param("cardId") long cardId, @Param("userId") String userId);
 
+
+    Long countByDeckIdAndRatingEqualsAndUserIdEquals(Long deckId, Rating rating, String userId);
 }

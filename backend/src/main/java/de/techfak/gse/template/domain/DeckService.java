@@ -1,5 +1,6 @@
 package de.techfak.gse.template.domain;
 
+import java.util.Dictionary;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,5 +39,7 @@ public interface DeckService {
 
     Optional<Deck> deleteDeck(long deckId);
 
-    Optional<CardInfo> rankCard(Usr usr, long deckId, long cardId, int rating);
+    Optional<CardInfo> rankCard(Usr usr, long deckId, long cardId, Rating rating);
+
+    Dictionary<Rating, Long> getDeckInfo(Usr usr, long deckId);
 }
