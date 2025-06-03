@@ -10,7 +10,6 @@ declare module 'vue' {
     Adder: typeof import('./components/Adder.vue')['default']
     AppFooter: typeof import('./components/AppFooter.vue')['default']
     Cards: typeof import('./components/Cards.vue')['default']
-    Dashboard: typeof import('./components/Dashboard.vue')['default']
     Decks: typeof import('./components/Decks.vue')['default']
     HelloWorld: typeof import('./components/HelloWorld.vue')['default']
     LoginForm: typeof import('./components/LoginForm.vue')['default']

@@ -24,6 +24,15 @@ export const useCardStore = defineStore('card', {
       this.cards = []
     },
 
+    resetIndex(): void{
+      this.currentCardIndex = 0
+    },
+
+    //TODO: negativen Index abfangen
+    indexMinusOne(): void{
+      this.currentCardIndex -= 1
+    },
+
     getFirst(): number{
       return this.cards[0].id
     },
@@ -34,6 +43,8 @@ export const useCardStore = defineStore('card', {
         if (this.currentCardIndex < this.cards.length - 1) {
           nextId = this.cards[this.currentCardIndex + 1].id
         }
+
+        this.currentCardIndex += 1
       return nextId
     },
 

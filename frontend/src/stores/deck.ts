@@ -90,7 +90,7 @@ export const useDeckStore = defineStore('decks', {
       return selectedTitles.join(",")
     },
     getFaellig(deck: Deck): number{
-      return deck.stapel_id[0]
+      return deck.stapel_id.length
     },
     resetCards(deckName : string): void{
       for(const deck of this.decks){

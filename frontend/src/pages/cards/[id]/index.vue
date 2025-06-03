@@ -94,6 +94,7 @@
           <v-btn
             icon
             color="red"
+            @click="nextCard"
           >
             <v-icon>mdi-alpha-x</v-icon>
           </v-btn>
@@ -101,6 +102,7 @@
           <v-btn
             icon
             color="orange"
+            @click="nextCard"
           >
             <v-icon>mdi-help</v-icon>
           </v-btn>
@@ -108,6 +110,7 @@
           <v-btn
             icon
             color="yellow"
+            @click="nextCard"
           >
             <v-icon>mdi-check</v-icon>
           </v-btn>
@@ -147,12 +150,16 @@ const cardStore = useCardStore()
 const router = useRouter();
 const route = useRoute<'/cards/[id]/'>()
 const id = route.params.id
-const card = cardStore.findCardById(parseInt(id))
+const card = ref(cardStore.findCardById(parseInt(id)))
 const reveal = ref(false)
+watch (() => route.params.id, (newId) => {
+  card.value = cardStore.findCardById(parseInt(newId))
+})
 
 //Buttons letzte Karte, Antwort Zeigen, Home
 const goBack = () => {
-  console.log("Zurück geklickt");
+  cardStore.indexMinusOne()
+  router.go(-1)
   // Hier kannst du router.push oder andere Logik einfügen
 }
 
@@ -161,11 +168,13 @@ const showAnswer = () => {
 }
 
 const goHome = () => {
+  cardStore.resetIndex()
   router.push('/')
 }
 
 const nextCard = () => {
   router.push('/cards/' + cardStore.getNextId())
+  reveal.value = false
 }
 
 const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name
