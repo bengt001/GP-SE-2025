@@ -5,6 +5,7 @@ import router from "@/router";
 export const useCardStore = defineStore('card', {
   state: () => ({
     cards: [] as Card[],
+    currentCardIndex: 0
   }),
 
   actions: {
@@ -25,6 +26,15 @@ export const useCardStore = defineStore('card', {
 
     getFirst(): number{
       return this.cards[0].id
+    },
+
+    //gibt die Id der nächsten Karte zurück oder 0, falls Ende der Liste erreicht
+    getNextId(): number{
+      let nextId: number = 0
+        if (this.currentCardIndex < this.cards.length - 1) {
+          nextId = this.cards[this.currentCardIndex + 1].id
+        }
+      return nextId
     },
 
     findCardById(id: number): Card | undefined {
