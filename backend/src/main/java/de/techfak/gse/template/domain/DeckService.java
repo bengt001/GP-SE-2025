@@ -41,5 +41,5 @@ public interface DeckService {
 
     Optional<CardInfo> rankCard(Usr usr, long deckId, long cardId, Rating rating);
 
-    Dictionary<Rating, Long> getDeckInfo(Usr usr, long deckId);
+    // Dictionary<Rating, Long> getDeckInfo(Usr usr, long deckId);
 }

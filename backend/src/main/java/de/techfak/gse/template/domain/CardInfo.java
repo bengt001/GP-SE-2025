@@ -44,12 +44,12 @@ public class CardInfo {
      * @param deckId
      * @param rating
      */
-    public CardInfo(Usr userId, Card cardId, Deck deckId, Rating rating) {
+    public CardInfo(Usr userId, Card cardId, Deck deckId, Rating rating, SraValues sraValues) {
         this.userId = userId;
         this.cardId = cardId;
         this.deckId = deckId;
         this.rating = rating;
         this.nextRepetition = LocalDate.now();
-        this.sraValues = new SraValues();
+        this.sraValues =  sraValues;
     }
 }

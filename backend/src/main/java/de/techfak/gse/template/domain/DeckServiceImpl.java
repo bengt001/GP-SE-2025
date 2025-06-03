@@ -171,7 +171,9 @@ public class DeckServiceImpl implements DeckService {
         });
     }
 
+    /*
     @Override
+
     public Dictionary<Rating, Long> getDeckInfo(Usr usr, long deckId) {
         Dictionary<Rating, Long> ratingCount = new Hashtable<>();
         for (Rating rating : Rating.values()) {
@@ -180,4 +182,6 @@ public class DeckServiceImpl implements DeckService {
         }
         return ratingCount;
     }
+
+     */
 }

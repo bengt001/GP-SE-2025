@@ -21,5 +21,5 @@ public interface CardInfoRepository extends CrudRepository<CardInfo, Long> {
     Optional<CardInfo> findCardInfoByCardIdAndUserId(@Param("cardId") long cardId, @Param("userId") String userId);
 
 
-    Long countByDeckIdAndRatingEqualsAndUserIdEquals(Long deckId, Rating rating, String userId);
+    // Long countByDeckIdAndRatingEqualsAndUserIdEquals(Long deckId, Rating rating, String userId);
 }
