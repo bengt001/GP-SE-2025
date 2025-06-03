@@ -115,6 +115,7 @@
           <v-btn
             icon
             color="green"
+            @click="nextCard"
           >
             <v-icon>mdi-check-all</v-icon>
           </v-btn>
@@ -161,6 +162,10 @@ const showAnswer = () => {
 
 const goHome = () => {
   router.push('/')
+}
+
+const nextCard = () => {
+  router.push('/cards/' + cardStore.getNextId())
 }
 
 const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name
