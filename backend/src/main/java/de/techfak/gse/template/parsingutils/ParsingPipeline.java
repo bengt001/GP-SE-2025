@@ -37,7 +37,7 @@ public class ParsingPipeline {
      *
      * @param is the input stream containing the JSON data
      */
-    public void importLexmeaToDatabase(InputStream is) {
+    public void importLexmeaToDatabase(InputStream is, int userId) {
         try (BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
 
             ObjectMapper mapper = new ObjectMapper();
@@ -52,7 +52,7 @@ public class ParsingPipeline {
                 LOGGER.debug("allPathsSize: {}", allPaths.size());
                 for (ArrayList<Object> path : allPaths) {
                     try {
-                        createDeckWithCards(path, root);
+                        createDeckWithCards(path, root, userId);
                     } catch (DeckCreationFailedException e) {
                         LOGGER.debug("Deck failed to build");
                     }
@@ -65,7 +65,8 @@ public class ParsingPipeline {
         }
     }
 
-    private void createDeckWithCards(ArrayList<Object> path, JsonNode root) throws DeckCreationFailedException {
+    private void createDeckWithCards(ArrayList<Object> path, JsonNode root, int userId)
+            throws DeckCreationFailedException {
         ObjectMapper mapper = new ObjectMapper();
         ArrayList<String> rechtgebietList = JsonParser.extractContentAsStringFromPath(root, path, "name");
         ArrayList<String> schemaHtml = JsonParser.extractContentAsStringFromPath(root, path, "text");
@@ -83,7 +84,7 @@ public class ParsingPipeline {
                 LOGGER.error("no cards could be generated");
                 throw new DeckCreationFailedException(ERROR_MSG);
             } else {
-                Deck currentDeck = deckService.addDeck(true, rechtgebietList);
+                Deck currentDeck = deckService.addDeck(true, rechtgebietList, userId);
                 for (String[] content : problemBoxes) {
                     try {
                         String jsonArray = mapper.writeValueAsString(content);
@@ -118,7 +119,11 @@ public class ParsingPipeline {
                     LOGGER.error("JsonProcessingException: Aufdeckkarte card fail");
                     throw new RuntimeException(e);
                 }
-                //Would need to check if empty to delet an empty deck
+                if (cardService.getCardsByDeckId(currentDeck.getDeckId()).isEmpty()) {
+                    System.out.println("#######################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################");
+                    deckService.deleteDeck(currentDeck.getDeckId());
+                }
+
             }
 
         }

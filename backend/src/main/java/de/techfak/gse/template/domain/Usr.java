@@ -44,7 +44,7 @@ public class Usr implements UserDetails {
     private LocalDate creationDate;
 
     @OneToMany(mappedBy = "userId")
-    private transient List<CardRating> ratings;
+    private transient List<CardInfo> ratings;
 
     @JsonIgnore
     @ElementCollection(fetch = FetchType.EAGER)
@@ -56,25 +56,28 @@ public class Usr implements UserDetails {
     @ManyToMany(mappedBy = "users")
     private transient List<Deck> decks = new ArrayList<>();
 
-    /** JPA constructor. */
+    /**
+     * JPA constructor.
+     */
     protected Usr() {
 
     }
 
     /**
      * Konstruktor des Nutzers (Usr).
-     * @param username Nutzername des Nutzers.
-     * @param email Email des Nutzers.
-     * @param password Passwort des Nutzers.
+     *
+     * @param username    Nutzername des Nutzers.
+     * @param email       Email des Nutzers.
+     * @param password    Passwort des Nutzers.
      * @param displayName Der Display Name des Nutzers
-     * @param userId Die Id des Nutzers
+     * @param userId      Die Id des Nutzers
      */
     public Usr(final String username,
                final String email,
                final String password,
                final String displayName,
                final String userId) {
-        this.username = username;
+        this.username = email;
         this.email = email;
         this.password = password;
         this.creationDate = LocalDate.now();
