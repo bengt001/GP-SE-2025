@@ -8,11 +8,10 @@ export const useCardStore = defineStore('card', {
   }),
 
   actions: {
-    addCard(type: string, title: string, text: string, deckId: number) {
-      const newId = this.cards.length + 1
+    addCard(type: string, title: string, text: string, deckId: number,cardId: number) {
       this.cards.push(
         {
-          id: newId,
+          id: cardId,
           type: type,
           title: title,
           text: text,
@@ -20,13 +19,22 @@ export const useCardStore = defineStore('card', {
         }
       )
     },
+    clearCards(): void{
+      this.cards = []
+    },
+    getCards(): Card[]{
+      return  this.cards
+    },
+    getFirst(): number{
+      return this.cards[0].id
+    },
 
     findCardById(id: number): Card | undefined {
       return this.cards.find((card) => card.id === id)
     },
     loadCards(ids: number[],modes: string[]){
       for (const id of ids){
-        console.log(id,modes)  //TODO passende Karten aus dem backend laden
+
       }
     },
 
