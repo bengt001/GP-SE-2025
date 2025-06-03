@@ -150,12 +150,11 @@ async function startLearning() {
     for(const card of curDeck.data.cards){
       if(selectedMode.includes(card.cardType)){
         const cardContent = CardStore.cleanDefinitionString(card.content)
-
-        console.log(cardContent)
         CardStore.addCard(card.cardType,cardContent[0],cardContent[1],selectedIDs[i],card.cardId)
       }
     }
   }
+  console.log("test")
   await router.push("/cards/" + CardStore.getFirst())
 }
 
@@ -180,8 +179,7 @@ async function startLearning() {
         >
           <v-card
             ref="card"
-            style="width: 300px; height: 400px"
-            height="400"
+            style="width: 300px; height: 300px"
             class="d-flex flex-column"
             variant="elevated"
             :style="{ borderColor: toDisplay[n - 1].color, borderStyle: 'solid', borderWidth: '10px' }"
@@ -192,7 +190,7 @@ async function startLearning() {
             >
               {{ toDisplay[n - 1].title }}
             </v-card-title>
-
+            <v-spacer />
             <v-card-text class="text-center">
               <v-col
                 class="text-h6"
@@ -216,7 +214,7 @@ async function startLearning() {
                 </div>
               </v-col>
             </v-card-text>
-
+            <v-spacer />
             <v-card-actions class="mt-auto">
               <v-row justify="space-evenly">
                 <v-checkbox
@@ -282,10 +280,9 @@ async function startLearning() {
         >
           <v-card
             ref="card"
-            height="400"
             class="d-flex flex-column"
             variant="elevated"
-            style="width: 300px; height: 400px"
+            style="width: 300px; height: 300px"
             :style="{ borderColor: toDisplay[n - 1].color, borderStyle: 'solid', borderWidth: '10px' }"
           >
             <v-card-title
@@ -294,7 +291,7 @@ async function startLearning() {
             >
               {{ toDisplay[n-1].title }}
             </v-card-title>
-
+            <v-spacer />
             <v-card-text class="text-center">
               <v-col
                 class="text-h6"
@@ -318,7 +315,7 @@ async function startLearning() {
                 </div>
               </v-col>
             </v-card-text>
-
+            <v-spacer />
             <v-card-actions class="mt-auto">
               <v-row justify="space-evenly">
                 <v-checkbox

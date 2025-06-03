@@ -793,7 +793,7 @@ function addDecks() {
   }
   addDecksSnack.value = true
   setTimeout(() => {
-    router.go(-1)
+    router.push('/')
   }, 1000)
 
 

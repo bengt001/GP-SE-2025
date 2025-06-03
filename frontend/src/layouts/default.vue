@@ -69,6 +69,7 @@
       <v-main>
         <!--        Subheader mit Home-Button und Buttons für Benachrichtigungen, Statistiken und Karteikartenhinzufügen -->
         <v-tabs
+          v-if="!route.fullPath.includes('cards')"
           v-model="subheader"
           align-tabs="center"
           bg-color="lexmea_blue_300"
@@ -125,6 +126,8 @@ const subheader_tabs = ref([
     to: ' ',
   }
 ])
+
+const route = useRoute()
 
 const drawer = ref(false)
 const group = ref()
