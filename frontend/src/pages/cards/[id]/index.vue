@@ -8,6 +8,12 @@
     min-height="400"
     @click="reveal = true"
   >
+    <v-card-text>
+      <p class="text-center">
+        {{ testDeckName }}
+      </p>
+    </v-card-text>
+
     <p
       v-if="card"
       class="text-center text-decoration-underline"
@@ -121,5 +127,5 @@ const goHome = () => {
   router.push('/')
 }
 
-
+const testDeckName = "deck name" //TODO: load deck name
 </script>
