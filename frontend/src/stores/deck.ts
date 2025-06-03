@@ -17,13 +17,13 @@ export const useDeckStore = defineStore('decks', {
       let authorID = 0
       switch (nameSplit[1]){
         case "Broadcast)":
-          authorID = 1
+          authorID = 0
           break
         case "Lexmea)":
-          authorID = 2
+          authorID = 1
           break
         case "Eigener Stapel)":
-          authorID = 3
+          authorID = 2
           break
         default:
           break
@@ -38,9 +38,13 @@ export const useDeckStore = defineStore('decks', {
         }
       }
 
+      if(IDlist.length === 0){
+        return
+      }
 
 
-      const cards_arr = [0,0,0,0,5]  //TODO ratings aus backend
+      //TODO Deck beim user speichern
+      const cards_arr = [0,0,0,0,20]  //TODO ratings aus backend
       const newDeck: Deck = {
         title: deckname,
         author_id: authorID,
@@ -57,7 +61,7 @@ export const useDeckStore = defineStore('decks', {
       for(const ID of deckID){
         for(const deck of this.decks){
           if(deck.stapel_id.includes(ID)){
-            deck.cards = [1,2,1,1,0]
+            deck.cards = [1,2,1,1,15]
           }
         }
       }
@@ -104,14 +108,24 @@ export const useDeckStore = defineStore('decks', {
       }
       return count
     },
-    get_my_active_decks(): void{
+    async get_my_active_decks(): Promise<void>{
       //MOCK um es zu leeren
-      const counter: number = 0
-      while (counter < this.decks.length){
-        this.decks.splice(counter ,1)
-        localStorage.setItem('decks',JSON.stringify(this.decks))
-      }
+      this.clear_decks();
+      await this.addDeck("Strafrecht AT (Lexmea)","#03364D")
+      this.setDeckProgress("Strafrecht AT (Lexmea)",[5,3,2,4,5])
       //TODO MOCK entfernen
+    },
+    //MOCK wahrscheinlich nicht benötigt--> entfernen
+    setDeckProgress(deckname: string,progress: number[]): void{
+      for(const deck of this.decks){
+        if(deck.title === deckname){
+          deck.cards = progress
+        }
+      }
+    },
+    clear_decks(): void {
+      this.decks.splice(0, this.decks.length)
+      localStorage.setItem('decks', JSON.stringify(this.decks))
     },
     async reset_decks(): Promise<void>{
       const counter: number = 0
@@ -124,7 +138,7 @@ export const useDeckStore = defineStore('decks', {
       const response = await axios.get('api/decks')
       const allDecks = response.data
       for(const deck of allDecks){
-        if(deck.fieldOfLaw.includes("Strafrecht AT") && deck.authorId === 2){
+        if(deck.fieldOfLaw.includes("Strafrecht AT") && deck.authorId === 1){
           IDlist.push(deck.deckId)
         }
       }
@@ -132,7 +146,7 @@ export const useDeckStore = defineStore('decks', {
       const cards_arr = [0,0,0,0,5] //TODO aus dem backend bekommen
       const newDeck: Deck = {
         title: "Strafrecht AT (Lexmea)",
-        author_id: 2,
+        author_id: 1,
         stapel_id: IDlist,
         cards: cards_arr,
         color: "#03364D"
