@@ -41,7 +41,7 @@
     >
       <p
         v-if="card"
-        class="text-center text-pre-wrap"
+        class="text-center text-justify"
       >
         {{ card.text }}
       </p>
@@ -127,5 +127,5 @@ const goHome = () => {
   router.push('/')
 }
 
-const testDeckName = "deck name" //TODO: load deck name
+const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name
 </script>

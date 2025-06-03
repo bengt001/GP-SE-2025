@@ -22,9 +22,7 @@ export const useCardStore = defineStore('card', {
     clearCards(): void{
       this.cards = []
     },
-    getCards(): Card[]{
-      return  this.cards
-    },
+
     getFirst(): number{
       return this.cards[0].id
     },
@@ -32,10 +30,28 @@ export const useCardStore = defineStore('card', {
     findCardById(id: number): Card | undefined {
       return this.cards.find((card) => card.id === id)
     },
-    loadCards(ids: number[],modes: string[]){
-      for (const id of ids){
 
+    cleanDefinitionString(content: string): string[] {
+      const cleanString : string[] = []
+
+      const cardContent = content.split(",")
+      const question = cardContent[0]
+      const questionCut = question.split("[")
+      const cleanQuestion = questionCut[1]
+
+      cleanString.push(cleanQuestion)
+
+      let cardText : string = ""
+      for (let i = 1; i < cardContent.length; i++) {
+        cardText = cardText.concat(cardContent[i])
       }
+
+      const answer = cardText.split(" \\")
+      const cleanAnswer = answer[0].concat("\"")
+
+      cleanString.push(cleanAnswer)
+
+      return cleanString
     },
 
     getCard(deckIds: number[], types: string[]): Card | undefined {
