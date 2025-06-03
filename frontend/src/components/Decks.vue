@@ -149,15 +149,14 @@ async function startLearning() {
     const curDeck = await axios.get("api/decks/" + selectedIDs[i])
     for(const card of curDeck.data.cards){
       if(selectedMode.includes(card.cardType)){
-        const cardContent = card.content.split(",")
+        const cardContent = CardStore.cleanDefinitionString(card.content)
+
+        console.log(cardContent)
         CardStore.addCard(card.cardType,cardContent[0],cardContent[1],selectedIDs[i],card.cardId)
       }
     }
   }
-
-  console.log(CardStore.getFirst())
-  router.push("/cards/" + CardStore.getFirst())
-
+  await router.push("/cards/" + CardStore.getFirst())
 }
 
 
