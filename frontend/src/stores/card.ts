@@ -20,9 +20,16 @@ export const useCardStore = defineStore('card', {
         }
       )
     },
+
     findCardById(id: number): Card | undefined {
       return this.cards.find((card) => card.id === id)
     },
+    loadCards(ids: number[],modes: string[]){
+      for (const id of ids){
+        console.log(id,modes)  //TODO passende Karten aus dem backend laden
+      }
+    },
+
     getCard(deckIds: number[], types: string[]): Card | undefined {
       for (const card of this.cards) {
         if (deckIds.includes(card.deckId) && types.includes(card.type)) {
