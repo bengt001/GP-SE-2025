@@ -25,7 +25,7 @@ class SMTwoAnkiTest {
      */
     @Test
     void updateValuesAgainInitValues() {
-        SraValues updatedValues = smTwo.updateValues(initValues, 0);
+        SraValues updatedValues = smTwo.updateValues(initValues, Rating.AGAIN);
         assertThat(updatedValues).isEqualTo(new SraValues(1, 0, 230));
     }
 
@@ -34,7 +34,7 @@ class SMTwoAnkiTest {
      */
     @Test
     void updateValuesAgainSomeValues() {
-        SraValues updatedValues = smTwo.updateValues(someValues, 0);
+        SraValues updatedValues = smTwo.updateValues(someValues, Rating.AGAIN);
         assertThat(updatedValues).isEqualTo(new SraValues(6, 0, 210));
     }
 
@@ -43,7 +43,7 @@ class SMTwoAnkiTest {
      */
     @Test
     void updateValuesHardInitValues() {
-        SraValues updatedValues = smTwo.updateValues(initValues, 1);
+        SraValues updatedValues = smTwo.updateValues(initValues, Rating.HARD);
         assertThat(updatedValues).isEqualTo(new SraValues(1, 0, 235));
     }
 
@@ -52,7 +52,7 @@ class SMTwoAnkiTest {
      */
     @Test
     void updateValuesHardSomeValues() {
-        SraValues updatedValues = smTwo.updateValues(someValues, 1);
+        SraValues updatedValues = smTwo.updateValues(someValues, Rating.HARD);
         assertThat(updatedValues).isEqualTo(new SraValues(6, 7, 215));
     }
 
@@ -61,7 +61,7 @@ class SMTwoAnkiTest {
      */
     @Test
     void updateValuesGoodInitValues() {
-        SraValues updatedValues = smTwo.updateValues(initValues, 2);
+        SraValues updatedValues = smTwo.updateValues(initValues, Rating.GOOD);
         assertThat(updatedValues).isEqualTo(new SraValues(1, 1, 250));
     }
 
@@ -70,7 +70,7 @@ class SMTwoAnkiTest {
      */
     @Test
     void updateValuesGoodSomeValues() {
-        SraValues updatedValues = smTwo.updateValues(someValues, 2);
+        SraValues updatedValues = smTwo.updateValues(someValues, Rating.GOOD);
         assertThat(updatedValues).isEqualTo(new SraValues(6, 13, 230));
     }
 
@@ -79,7 +79,7 @@ class SMTwoAnkiTest {
      */
     @Test
     void updateValuesEasyInitValues() {
-        SraValues updatedValues = smTwo.updateValues(initValues, 3);
+        SraValues updatedValues = smTwo.updateValues(initValues, Rating.HARD);
         assertThat(updatedValues).isEqualTo(new SraValues(1, 2, 265));
     }
 
@@ -88,14 +88,14 @@ class SMTwoAnkiTest {
      */
     @Test
     void updateValuesEasySomeValues() {
-        SraValues updatedValues = smTwo.updateValues(someValues, 3);
+        SraValues updatedValues = smTwo.updateValues(someValues, Rating.HARD);
         assertThat(updatedValues).isEqualTo(new SraValues(6, 15, 245));
     }
 
     @Test
     void updateValuesRangeIllegalArgument() {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                () -> smTwo.updateValues(initValues, -1));
+                () -> smTwo.updateValues(initValues, Rating.NOT_LEARNED));
         assertThat(exception).hasMessageContaining("Rating must be between");
     }
 }

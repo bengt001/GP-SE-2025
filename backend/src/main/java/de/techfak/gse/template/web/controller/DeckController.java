@@ -214,18 +214,18 @@ public class DeckController {
         return deckService.updateDeck(usr, deckId, deck).orElseThrow(BadRequestException::new);
     }
 
-    /**
-     * API Endpoint for sending a updateDeck Patch-Request.
-     *
-     * @param deckId the deckId that shall be updated
-     * @param deck   the updated version of the deck
-     * @return an updated Version of the Deck
-     */
-    @PatchMapping("/usr/decks/{deckId:d\\+}/info")
-    @Secured("ROLE_USER")
-    public Dictionary<Rating, Long> deckInfo(@PathVariable final long deckId, @RequestBody final Deck deck) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Usr usr = userService.loadUserByUsername(auth.getName());
-        return deckService.getDeckInfo(usr, deckId);
-    }
+//    /**
+//     * API Endpoint for sending a updateDeck Patch-Request.
+//     *
+//     * @param deckId the deckId that shall be updated
+//     * @param deck   the updated version of the deck
+//     * @return an updated Version of the Deck
+//     */
+//    @PatchMapping("/usr/decks/{deckId:d\\+}/info")
+//    @Secured("ROLE_USER")
+//    public Dictionary<Rating, Long> deckInfo(@PathVariable final long deckId, @RequestBody final Deck deck) {
+//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//        Usr usr = userService.loadUserByUsername(auth.getName());
+//        return deckService.getDeckInfo(usr, deckId);
+//    }
 }

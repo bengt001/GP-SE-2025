@@ -171,13 +171,13 @@ public class DeckServiceImpl implements DeckService {
         });
     }
 
-    @Override
-    public Dictionary<Rating, Long> getDeckInfo(Usr usr, long deckId) {
-        Dictionary<Rating, Long> ratingCount = new Hashtable<>();
-        for (Rating rating : Rating.values()) {
-            ratingCount.put(rating, cardInfoRepository.countByDeckIdAndRatingEqualsAndUserIdEquals(
-                    deckId, rating, usr.getUserId()));
-        }
-        return ratingCount;
-    }
+//    @Override
+//    public Dictionary<Rating, Long> getDeckInfo(Usr usr, long deckId) {
+//        Dictionary<Rating, Long> ratingCount = new Hashtable<>();
+//        for (Rating rating : Rating.values()) {
+//            ratingCount.put(rating, cardInfoRepository.countByDeckIdAndRatingEqualsAndUserIdEquals(
+//                    deckId, rating, usr.getUserId()));
+//        }
+//        return ratingCount;
+//    }
 }
