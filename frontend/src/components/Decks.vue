@@ -6,6 +6,7 @@ import { computed } from 'vue';
 import type Deck from "@/types/Deck"
 import {useCardStore} from "@/stores/card";
 import axios from "../api/config";
+import router from "@/router";
 
 
 const UserStore = useUserStore()
@@ -125,7 +126,9 @@ function openLearnDialog() {
   console.log( DeckStore.getTitleOfSelected(selectedDecksTitle.value))
 }
 
-function startLearning() {
+async function startLearning() {
+  CardStore.clearCards()
+
   let selectedIDs: number[] = []
   const result = axios.get("/api/decks");
   result.then((x) => console.log(x))
@@ -138,11 +141,23 @@ function startLearning() {
   }
 
   const selectedMode: string[] = []
-  if (definitions.value) selectedMode.push("definitions")
-  if (problems.value) selectedMode.push("problems")
-  if (schema.value) selectedMode.push("schema")
+  if (definitions.value) selectedMode.push("Definitionen")
+  if (problems.value) selectedMode.push("Probleme")
+  if (schema.value) selectedMode.push("Aufdeckkarte")
 
-  CardStore.loadCards(selectedIDs,selectedMode)
+  for (let i = 0; i < selectedIDs.length; i++) {
+    const curDeck = await axios.get("api/decks/" + selectedIDs[i])
+    for(const card of curDeck.data.cards){
+      if(selectedMode.includes(card.cardType)){
+        const cardContent = card.content.split(",")
+        CardStore.addCard(card.cardType,cardContent[0],cardContent[1],selectedIDs[i],card.cardId)
+      }
+    }
+  }
+
+  console.log(CardStore.getFirst())
+  router.push("/cards/" + CardStore.getFirst())
+
 }
 
 
