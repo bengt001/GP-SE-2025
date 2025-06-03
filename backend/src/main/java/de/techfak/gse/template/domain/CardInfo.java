@@ -24,11 +24,13 @@ public class CardInfo {
     @ManyToOne
     private Deck deckId;
     @Column
-    private LocalDate lastDateRated;
+    private LocalDate nextRepetition;
     @Lob
     private String editedContent;
     @Column
     private int rating;
+    @Column
+    private SraValues sraValues;
 
     protected CardInfo() {
 
@@ -47,6 +49,7 @@ public class CardInfo {
         this.cardId = cardId;
         this.deckId = deckId;
         this.rating = rating;
-        this.lastDateRated = LocalDate.now();
+        this.nextRepetition = LocalDate.now();
+        this.sraValues = new SraValues();
     }
 }

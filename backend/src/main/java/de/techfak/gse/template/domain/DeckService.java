@@ -38,4 +38,5 @@ public interface DeckService {
 
     Optional<Deck> deleteDeck(long deckId);
 
+    Optional<CardInfo> rankCard(Usr usr, long deckId, long cardId, int rating);
 }

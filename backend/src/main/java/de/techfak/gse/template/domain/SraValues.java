@@ -1,43 +1,22 @@
 package de.techfak.gse.template.domain;
 
-import lombok.Getter;
-
-import java.util.Objects;
+import jakarta.persistence.Embeddable;
 
 /**
- * Stores the values needed for an sra.
+ * This class stores the values used by an SRA.
+ * @param repetitions Number of repetitions, initially 0.
+ * @param interval Size of the learning interval in days, initially 0.
+ * @param easinessFactor Easiness Factor, initially 250.
  */
-@Getter
-public class SraValues {
-    private final int repetitions;
-    private final int interval;
-    private final float easinessFactor;
+@Embeddable
+public record SraValues(int repetitions, int interval, float easinessFactor) {
+    public static final int EASINESS_FACTOR_INIT = 250;
 
     /**
-     * Creating a new SraValues object.
-     * @param repetitions repetitions done.
-     * @param interval size of the interval.
-     * @param easinessFactor EasinessFactor.
+     * Constructor for the SRA Values.
+     * By Default the are initialized with 0, 0, 250.
      */
-    public SraValues(int repetitions, int interval, float easinessFactor) {
-        this.repetitions = repetitions;
-        this.interval = interval;
-        this.easinessFactor = easinessFactor;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-        SraValues sraValues = (SraValues) obj;
-        return repetitions == sraValues.repetitions
-                && interval == sraValues.interval
-                && Float.compare(easinessFactor, sraValues.easinessFactor) == 0;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(repetitions, interval, easinessFactor);
+    public SraValues() {
+        this(0, 0, EASINESS_FACTOR_INIT);
     }
 }

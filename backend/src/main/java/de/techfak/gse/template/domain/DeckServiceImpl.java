@@ -4,6 +4,7 @@ import de.techfak.gse.template.web.exception.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -16,14 +17,16 @@ import java.util.Optional;
 public class DeckServiceImpl implements DeckService {
     private final DeckRepository deckRepository;
     private final CardRepository cardRepository;
-    private final UserRepository userRepository;
+    private final CardInfoRepository cardInfoRepository;
+    private final SpacedRepetitionAlgorithm sra;
 
     @Autowired
     public DeckServiceImpl(DeckRepository deckRepository, CardRepository cardRepository,
-                           UserRepository userRepository) {
+                          CardInfoRepository cardInfoRepository) {
         this.deckRepository = deckRepository;
         this.cardRepository = cardRepository;
-        this.userRepository = userRepository;
+        this.cardInfoRepository = cardInfoRepository;
+        this.sra = new SMTwoAnki();
     }
 
     @Override
@@ -150,6 +153,25 @@ public class DeckServiceImpl implements DeckService {
             return tempDeck;
         }
         return Optional.empty();
+    }
+
+    /**
+     * The method rankCard is used to rank a card and update the values in the cardInfo table.
+     * @param usr usr used for the id, who has ranked the card.
+     * @param deckId deckId not strictly needed but good to have if the database changes.
+     * @param cardId cardId for the CardInfo needed.
+     * @param rating Rating (Integer from 0 to 3) to rate the card.
+     * @return an updated value of the CardInfo.
+     */
+    @Override
+    public Optional<CardInfo> rankCard(Usr usr, long deckId, long cardId, int rating) {
+        Optional<CardInfo> tempCardInfo = cardInfoRepository.findCardInfoByCardIdAndUserId(cardId, usr.getUserId());
+        return tempCardInfo.map(cardInfo -> {
+            cardInfo.setRating(rating);
+            cardInfo.setSraValues(sra.updateValues(cardInfo.getSraValues(), cardInfo.getRating()));
+            cardInfo.setNextRepetition(LocalDate.now().plusDays(cardInfo.getSraValues().interval()));
+            return cardInfoRepository.save(cardInfo);
+        });
     }
 
 }
