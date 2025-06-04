@@ -1,15 +1,17 @@
 <script setup lang="ts">
-const tab = ref('adder')
-
 import { ref } from 'vue'
 import {useDeckStore} from "@/stores/deck";
+import {useUserStore} from "@/stores/users";
+
 
 const deckStore = useDeckStore()
+const userStore = useUserStore()
 const color_own = "#FF968B"
 const color_lexmea = "#03364D"
 const color_broadcast = "#78B390"
-const selected = ref<TreeNode[]>([])
 
+const selected = ref<TreeNode[]>([])
+const tab = ref('adder')
 const router = useRouter()
 const selected_strafrecht = ref('strafrecht_lexmea')
 const selected_oeffrecht = ref('oeffirecht_lexmea')
@@ -974,6 +976,7 @@ const zivilrechtTree = computed(() => {
                     color="primary"
                     label="Eigene Stapel"
                     hide-details
+                    :disabled="!userStore.authenticated"
                   />
                 </v-list-item>
               </v-list>
