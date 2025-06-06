@@ -20,6 +20,9 @@ export const useCardStore = defineStore('card', {
         }
       )
     },
+    getCardIndex(){
+      return this.currentCardIndex
+    },
     clearCards(): void{
       this.cards = []
     },
@@ -73,6 +76,10 @@ export const useCardStore = defineStore('card', {
       cleanString.push(cleanAnswer)
 
       return cleanString
+    },
+
+    getCards(): Card[]{
+      return this.cards
     },
 
     getCard(deckIds: number[], types: string[]): Card | undefined {
