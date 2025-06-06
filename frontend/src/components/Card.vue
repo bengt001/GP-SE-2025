@@ -3,6 +3,8 @@ import {useCardStore} from "@/stores/card";
 import {useRoute} from "vue-router";
 import {ref} from 'vue'
 
+const DialogEnd = ref(false)
+
 const cardStore = useCardStore()
 const router = useRouter();
 const route = useRoute<'/cards/[id]/'>()
@@ -29,7 +31,16 @@ const goHome = () => {
   router.push('/')
 }
 
-const nextCard = () => {
+function showEndDialog(){
+  DialogEnd.value = true
+}
+
+function nextCard() {
+  const nextId = cardStore.getNextId()
+  if(nextId === -1){
+    showEndDialog()
+    return;
+  }
   router.push('/cards/' + cardStore.getNextId())
   reveal.value = false
 }
@@ -133,28 +144,28 @@ const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name
           <v-btn
             icon
             color="red"
-            @click="nextCard"
+            @click="nextCard()"
           >
             <v-icon>mdi-alpha-x</v-icon>
           </v-btn>
           <v-btn
             icon
             color="orange"
-            @click="nextCard"
+            @click="nextCard()"
           >
             <v-icon>mdi-help</v-icon>
           </v-btn>
           <v-btn
             icon
             color="yellow"
-            @click="nextCard"
+            @click="nextCard()"
           >
             <v-icon>mdi-check</v-icon>
           </v-btn>
           <v-btn
             icon
             color="green"
-            @click="nextCard"
+            @click="nextCard()"
           >
             <v-icon>mdi-check-all</v-icon>
           </v-btn>
@@ -170,8 +181,31 @@ const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name
       </v-btn>
     </div>
   </v-container>
+
+  <v-dialog
+    v-model="DialogEnd"
+    max-width="344"
+  >
+    <v-card>
+      <v-card-title class="text-center d-flex flex-column align-center justify-center">
+        <v-icon icon="mdi-party-popper" />
+        <span class="mt-2">Geschafft!</span>
+      </v-card-title>
+      <v-card-text>
+        Herzlichen Glückwunsch du hast alle Karten geschafft
+      </v-card-text>
+      <v-card-actions>
+        <v-btn @click="goHome">
+          Zurück zum Dashboard
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <style scoped lang="sass">
+
+
+
 
 </style>

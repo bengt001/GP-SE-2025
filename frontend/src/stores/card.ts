@@ -37,9 +37,9 @@ export const useCardStore = defineStore('card', {
       return this.cards[0].id
     },
 
-    //gibt die Id der nächsten Karte zurück oder 0, falls Ende der Liste erreicht
+    //gibt die Id der nächsten Karte zurück oder -1, falls Ende der Liste erreicht
     getNextId(): number{
-      let nextId: number = 0
+      let nextId: number = -1
         if (this.currentCardIndex < this.cards.length - 1) {
           nextId = this.cards[this.currentCardIndex + 1].id
         }
