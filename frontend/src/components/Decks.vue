@@ -19,13 +19,13 @@ const DialogLearn = ref(false)
 
 const SelectedDeck = ref<boolean[]>([])
 const minOneSelected = ref(false)
-const minOneTypeSelected = ref(false)
 const dot_menu = ref<boolean[]>([])
 const deckToDeactivate = ref('')
 const deckToReset = ref('')
 const definitions = ref(false)
 const problems = ref(false)
 const schema = ref(false)
+const numberOfCards = ref(0)
 
 const searchValue = ref("")
 
@@ -91,13 +91,29 @@ watch([definitions, problems], ([newDefinitions, newProblems]) => {
   }
 })
 
-watch(
-  [definitions,problems,schema],
-  (newVal) => {
-    minOneTypeSelected.value = newVal.includes(true)
-  },
-  { deep: true }
+watch([definitions, problems, schema], () => {
+    const selectedTypes = getSelectedTypes()
+    const newMax = getCardCount(selectedTypes)
+    if (numberOfCards.value > newMax) {
+      numberOfCards.value = newMax
+    }
+  })
+
+const anyTypeSelected = computed(() =>
+  definitions.value || problems.value || schema.value
 )
+
+const canLearn = computed(() =>
+  anyTypeSelected.value && numberOfCards.value > 0
+)
+
+function getSelectedTypes(): string[] {
+  const arr: string[] = []
+  if (definitions.value) arr.push("Definitionen")
+  if (problems.value)    arr.push("Probleme")
+  if (schema.value)      arr.push("Schema")
+  return arr
+}
 
 function openResetDialog(deckTitle: string) {
   deckToReset.value = deckTitle
@@ -126,12 +142,65 @@ function openLearnDialog() {
   console.log( DeckStore.getTitleOfSelected(selectedDecksTitle.value))
 }
 
+function plus5() {
+  numberOfCards.value += 5
+  const max = getCardCount(getSelectedTypes())
+  if (numberOfCards.value > max) {
+    numberOfCards.value = max
+  }
+}
+
+function minus5() {
+  if (numberOfCards.value <= 5)
+  {
+    return
+  }
+  numberOfCards.value -= 5
+}
+function plus() {
+  numberOfCards.value += 1
+  const max = getCardCount(getSelectedTypes())
+  if (numberOfCards.value > max) {
+    numberOfCards.value = max
+  }
+}
+
+function minus() {
+  if (numberOfCards.value <= 1)
+  {
+    return
+  }
+  numberOfCards.value -= 1
+}
+
+function getCardCount(selectedCardTypes:string[]): number{
+
+  let cardCount: number = 0
+
+  for (let i = 0; i < SelectedDeck.value.length; i++) {
+    if (SelectedDeck.value[i]) {
+      for(const type of selectedCardTypes){
+        if(type == "Probleme"){
+          cardCount += allDecks.value[i].problems
+        }
+        else if(type == "Definitionen"){
+          cardCount += allDecks.value[i].definitions
+        }
+        else if(type == "Schema"){
+          cardCount += allDecks.value[i].schemas
+        }
+      }
+    }
+  }
+  return cardCount
+
+
+}
+
 async function startLearning() {
   CardStore.clearCards()
-
+  let countCards: number = 0
   let selectedIDs: number[] = []
-  const result = axios.get("/api/decks");
-  result.then((x) => console.log(x))
 
   for (let i = 0; i < SelectedDeck.value.length; i++) {
     if (SelectedDeck.value[i]) {
@@ -146,15 +215,21 @@ async function startLearning() {
   if (schema.value) selectedMode.push("Aufdeckkarte")
 
   for (let i = 0; i < selectedIDs.length; i++) {
+    if (countCards >= numberOfCards.value){
+      break
+    }
     const curDeck = await axios.get("api/decks/" + selectedIDs[i])
     for(const card of curDeck.data.cards){
+      if (countCards >= numberOfCards.value){
+        break
+      }
       if(selectedMode.includes(card.cardType)){
         const cardContent = CardStore.cleanDefinitionString(card.content)
         CardStore.addCard(card.cardType,cardContent[0],cardContent[1],selectedIDs[i],card.cardId)
+        countCards += 1
       }
     }
   }
-  console.log("test")
   await router.push("/cards/" + CardStore.getFirst())
 }
 
@@ -450,12 +525,97 @@ async function startLearning() {
             hide-details
           />
         </v-list-item>
+        <v-list-item>Zum lernen Ausgewählte Karten:</v-list-item>
+        <v-list-item>
+          <v-row
+            class="align-center"
+            no-gutters
+          >
+            <v-col
+              cols="auto"
+              class="px-1"
+            >
+              <v-btn
+                color="primary"
+                size="small"
+                @click="minus5"
+              >
+                <v-icon size="16">
+                  mdi-minus
+                </v-icon>
+                <span class="ml-1">5</span>
+              </v-btn>
+            </v-col>
+            <v-col
+              cols="auto"
+              class="px-1"
+            >
+              <v-btn
+                color="primary"
+                size="small"
+                @click="minus"
+              >
+                <v-icon size="16">
+                  mdi-minus
+                </v-icon>
+                <span class="ml-1">1</span>
+              </v-btn>
+            </v-col>
+            <v-col
+              cols="auto"
+              class="px-2"
+            >
+              <div class="text-h6">
+                {{ numberOfCards }}
+              </div>
+            </v-col>
+            <v-col
+              cols="auto"
+              class="px-1"
+            >
+              <v-btn
+                color="primary"
+                size="small"
+                @click="plus"
+              >
+                <v-icon size="16">
+                  mdi-plus
+                </v-icon>
+                <span class="ml-1">1</span>
+              </v-btn>
+            </v-col>
+            <v-col
+              cols="auto"
+              class="px-1"
+            >
+              <v-btn
+                color="primary"
+                size="small"
+                @click="plus5"
+              >
+                <v-icon size="16">
+                  mdi-plus
+                </v-icon>
+                <span class="ml-1">5</span>
+              </v-btn>
+            </v-col>
+            <v-spacer />
+            <v-col
+              cols="auto"
+              class="px-2"
+            >
+              <div class="text-body-2">
+                Dies entspricht ca. {{ (numberOfCards * 0.7).toFixed(1) }} Minuten Lernzeit
+              </div>
+            </v-col>
+          </v-row>
+        </v-list-item>
       </v-list>
 
       <v-card-actions>
         <v-btn
           color="primary"
-          :disabled="!minOneTypeSelected"
+          :disabled="!canLearn"
           @click="startLearning"
         >
           <v-icon start>

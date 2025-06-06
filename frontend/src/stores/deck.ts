@@ -29,6 +29,10 @@ export const useDeckStore = defineStore('decks', {
           break
       }
 
+      let definitonCount:number = 0;
+      let problemCount:number = 0;
+      let schemaCount:number = 0;
+
       const IDlist = []
       const response = await axios.get('api/decks')
       const allDecks = response.data
@@ -42,6 +46,22 @@ export const useDeckStore = defineStore('decks', {
         return
       }
 
+      for(const id of IDlist){
+        const cards = await axios.get('api/decks/' + id + '/cards')
+          for(const card of cards.data){
+            console.log(card.cardType)
+            if(card.cardType == "Definitionen"){
+              definitonCount += 1
+            }
+            else if(card.cardType == "Aufdeckkarte"){
+              schemaCount += 1
+            }
+            else if(card.cardType == "Probleme"){
+              problemCount += 1
+            }
+          }
+      }
+
 
       //TODO Deck beim user speichern
       const cards_arr = [0,0,0,0,20]  //TODO ratings aus backend
@@ -49,6 +69,9 @@ export const useDeckStore = defineStore('decks', {
         title: deckname,
         author_id: authorID,
         stapel_id: IDlist,
+        definitions: definitonCount,
+        problems: problemCount,
+        schemas: schemaCount,
         cards: cards_arr,
         color: color
       }
@@ -143,12 +166,34 @@ export const useDeckStore = defineStore('decks', {
         }
       }
 
+      let definitonCount:number = 0;
+      let problemCount:number = 0;
+      let schemaCount:number = 0;
+
+      for(const id of IDlist){
+        const cards = await axios.get('api/decks/' + id + '/cards')
+        for(const card of cards.data){
+          if(card.cardType == "Definitionen"){
+            definitonCount += 1
+          }
+          else if(card.cardType == "Aufdeckkarte"){
+            schemaCount += 1
+          }
+          else if(card.cardType == "Probleme"){
+            problemCount += 1
+          }
+        }
+      }
+
       const cards_arr = [0,0,0,0,5] //TODO aus dem backend bekommen
       const newDeck: Deck = {
         title: "Strafrecht AT (Lexmea)",
         author_id: 1,
         stapel_id: IDlist,
         cards: cards_arr,
+        definitions: definitonCount,
+        problems: problemCount,
+        schemas: schemaCount,
         color: "#03364D"
       }
       this.decks.push(newDeck)
