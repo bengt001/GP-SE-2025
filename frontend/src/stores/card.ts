@@ -9,14 +9,15 @@ export const useCardStore = defineStore('card', {
   }),
 
   actions: {
-    addCard(type: string, title: string, text: string, deckId: number,cardId: number) {
+    addCard(type: string, title: string, text: string, deckId: number,cardId: number,color: string) {
       this.cards.push(
         {
           id: cardId,
           type: type,
           title: title,
           text: text,
-          deckId : deckId
+          deckId : deckId,
+          color: color
         }
       )
     },

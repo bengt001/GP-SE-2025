@@ -218,14 +218,31 @@ async function startLearning() {
     if (countCards >= numberOfCards.value){
       break
     }
+
+
+
     const curDeck = await axios.get("api/decks/" + selectedIDs[i])
+    let curDeckColor:string
+    switch (curDeck.data.authorId){
+      case 0:
+        curDeckColor = "#78B390"
+        break
+      case 1:
+        curDeckColor= "#03364D"
+        break
+      case 2:
+        curDeckColor=  "#FF968B"
+        break
+      default:
+        curDeckColor="white"
+    }
     for(const card of curDeck.data.cards){
       if (countCards >= numberOfCards.value){
         break
       }
       if(selectedMode.includes(card.cardType)){
         const cardContent = CardStore.cleanDefinitionString(card.content)
-        CardStore.addCard(card.cardType,cardContent[0],cardContent[1],selectedIDs[i],card.cardId)
+        CardStore.addCard(card.cardType,cardContent[0],cardContent[1],selectedIDs[i],card.cardId,curDeckColor)
         countCards += 1
       }
     }

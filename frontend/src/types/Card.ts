@@ -4,4 +4,5 @@ export default interface Card {
   title : string,
   text : string,
   deckId : number
+  color : string;
 }

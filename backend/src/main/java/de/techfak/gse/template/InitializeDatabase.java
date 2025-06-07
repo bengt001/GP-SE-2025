@@ -11,10 +11,7 @@ import org.springframework.stereotype.Service;
  * */
 @Service
 public class InitializeDatabase implements InitializingBean {
-    /** Name of user test.*/
-    String test = "test";
-    /** test mail die vom Standartnutzer genutzt wird.*/
-    String testEmail = "test@mail.com";
+
     private final UserService userService;
 
     @Autowired
