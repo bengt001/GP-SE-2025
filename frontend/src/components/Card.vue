@@ -98,6 +98,7 @@ const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name
       color="grey_300"
       elevation="16"
       style="width: 100%; max-width: 600px; max-height: 80vh; overflow-y: auto;"
+      :style="{borderColor: card?.color ?? 'transparent', borderStyle: 'solid', borderWidth: '10px'}"
       @click="reveal = true"
     >
       <v-card-text>
