@@ -49,7 +49,6 @@ export const useDeckStore = defineStore('decks', {
       for(const id of IDlist){
         const cards = await axios.get('api/decks/' + id + '/cards')
           for(const card of cards.data){
-            console.log(card.cardType)
             if(card.cardType == "Definitionen"){
               definitonCount += 1
             }
