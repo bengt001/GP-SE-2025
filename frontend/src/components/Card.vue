@@ -18,6 +18,42 @@ const backPossible = ref(false)
 
 const cards = computed(() => cardStore.getCards())
 const curCardIndex = computed(() => cardStore.getCardIndex())
+const countGreen = computed(() => {
+  let counted = 0
+for(const rating of ratingArr.value){
+  if (rating === 0){
+    counted += 1
+  }
+}
+return counted
+})
+const countYellow = computed(() => {
+  let counted = 0
+  for(const rating of ratingArr.value){
+    if (rating === 1){
+      counted += 1
+    }
+  }
+  return counted
+})
+const countOrange = computed(() => {
+  let counted = 0
+  for(const rating of ratingArr.value){
+    if (rating === 2){
+      counted += 1
+    }
+  }
+  return counted
+})
+const countRed = computed(() => {
+  let counted = 0
+  for(const rating of ratingArr.value){
+    if (rating === 3){
+      counted += 1
+    }
+  }
+  return counted
+})
 
 watch(cards, newCards => {
     ratingArr.value = Array(newCards.length).fill(4);
@@ -242,14 +278,101 @@ const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name
       </v-card-title>
       <v-card-text>
         Herzlichen Glückwunsch du hast alle Karten geschafft
+        <v-row
+          dense
+          no-gutters
+        >
+          <v-col
+            cols="6"
+            class="pa-2"
+          >
+            <v-sheet
+              class="pa-3 text-center rounded-lg"
+              color="green_lightest"
+              elevation="1"
+            >
+              <v-responsive
+                class="text-h6 font-weight-bold"
+                :style="{ color: $vuetify.theme.current.colors.green_darkest }"
+              >
+                {{ countGreen }}
+              </v-responsive>
+              <v-responsive class="text-caption">
+                Einfach
+              </v-responsive>
+            </v-sheet>
+          </v-col>
+          <v-col
+            cols="6"
+            class="pa-2"
+          >
+            <v-sheet
+              class="pa-3 text-center rounded-lg"
+              color="yellow_lightest"
+              elevation="1"
+            >
+              <v-responsive
+                class="text-h6 font-weight-bold"
+                :style="{ color: $vuetify.theme.current.colors.yellow_darkest }"
+              >
+                {{ countYellow }}
+              </v-responsive>
+              <v-responsive class="text-caption">
+                Okay
+              </v-responsive>
+            </v-sheet>
+          </v-col>
+          <v-col
+            cols="6"
+            class="pa-2"
+          >
+            <v-sheet
+              class="pa-3 text-center rounded-lg"
+              color="orange_lightest"
+              elevation="1"
+            >
+              <v-responsive
+                class="text-h6 font-weight-bold"
+                :style="{ color: $vuetify.theme.current.colors.orange_darkest }"
+              >
+                {{ countOrange }}
+              </v-responsive>
+              <v-responsive class="text-caption">
+                Schwer
+              </v-responsive>
+            </v-sheet>
+          </v-col>
+          <v-col
+            cols="6"
+            class="pa-2"
+          >
+            <v-sheet
+              class="pa-3 text-center rounded-lg"
+              color="red_lightest"
+              elevation="1"
+            >
+              <v-responsive
+                class="text-h6 font-weight-bold"
+                :style="{ color: $vuetify.theme.current.colors.red_darkest }"
+              >
+                {{ countRed }}
+              </v-responsive>
+              <v-responsive class="text-caption">
+                Nicht gewusst
+              </v-responsive>
+            </v-sheet>
+          </v-col>
+        </v-row>
       </v-card-text>
       <v-card-actions>
-        <v-btn @click="goBack">
-          Zurück zur letzten Karte
-        </v-btn>
-        <v-btn @click="goHome">
-          Zurück zum Dashboard
-        </v-btn>
+        <v-responsive>
+          <v-btn @click="goBack">
+            Zurück zur letzten Karte
+          </v-btn>
+          <v-btn @click="goHome">
+            Zurück zum Dashboard
+          </v-btn>
+        </v-responsive>
       </v-card-actions>
     </v-card>
   </v-dialog>
