@@ -790,13 +790,12 @@ const zivilrecht_lexmea_broadcast_own = ref<TreeNode[]>([
 ])
 
 function addDecks() {
-  for (const selecteddeck of selected.value) {
-    deckStore.addDeck(selecteddeck.title, selecteddeck.color)
-  }
+  const deckTuples = selected.value.map(deck => [deck.title, deck.color] as [string, string | undefined]);
+  deckStore.addMultDecks(deckTuples)
   addDecksSnack.value = true
   setTimeout(() => {
     router.push('/')
-  }, 2000)
+  }, 1)
 
 
 }
