@@ -118,7 +118,7 @@ const subheader_tabs = ref([
   {
     title: 'Statistiken',
     icon: 'mdi-chart-bar',
-    to: ' ',
+    to: '/stats',
   },
   {
     title: 'Benachrichtigungen',
