@@ -27,6 +27,11 @@ const problems = ref(false)
 const schema = ref(false)
 const numberOfCards = ref(0)
 
+const menu = ref(false)
+const lexmea = ref(true)
+const own = ref(true)
+const broad = ref(true)
+
 const searchValue = ref("")
 
 const colorNames = ['green', 'yellow', 'orange', 'red', 'grey'];
@@ -37,7 +42,15 @@ const toDisplay = computed(() => {
   const items: Deck[] = [];
   for (let i = 0; i < allDecks.value.length; i++) {
     if (allDecks.value[i].title.includes(searchValue.value)) {
-      items.push(allDecks.value[i])
+      if(lexmea.value && allDecks.value[i].title.includes("Lexmea")){
+        items.push(allDecks.value[i])
+      }
+      else if(own.value && allDecks.value[i].title.includes("Eigener Stapel")){
+        items.push(allDecks.value[i])
+      }
+      else if(broad.value && allDecks.value[i].title.includes("Broadcast")){
+        items.push(allDecks.value[i])
+      }
     }
   }
   return items;
@@ -255,6 +268,49 @@ async function startLearning() {
 </script>
 <template>
   <Searchbar @change-value="searchValue=$event" />
+
+  <v-menu
+    v-model="menu"
+    :close-on-content-click="false"
+  >
+    <template #activator="{ props }">
+      <v-btn
+        class="v-btn--flat filter-btn"
+        v-bind="props"
+        icon="mdi-filter"
+        color="primary"
+      />
+    </template>
+    <v-card min-width="300">
+      <v-list>
+        <v-list-item>
+          <v-switch
+            v-model="lexmea"
+            color="primary"
+            label="Lexmea"
+            hide-details
+          />
+        </v-list-item>
+        <v-list-item>
+          <v-switch
+            v-model="broad"
+            color="primary"
+            label="Broadcast"
+            hide-details
+          />
+        </v-list-item>
+        <v-list-item v-if="UserStore.authenticated">
+          <v-switch
+            v-model="own"
+            label="Eigene Stapel"
+            color="primary"
+            hide-details
+          />
+        </v-list-item>
+      </v-list>
+    </v-card>
+  </v-menu>
+
   <v-container class="overflow-hidden">
     <v-row
       v-if="UserStore.authenticated"
@@ -683,6 +739,12 @@ async function startLearning() {
   position: fixed
   bottom: 20px
   right: 20px
+  z-index: 100
+
+.filter-btn
+  position: fixed
+  bottom: 20px
+  left: 20px
   z-index: 100
 
 .no-word-break
