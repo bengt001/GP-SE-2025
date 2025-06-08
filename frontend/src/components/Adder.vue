@@ -866,6 +866,8 @@ const zivilrechtTree = computed(() => {
       <v-tabs
         v-model="tab"
         bg-color="primary"
+        show-arrows
+        class="overflow-auto"
       >
         <v-tab value="Strafrecht">
           Strafrecht

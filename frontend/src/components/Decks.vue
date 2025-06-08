@@ -277,7 +277,7 @@ async function startLearning() {
             :style="{ borderColor: toDisplay[n - 1].color, borderStyle: 'solid', borderWidth: '10px' }"
           >
             <v-card-title
-              class="text-h5"
+              class="text-h5 no-word-break"
               style="white-space: normal;"
             >
               {{ toDisplay[n - 1].title }}
@@ -388,7 +388,7 @@ async function startLearning() {
             :style="{ borderColor: toDisplay[n - 1].color, borderStyle: 'solid', borderWidth: '10px' }"
           >
             <v-card-title
-              class="text-h5"
+              class="text-h5 no-word-break"
               style="white-space: normal;"
             >
               {{ toDisplay[n-1].title }}
@@ -684,4 +684,8 @@ async function startLearning() {
   bottom: 20px
   right: 20px
   z-index: 100
+
+.no-word-break
+  word-break: keep-all
+  overflow-wrap: normal
 </style>
