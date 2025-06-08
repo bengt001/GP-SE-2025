@@ -78,7 +78,8 @@ function goBack(){
     const card = cardStore.getCardAtIndex()
     deckStore.undoRate(card.deckId, lastRating.value)
   }
-  router.go(-1)
+  const prevId = cardStore.getCardAtIndex().id;
+  router.replace(`/cards/${prevId}`);
 }
 
 function showAnswer() {
@@ -127,7 +128,7 @@ const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name
         :style="{
           backgroundColor: colorNames[color_index],
           width: 100 / ratingArr.length + '%',
-          border: i === curCardIndex ? '2px solid'+ theme.current.value.colors.primary : 'none'
+          border: i === curCardIndex ? '2px solid black' : 'none'
         }"
       />
     </div>
@@ -142,140 +143,141 @@ const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name
       / {{ cards.length }}
     </div>
   </div>
-  <v-responsive class="d-flex justify-center">
-    <v-card
-      class="mx-auto pa-4"
-      color="grey_300"
-      elevation="16"
-      style="width: 100%; max-width: 600px; max-height: 80vh; overflow-y: auto;"
-      :style="{borderColor: card?.color ?? 'transparent', borderStyle: 'solid', borderWidth: '10px'}"
-      @click="reveal = true"
-    >
-      <v-card-text>
-        <p class="text-center">
-          {{ testDeckName }}
-        </p>
-      </v-card-text>
-
-      <p
-        v-if="card"
-        class="text-center text-decoration-underline"
+  <div class="card-button-wrap">
+    <v-responsive class="card">
+      <v-card
+        class="mx-auto pa-4"
+        color="grey_300"
+        elevation="16"
+        style="width: 100%; max-width: 600px; max-height: 80vh; overflow-y: auto;"
+        :style="{borderColor: card?.color ?? 'transparent', borderStyle: 'solid', borderWidth: '10px'}"
+        @click="reveal = true"
       >
-        {{ card.type }}
-      </p>
+        <v-card-text>
+          <p class="text-center">
+            {{ testDeckName }}
+          </p>
+        </v-card-text>
 
-      <v-card-title>
-        <h3
-          v-if="card"
-          class="text-center text-wrap"
-          style="word-break: break-word;"
-        >
-          {{ card.title }}
-        </h3>
-        <h3
-          v-else
-          class="text-center"
-        >
-          card title
-        </h3>
-      </v-card-title>
-
-      <v-card-text
-        v-if="reveal"
-      >
         <p
           v-if="card"
-          class="text-center text-justify"
+          class="text-center text-decoration-underline"
         >
-          {{ card.text }}
+          {{ card.type }}
         </p>
-        <p
-          v-else
-          class="text-center"
+
+        <v-card-title>
+          <h3
+            v-if="card"
+            class="text-center text-wrap"
+            style="word-break: break-word;"
+          >
+            {{ card.title }}
+          </h3>
+          <h3
+            v-else
+            class="text-center"
+          >
+            card title
+          </h3>
+        </v-card-title>
+
+        <v-card-text
+          v-if="reveal"
         >
-          card content
-        </p>
-      </v-card-text>
-    </v-card>
-  </v-responsive>
+          <p
+            v-if="card"
+            class="text-center text-justify"
+          >
+            {{ card.text }}
+          </p>
+          <p
+            v-else
+            class="text-center"
+          >
+            card content
+          </p>
+        </v-card-text>
+      </v-card>
+    </v-responsive>
 
-
-  <v-container
-    class="mt-6 px-4"
-    style="max-width: 600px;"
-    fluid
-  >
-    <div
-      class="d-flex justify-between align-center flex-wrap"
-      style="gap: 12px;"
+    <v-container
+      class="button px-4"
+      style="max-width: 600px;"
+      fluid
     >
-      <v-btn
-        icon
-        style="flex: 0 0 auto;"
-        :disabled="!backPossible"
-        @click="goBack"
-      >
-        <v-icon>mdi-arrow-left</v-icon>
-      </v-btn>
-
       <div
-        style="flex: 1 1 auto;"
-        class="text-center"
+        class="d-flex justify-between align-center flex-wrap"
+        style="gap: 12px;"
       >
         <v-btn
-          v-if="!reveal"
-          color="primary"
-          class="mx-auto"
-          @click="showAnswer"
+          icon
+          style="flex: 0 0 auto;"
+          :disabled="!backPossible"
+          @click="goBack()"
         >
-          Antwort anzeigen
+          <v-icon>mdi-arrow-left</v-icon>
         </v-btn>
 
         <div
-          v-else
-          class="d-flex justify-center flex-wrap"
-          style="gap: 8px;"
+          style="flex: 1 1 auto;"
+          class="text-center"
         >
           <v-btn
-            icon
-            color="red"
-            @click="rateCard(3)"
+            v-if="!reveal"
+            color="primary"
+            class="mx-auto"
+            @click="showAnswer"
           >
-            <v-icon>mdi-alpha-x</v-icon>
+            Antwort anzeigen
           </v-btn>
-          <v-btn
-            icon
-            color="orange"
-            @click="rateCard(2)"
-          >
-            <v-icon>mdi-help</v-icon>
-          </v-btn>
-          <v-btn
-            icon
-            color="yellow"
-            @click="rateCard(1)"
-          >
-            <v-icon>mdi-check</v-icon>
-          </v-btn>
-          <v-btn
-            icon
-            color="green"
-            @click="rateCard(0)"
-          >
-            <v-icon>mdi-check-all</v-icon>
-          </v-btn>
-        </div>
-      </div>
 
-      <v-btn
-        icon
-        style="flex: 0 0 auto;"
-        @click="goHome"
-      >
-        <v-icon>mdi-home</v-icon>
-      </v-btn>
-    </div>
-  </v-container>
+          <div
+            v-else
+            class="d-flex justify-center flex-wrap"
+            style="gap: 8px;"
+          >
+            <v-btn
+              icon
+              color="red"
+              @click="rateCard(3)"
+            >
+              <v-icon>mdi-alpha-x</v-icon>
+            </v-btn>
+            <v-btn
+              icon
+              color="orange"
+              @click="rateCard(2)"
+            >
+              <v-icon>mdi-help</v-icon>
+            </v-btn>
+            <v-btn
+              icon
+              color="yellow"
+              @click="rateCard(1)"
+            >
+              <v-icon>mdi-check</v-icon>
+            </v-btn>
+            <v-btn
+              icon
+              color="green"
+              @click="rateCard(0)"
+            >
+              <v-icon>mdi-check-all</v-icon>
+            </v-btn>
+          </div>
+        </div>
+
+        <v-btn
+          icon
+          style="flex: 0 0 auto;"
+          @click="goHome"
+        >
+          <v-icon>mdi-home</v-icon>
+        </v-btn>
+      </div>
+    </v-container>
+  </div>
 
   <v-dialog
     v-model="DialogEnd"
@@ -380,10 +382,10 @@ const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name
       </v-card-text>
       <v-card-actions>
         <v-responsive>
-          <v-btn @click="goBack">
+          <v-btn @click="goBack()">
             Zurück zur letzten Karte
           </v-btn>
-          <v-btn @click="goHome">
+          <v-btn @click="goHome()">
             Zurück zum Dashboard
           </v-btn>
         </v-responsive>
@@ -403,4 +405,17 @@ const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name
   height: 14px
   border-radius: 4px
   overflow: hidden
+
+.card-button-wrap
+  display: flex
+  flex-direction: column
+  height: 80vh
+
+.card
+  flex: 1 1 auto
+  overflow-y: auto
+
+.button
+  flex: 0 0 auto
+  padding-top: 12px
 </style>
