@@ -219,7 +219,6 @@ async function startLearning() {
     if (SelectedDeck.value[i]) {
       selectedIDs = selectedIDs.concat(allDecks.value[i].stapel_id);
     }
-    DeckStore.setProgress(selectedIDs)
   }
 
   const selectedMode: string[] = []

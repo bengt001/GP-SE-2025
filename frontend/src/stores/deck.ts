@@ -1,6 +1,7 @@
 import {defineStore} from 'pinia'
 import type Deck from "@/types/Deck";
 import axios from "../api/config";
+import {useUserStore} from "@/stores/users";
 
 export const useDeckStore = defineStore('decks', {
   state: () => ({
@@ -74,10 +75,14 @@ export const useDeckStore = defineStore('decks', {
             }
           }
       }
-
-
+      let cards_arr
+      if(useUserStore().authenticated){
+         cards_arr = [0,0,0,0,20]  //TODO ratings aus backend
+      }
+      else{
+         cards_arr = [0,0,0,0,problemCount+definitonCount+schemaCount]  //TODO ratings aus backend
+      }
       //TODO Deck beim user speichern
-      const cards_arr = [0,0,0,0,20]  //TODO ratings aus backend
       const newDeck: Deck = {
         title: deckname,
         author_id: authorID,
@@ -91,17 +96,6 @@ export const useDeckStore = defineStore('decks', {
       this.decks.push(newDeck)
       localStorage.setItem('decks', JSON.stringify(this.decks));
       this.decksLoading--
-    },
-
-    //TODO ENTFERNEN nur für Präsentation
-    setProgress(deckID : number[]): void{
-      for(const ID of deckID){
-        for(const deck of this.decks){
-          if(deck.stapel_id.includes(ID)){
-            deck.cards = [1,2,1,1,15]
-          }
-        }
-      }
     },
 
     deactivateDeck(deckname: string): void{
@@ -133,17 +127,13 @@ export const useDeckStore = defineStore('decks', {
       for(const deck of this.decks){
         if(deck.title === deckName){
           let cardNumber : number = 0
-          cardNumber = this.getCardNumber(deck.cards)
+          cardNumber = this.getCardNumber(deck)
           deck.cards = [0,0,0,0,cardNumber]         //TODO im backend deck resetten
         }
       }
     },
-    getCardNumber(cards:number[]):number{
-      let count:number = 0
-      for(const card of cards){
-        count += card
-      }
-      return count
+    getCardNumber(deck:Deck):number{
+      return deck.schemas + deck.problems + deck.definitions
     },
     async get_my_active_decks(): Promise<void>{
       //MOCK um es zu leeren
@@ -172,14 +162,37 @@ export const useDeckStore = defineStore('decks', {
       }
       await this.addMultDecks([["Strafrecht AT (Lexmea)", "#03364D"]]);
     },
-    getDecksColor(): string[]{
-      const ColorArr:string[] = []
+    getDeckByOneID(id:number):Deck|undefined{
       for(const deck of this.decks){
-        const color: string|undefined = deck.color
-        ColorArr.push(color ?? "")
+        for(const stapelID of deck.stapel_id){
+          if(stapelID === id){
+            return deck
+          }
+        }
       }
-      return ColorArr
-    }
+      return undefined
+    },
+  //   Funktionene um bei unangemeldeten bewertungen zu speicher:
+    rate(id:number,rateIndex:number){
+      const deck = this.getDeckByOneID(id)
+      if(deck){
+        const cards:number[] = deck.cards
+        cards[rateIndex]++
+        cards[4]--
+        deck.cards = cards
+        localStorage.setItem('decks', JSON.stringify(this.decks))
+      }
+    },
+    undoRate(id:number,rateIndex:number){
+      const deck = this.getDeckByOneID(id)
+      if(deck){
+        const cards:number[] = deck.cards
+        cards[rateIndex]--
+        cards[4]++
+        deck.cards = cards
+        localStorage.setItem('decks', JSON.stringify(this.decks))
+      }
+    },
 
   },
 })

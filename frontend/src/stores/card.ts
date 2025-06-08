@@ -24,6 +24,9 @@ export const useCardStore = defineStore('card', {
     getCardIndex(){
       return this.currentCardIndex
     },
+    getCardAtIndex():Card{
+      return this.cards[this.currentCardIndex]
+    },
     clearCards(): void{
       this.cards = []
     },

@@ -1,12 +1,16 @@
 <script setup lang="ts">
 import {useCardStore} from "@/stores/card";
+import {useDeckStore} from "@/stores/deck";
 import {useRoute} from "vue-router";
 import {ref} from 'vue'
 import { useTheme } from 'vuetify'
+import {useUserStore} from "@/stores/users";
 
 const theme = useTheme()
 const colorNames = ['green', 'yellow', 'orange', 'red', 'grey'];
 const cardStore = useCardStore()
+const deckStore = useDeckStore()
+const userStore = useUserStore()
 const router = useRouter();
 const route = useRoute<'/cards/[id]/'>()
 const id = route.params.id
@@ -15,6 +19,7 @@ const card = ref(cardStore.findCardById(parseInt(id)))
 const reveal = ref(false)
 const ratingArr = ref<number[]>([])
 const backPossible = ref(false)
+const lastRating = ref(4)
 
 const cards = computed(() => cardStore.getCards())
 const curCardIndex = computed(() => cardStore.getCardIndex())
@@ -69,6 +74,10 @@ function goBack(){
   DialogEnd.value = false
   backPossible.value = false
   cardStore.indexMinusOne()
+  if(!userStore.authenticated) {
+    const card = cardStore.getCardAtIndex()
+    deckStore.undoRate(card.deckId, lastRating.value)
+  }
   router.go(-1)
 }
 
@@ -98,6 +107,11 @@ function nextCard() {
 
 function rateCard(colorIndex: number) {
   ratingArr.value[cardStore.getCardIndex()] = colorIndex
+  lastRating.value = colorIndex
+  if(!userStore.authenticated) {
+    const card = cardStore.getCardAtIndex()
+    deckStore.rate(card.deckId, colorIndex)
+  }
   nextCard()
 }
 
