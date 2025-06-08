@@ -361,7 +361,10 @@ async function startLearning() {
         :key="i"
         cols="auto"
       >
-        <v-skeleton-loader type="card" style="width:300px; height:300px; margin:8px" />
+        <v-skeleton-loader
+          type="card"
+          style="width:300px; height:300px; margin:8px"
+        />
       </v-col>
     </v-row>
     <!--      Dashboard for unauthenticated User-->
@@ -469,7 +472,10 @@ async function startLearning() {
         :key="i"
         cols="auto"
       >
-        <v-skeleton-loader type="card" style="width:300px; height:300px; margin:8px" />
+        <v-skeleton-loader
+          type="card"
+          style="width:300px; height:300px; margin:8px"
+        />
       </v-col>
     </v-row>
   </v-container>
