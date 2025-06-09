@@ -3,10 +3,9 @@ import {useCardStore} from "@/stores/card";
 import {useDeckStore} from "@/stores/deck";
 import {useRoute} from "vue-router";
 import {ref} from 'vue'
-import { useTheme } from 'vuetify'
 import {useUserStore} from "@/stores/users";
 
-const theme = useTheme()
+
 const colorNames = ['green', 'yellow', 'orange', 'red', 'grey'];
 const cardStore = useCardStore()
 const deckStore = useDeckStore()
