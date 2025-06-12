@@ -1,5 +1,6 @@
 import {defineStore} from 'pinia'
 import type Deck from "@/types/Deck";
+import type Card from "@/types/Card"
 import axios from "../api/config";
 import {useUserStore} from "@/stores/users";
 
@@ -12,6 +13,14 @@ export const useDeckStore = defineStore('decks', {
   actions: {
     getloadingDecks(){
       return this.decksLoading
+    },
+    getDeckRating(deck:Deck){
+      const ratingArr:number[] = [0,0,0,0,0]
+      const allCards:Card[] = deck.definitions.concat(deck.schemas,deck.problems)
+      for(const card of allCards){
+        ratingArr[card.lastRating] += 1
+      }
+      return ratingArr
     },
 
     async addMultDecks(decks: [string, string | undefined][]): Promise<void> {
@@ -43,9 +52,9 @@ export const useDeckStore = defineStore('decks', {
           break
       }
 
-      let definitonCount:number = 0;
-      let problemCount:number = 0;
-      let schemaCount:number = 0;
+      const definitons:Card[] = []
+      const problems:Card[] = []
+      const schemas:Card[] = []
 
       const IDlist = []
       const response = await axios.get('api/decks')
@@ -60,37 +69,65 @@ export const useDeckStore = defineStore('decks', {
         this.decksLoading--
         return
       }
+      let  LastRating
+      if(useUserStore().authenticated){
+        LastRating = 4 // TODO aus backend
+      }
+      else{
+        LastRating = 4
+      }
 
       for(const id of IDlist){
         const cards = await axios.get('api/decks/' + id + '/cards')
           for(const card of cards.data){
             if(card.cardType == "Definitionen"){
-              definitonCount += 1
+              const cardContent = this.cleanDefinitionString(card.content)
+              const newCard: Card = {
+                id:card.cardId,
+                deckID:id,
+                type:card.cardType,
+                title:cardContent[0],
+                text:cardContent[1],
+                color:color,
+                lastRating:LastRating
+              }
+              definitons.push(newCard)
             }
             else if(card.cardType == "Aufdeckkarte"){
-              schemaCount += 1
-            }
+              const cardContent = this.cleanDefinitionString(card.content)
+              const newCard: Card = {
+                id:card.cardId,
+                deckID:id,
+                type:card.cardType,
+                title:cardContent[0],
+                text:cardContent[1],
+                color:color,
+                lastRating:LastRating
+              }
+              schemas.push(newCard)            }
             else if(card.cardType == "Probleme"){
-              problemCount += 1
-            }
+              const cardContent = this.cleanDefinitionString(card.content)
+              const newCard: Card = {
+                id:card.cardId,
+                deckID:id,
+                type:card.cardType,
+                title:cardContent[0],
+                text:cardContent[1],
+                color:color,
+                lastRating:LastRating
+              }
+              problems.push(newCard)            }
           }
       }
-      let cards_arr
-      if(useUserStore().authenticated){
-         cards_arr = [0,0,0,0,20]  //TODO ratings aus backend
-      }
-      else{
-         cards_arr = [0,0,0,0,problemCount+definitonCount+schemaCount]  //TODO ratings aus backend
-      }
+
       //TODO Deck beim user speichern
       const newDeck: Deck = {
         title: deckname,
         author_id: authorID,
         stapel_id: IDlist,
-        definitions: definitonCount,
-        problems: problemCount,
-        schemas: schemaCount,
-        cards: cards_arr,
+        definitions: definitons,
+        problems: problems,
+        schemas: schemas,
         color: color
       }
       this.decks.push(newDeck)
@@ -126,29 +163,26 @@ export const useDeckStore = defineStore('decks', {
     resetCards(deckName : string): void{
       for(const deck of this.decks){
         if(deck.title === deckName){
-          let cardNumber : number = 0
-          cardNumber = this.getCardNumber(deck)
-          deck.cards = [0,0,0,0,cardNumber]         //TODO im backend deck resetten
+          //TODO im backend deck resetten
+          for(const card of deck.schemas){
+            card.lastRating = 4
+          }
+          for(const card of deck.problems){
+            card.lastRating = 4
+          }
+          for(const card of deck.definitions){
+            card.lastRating = 4
+          }
         }
       }
     },
     getCardNumber(deck:Deck):number{
-      return deck.schemas + deck.problems + deck.definitions
+      return deck.schemas.length + deck.problems.length + deck.definitions.length
     },
     async get_my_active_decks(): Promise<void>{
       //MOCK um es zu leeren
       this.clear_decks();
       await this.addMultDecks([["Strafrecht AT (Lexmea)", "#03364D"]]);
-      this.setDeckProgress("Strafrecht AT (Lexmea)",[5,3,2,4,5])
-      //TODO MOCK entfernen
-    },
-    //MOCK wahrscheinlich nicht benötigt--> entfernen
-    setDeckProgress(deckname: string,progress: number[]): void{
-      for(const deck of this.decks){
-        if(deck.title === deckname){
-          deck.cards = progress
-        }
-      }
     },
     clear_decks(): void {
       this.decks.splice(0, this.decks.length)
@@ -172,24 +206,40 @@ export const useDeckStore = defineStore('decks', {
       }
       return undefined
     },
-  //   Funktionene um bei unangemeldeten bewertungen zu speicher:
-    rate(id:number,rateIndex:number){
-      const deck = this.getDeckByOneID(id)
-      if(deck){
-        const cards:number[] = deck.cards
-        cards[rateIndex]++
-        cards[4]--
-        deck.cards = cards
-        localStorage.setItem('decks', JSON.stringify(this.decks))
+
+    cleanDefinitionString(content: string): string[] {
+      const cleanString : string[] = []
+
+      const cardContent = content.split(",")
+      const question = cardContent[0]
+      const questionCut = question.split("[")
+      const cleanQuestion = questionCut[1]
+
+      cleanString.push(cleanQuestion)
+
+      let cardText : string = ""
+      for (let i = 1; i < cardContent.length; i++) {
+        cardText = cardText.concat(cardContent[i])
       }
+
+      const answer = cardText.split(" \\")
+      const cleanAnswer = answer[0].concat("\"")
+
+      cleanString.push(cleanAnswer)
+
+      return cleanString
     },
-    undoRate(id:number,rateIndex:number){
-      const deck = this.getDeckByOneID(id)
+  //   Funktionene um bei unangemeldeten bewertungen zu speicher:
+    rate(cardID:number,deckID:number,rateIndex:number){
+      const deck = this.getDeckByOneID(deckID)
       if(deck){
-        const cards:number[] = deck.cards
-        cards[rateIndex]--
-        cards[4]++
-        deck.cards = cards
+        const allCards = deck.problems.concat(deck.schemas,deck.definitions)
+        for(const card of allCards){
+          if(card.id == cardID){
+            card.lastRating = rateIndex
+            break
+          }
+        }
         localStorage.setItem('decks', JSON.stringify(this.decks))
       }
     },
