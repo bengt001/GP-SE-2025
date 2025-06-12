@@ -193,7 +193,11 @@ const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name
           </v-col>
         </v-row>
 
-        <v-row v-if="card && reveal" class="mb-2" justify="center">
+        <v-row
+          v-if="card && reveal"
+          class="mb-2"
+          justify="center"
+        >
           <v-col cols="auto">
             <v-chip
               v-if="reveal"
