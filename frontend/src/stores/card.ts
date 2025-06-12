@@ -20,6 +20,7 @@ export const useCardStore = defineStore('card', {
     },
     clearCards(): void{
       this.cards = []
+      this.currentCardIndex = 0
     },
 
     resetIndex(): void{

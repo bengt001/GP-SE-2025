@@ -248,6 +248,9 @@ function startLearning() {
   if (schema.value) selectedMode.push("Aufdeckkarte")
 
   for (let i = 0; i < SelectedDeck.value.length; i++) {
+    if (!SelectedDeck.value[i]) {
+      continue
+    }
     for(const mode of selectedMode){
       if(mode == "Definitionen"){
         Cards = Cards.concat(allDecks.value[i].definitions)
