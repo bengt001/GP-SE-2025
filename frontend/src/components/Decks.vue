@@ -5,8 +5,8 @@ import {ref} from "vue";
 import { computed } from 'vue';
 import type Deck from "@/types/Deck"
 import {useCardStore} from "@/stores/card";
-import axios from "../api/config";
 import router from "@/router";
+import type Card from "@/types/Card";
 
 
 const UserStore = useUserStore()
@@ -194,72 +194,80 @@ function getCardCount(selectedCardTypes:string[]): number{
     if (SelectedDeck.value[i]) {
       for(const type of selectedCardTypes){
         if(type == "Probleme"){
-          cardCount += allDecks.value[i].problems
+          cardCount += allDecks.value[i].problems.length
         }
         else if(type == "Definitionen"){
-          cardCount += allDecks.value[i].definitions
+          cardCount += allDecks.value[i].definitions.length
         }
         else if(type == "Schema"){
-          cardCount += allDecks.value[i].schemas
+          cardCount += allDecks.value[i].schemas.length
         }
       }
     }
   }
   return cardCount
-
-
 }
 
-async function startLearning() {
-  CardStore.clearCards()
-  let countCards: number = 0
-  let selectedIDs: number[] = []
-
-  for (let i = 0; i < SelectedDeck.value.length; i++) {
-    if (SelectedDeck.value[i]) {
-      selectedIDs = selectedIDs.concat(allDecks.value[i].stapel_id);
+//Methode die genuttzt wird um enene Card array so zu sortieren, dass Alle Karten von ausgewählten decks so soritert sind
+// , dass hinten unbewetete Karten sind und nach vorne von schlecht bis gut sortiert sind
+function sortCards(cardsToSort:Card[]):Card[]{
+  const green:Card[] = []
+  const yellow:Card[] = []
+  const orange:Card[] = []
+  const red:Card[] = []
+  const grey:Card[] = []
+  for(const card of cardsToSort){
+    switch (card.lastRating){
+      case 0:
+        green.push(card)
+        break
+      case 1:
+        yellow.push(card)
+        break
+      case 2:
+        orange.push(card)
+        break
+      case 3:
+        red.push(card)
+        break
+      case 4:
+        grey.push(card)
+        break
     }
   }
+  return green.concat(yellow,orange,red,grey)
+}
+
+function startLearning() {
+  CardStore.clearCards()
+  let Cards:Card[] = []
 
   const selectedMode: string[] = []
   if (definitions.value) selectedMode.push("Definitionen")
   if (problems.value) selectedMode.push("Probleme")
   if (schema.value) selectedMode.push("Aufdeckkarte")
 
-  for (let i = 0; i < selectedIDs.length; i++) {
-    if (countCards >= numberOfCards.value){
-      break
-    }
-
-
-
-    const curDeck = await axios.get("api/decks/" + selectedIDs[i])
-    let curDeckColor:string
-    switch (curDeck.data.authorId){
-      case 0:
-        curDeckColor = "#78B390"
-        break
-      case 1:
-        curDeckColor= "#03364D"
-        break
-      case 2:
-        curDeckColor=  "#FF968B"
-        break
-      default:
-        curDeckColor="white"
-    }
-    for(const card of curDeck.data.cards){
-      if (countCards >= numberOfCards.value){
-        break
+  for (let i = 0; i < SelectedDeck.value.length; i++) {
+    for(const mode of selectedMode){
+      if(mode == "Definitionen"){
+        Cards = Cards.concat(allDecks.value[i].definitions)
       }
-      if(selectedMode.includes(card.cardType)){
-        const cardContent = CardStore.cleanDefinitionString(card.content)
-        CardStore.addCard(card.cardType,cardContent[0],cardContent[1],selectedIDs[i],card.cardId,curDeckColor)
-        countCards += 1
+      else if(mode == "Probleme"){
+        Cards = Cards.concat(allDecks.value[i].problems)
+      }
+      else if(mode == "Aufdeckkarte"){
+        Cards = Cards.concat(allDecks.value[i].schemas)
       }
     }
   }
-  await router.push("/cards/" + CardStore.getFirst())
+
+  Cards = sortCards(Cards).slice(-numberOfCards.value).reverse()
+
+  for(const card of Cards){
+    CardStore.addCard(card)
+  }
+
+  router.push("/cards/" + CardStore.getFirst())
 }
 
 
@@ -348,9 +356,9 @@ async function startLearning() {
                   class="progress_bar"
                   style="display:flex; width:250px; height:10px;  margin-left: -10px"
                 >
-                  <!--                  geht durch liste der cards für den stapel : Aufbau [Anzahl grüne Karten,Anzahl gelbe Karten,Anzahl orange Karten,Anzahl rote Karten,Anzahl graue Karten]-->
+                  <!--  geht durch liste der cards für den stapel : Aufbau [Anzahl grüne Karten,Anzahl gelbe Karten,Anzahl orange Karten,Anzahl rote Karten,Anzahl graue Karten]-->
                   <div
-                    v-for="(count, color_index) in toDisplay[n-1].cards"
+                    v-for="(count, color_index) in DeckStore.getDeckRating(toDisplay[n-1])"
                     :key="color_index"
                     :style="{
                       backgroundColor: colorNames[color_index],
@@ -461,7 +469,7 @@ async function startLearning() {
                 >
                   <!--geht durch liste der cards für den stapel : Aufbau [Anzahl grüne Karten,Anzahl gelbe Karten,Anzahl orange Karten,Anzahl rote Karten,Anzahl graue Karten]-->
                   <div
-                    v-for="(count, color_index) in toDisplay[n-1].cards"
+                    v-for="(count, color_index) in DeckStore.getDeckRating(toDisplay[n-1])"
                     :key="color_index"
                     :style="{
                       backgroundColor: colorNames[color_index],
@@ -709,7 +717,7 @@ async function startLearning() {
         <v-btn
           color="primary"
           :disabled="!canLearn"
-          @click="startLearning"
+          @click="startLearning()"
         >
           <v-icon start>
             mdi-school

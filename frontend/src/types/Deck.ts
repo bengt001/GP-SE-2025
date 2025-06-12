@@ -1,10 +1,11 @@
+import type Card from "@/types/Card";
+
 export default interface Deck {
   title: string;
   stapel_id: number[];
   author_id: number;
-  cards: number[];
-  definitions:number;
-  problems:number;
-  schemas:number;
+  definitions:Card[];
+  problems:Card[];
+  schemas:Card[];
   color: string|undefined;
 }
