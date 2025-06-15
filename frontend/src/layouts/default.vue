@@ -82,9 +82,16 @@
             class="font-weight-light text-none font-weight-bold"
             :to="tab.to"
           >
-            <v-icon>
-              {{ tab.icon }}
-            </v-icon>
+            <div style="position: relative; display: inline-block;">
+              <v-icon>{{ tab.icon }}</v-icon>
+
+              <!-- Roten Punkt nur bei Benachrichtigungen anzeigen, wenn User angemeldet und ungelesene Nachrichten vorhanden -->
+              <span
+                v-if="tab.title === 'Benachrichtigungen' && notificationStore.hasUnread && userStore.authenticated"
+                class="red-dot"
+                aria-label="unread notifications"
+              />
+            </div>
             <div v-if="$vuetify.display.mdAndUp">
               {{ tab.title }}
             </div>
@@ -100,7 +107,9 @@
 
 <script lang="ts" setup>
 import {useUserStore} from "@/stores/users";
+import { useNotificationStore } from '@/stores/notifications'
 
+const notificationStore = useNotificationStore()
 const userStore = useUserStore();
 
 // Liste der Subheader-Tabs für for-Loop
@@ -160,3 +169,14 @@ watch(group, () => {
   drawer.value = false
 })
 </script>
+
+<style scoped lang="sass">
+.red-dot
+  position: absolute
+  top: 0px
+  right: 0px
+  width: 8px
+  height: 8px
+  background-color: red
+  border-radius: 50%
+</style>

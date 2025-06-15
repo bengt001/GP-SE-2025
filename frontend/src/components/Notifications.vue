@@ -1,30 +1,9 @@
 <script setup lang="ts">
-import {ref} from 'vue'
 import {useUserStore} from "@/stores/users";
+import { useNotificationStore } from '@/stores/notifications'
 
+const notificationStore = useNotificationStore()
 const UserStore = useUserStore()
-const exampleNotes = ref([
-  {
-    rechtsgebiet: ['Strafrecht', 'Strafrecht AT'],
-    cardsDue: 7,
-    read: false,
-
-  },
-  {
-    rechtsgebiet: ['Strafrecht', 'Strafrecht BT', "Nichtvermögensdelikte"],
-    cardsDue: 10,
-    read: true,
-  }
-])
-const deleteNote = (index: number) => {
-  exampleNotes.value.splice(index, 1)
-}
-
-function markAsRead(index: number) {
-  if (!exampleNotes.value[index].read) {
-    exampleNotes.value[index].read = true
-  }
-}
 
 </script>
 
@@ -35,10 +14,10 @@ function markAsRead(index: number) {
       v-if="UserStore.authenticated"
     >
       <v-card
-        v-for="(note, index) in exampleNotes"
+        v-for="(note, index) in notificationStore.exampleNotes"
         :key="index"
         class="mx-auto mb-4"
-        @click="markAsRead(index)"
+        @click="notificationStore.markAsRead(index)"
       >
         <v-card-title :class="{ 'read-text': note.read }">
           {{ note.cardsDue }} Karten sind heute fällig!
@@ -49,14 +28,13 @@ function markAsRead(index: number) {
           color="grey"
           class="delete-btn position-absolute"
           style="top: 50%; right: 20px; transform: translateY(-50%)"
-          @click="deleteNote(index)"
+          @click="notificationStore.deleteNote(index)"
         >
           <v-icon>mdi-delete</v-icon>
         </v-btn>
         <v-card-text :class="{ 'read-text': note.read }">
-          Der Stapel {{ note.rechtsgebiet[note.rechtsgebiet.length - 1] }} hat {{ note.cardsDue }} fällig Karten. Klicke
-          hier,
-          um sofot mit dem Lernen zu starten.
+          Der Stapel {{ note.rechtsgebiet[note.rechtsgebiet.length - 1] }} hat {{ note.cardsDue }} fällig Karten.
+          Klicke hier, um sofot mit dem Lernen zu starten.
         </v-card-text>
       </v-card>
     </v-col>
