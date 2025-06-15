@@ -11,10 +11,10 @@
           <div>
             <v-card
               max-width="150"
+              class="rounded-0"
             >
               <v-img
-                max-height="55"
-                color="white"
+                max-height="50"
                 src="@/assets/lexMeaWebsiteLogo.png"
                 alt="LexMea logo"
               />
@@ -124,7 +124,7 @@ const subheader_tabs = ref([
   {
     title: 'Benachrichtigungen',
     icon: 'mdi-message-text',
-    to: ' ',
+    to: '/notification',
   }
 ])
 
@@ -135,7 +135,6 @@ const group = ref()
 const items = ref([
   {
     title: 'Bibliothek',
-    value: 'foo',
     children: [
       {
         title: 'Gesetze',
@@ -150,12 +149,10 @@ const items = ref([
     ]
   },
   {
-    title: 'Arbeitsbereich',
-    value: 'fizz',
+    title: 'Arbeitsbereich'
   },
   {
-    title: 'Lernbereich',
-    value: 'buzz',
+    title: 'Lernbereich'
   },
 ])
 
