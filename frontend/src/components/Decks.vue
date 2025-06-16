@@ -5,8 +5,8 @@ import {ref} from "vue";
 import { computed } from 'vue';
 import type Deck from "@/types/Deck"
 import {useCardStore} from "@/stores/card";
-import axios from "../api/config";
 import router from "@/router";
+import type Card from "@/types/Card";
 
 
 const UserStore = useUserStore()
@@ -27,6 +27,11 @@ const problems = ref(false)
 const schema = ref(false)
 const numberOfCards = ref(0)
 
+const menu = ref(false)
+const lexmea = ref(true)
+const own = ref(true)
+const broad = ref(true)
+
 const searchValue = ref("")
 
 const colorNames = ['green', 'yellow', 'orange', 'red', 'grey'];
@@ -37,7 +42,15 @@ const toDisplay = computed(() => {
   const items: Deck[] = [];
   for (let i = 0; i < allDecks.value.length; i++) {
     if (allDecks.value[i].title.includes(searchValue.value)) {
-      items.push(allDecks.value[i])
+      if(lexmea.value && allDecks.value[i].title.includes("Lexmea")){
+        items.push(allDecks.value[i])
+      }
+      else if(own.value && allDecks.value[i].title.includes("Eigener Stapel")){
+        items.push(allDecks.value[i])
+      }
+      else if(broad.value && allDecks.value[i].title.includes("Broadcast")){
+        items.push(allDecks.value[i])
+      }
     }
   }
   return items;
@@ -181,73 +194,83 @@ function getCardCount(selectedCardTypes:string[]): number{
     if (SelectedDeck.value[i]) {
       for(const type of selectedCardTypes){
         if(type == "Probleme"){
-          cardCount += allDecks.value[i].problems
+          cardCount += allDecks.value[i].problems.length
         }
         else if(type == "Definitionen"){
-          cardCount += allDecks.value[i].definitions
+          cardCount += allDecks.value[i].definitions.length
         }
         else if(type == "Schema"){
-          cardCount += allDecks.value[i].schemas
+          cardCount += allDecks.value[i].schemas.length
         }
       }
     }
   }
   return cardCount
-
-
 }
 
-async function startLearning() {
-  CardStore.clearCards()
-  let countCards: number = 0
-  let selectedIDs: number[] = []
-
-  for (let i = 0; i < SelectedDeck.value.length; i++) {
-    if (SelectedDeck.value[i]) {
-      selectedIDs = selectedIDs.concat(allDecks.value[i].stapel_id);
+//Methode die genuttzt wird um enene Card array so zu sortieren, dass Alle Karten von ausgewählten decks so soritert sind
+// , dass hinten unbewetete Karten sind und nach vorne von schlecht bis gut sortiert sind
+function sortCards(cardsToSort:Card[]):Card[]{
+  const green:Card[] = []
+  const yellow:Card[] = []
+  const orange:Card[] = []
+  const red:Card[] = []
+  const grey:Card[] = []
+  for(const card of cardsToSort){
+    switch (card.lastRating){
+      case 0:
+        green.push(card)
+        break
+      case 1:
+        yellow.push(card)
+        break
+      case 2:
+        orange.push(card)
+        break
+      case 3:
+        red.push(card)
+        break
+      case 4:
+        grey.push(card)
+        break
     }
-    DeckStore.setProgress(selectedIDs)
   }
+  return green.concat(yellow,orange,red,grey)
+}
+
+function startLearning() {
+  CardStore.clearCards()
+  let Cards:Card[] = []
 
   const selectedMode: string[] = []
   if (definitions.value) selectedMode.push("Definitionen")
   if (problems.value) selectedMode.push("Probleme")
   if (schema.value) selectedMode.push("Aufdeckkarte")
 
-  for (let i = 0; i < selectedIDs.length; i++) {
-    if (countCards >= numberOfCards.value){
-      break
+  for (let i = 0; i < SelectedDeck.value.length; i++) {
+    if (!SelectedDeck.value[i]) {
+      continue
     }
-
-
-
-    const curDeck = await axios.get("api/decks/" + selectedIDs[i])
-    let curDeckColor:string
-    switch (curDeck.data.authorId){
-      case 0:
-        curDeckColor = "#78B390"
-        break
-      case 1:
-        curDeckColor= "#03364D"
-        break
-      case 2:
-        curDeckColor=  "#FF968B"
-        break
-      default:
-        curDeckColor="white"
-    }
-    for(const card of curDeck.data.cards){
-      if (countCards >= numberOfCards.value){
-        break
+    for(const mode of selectedMode){
+      if(mode == "Definitionen"){
+        Cards = Cards.concat(allDecks.value[i].definitions)
       }
-      if(selectedMode.includes(card.cardType)){
-        const cardContent = CardStore.cleanDefinitionString(card.content)
-        CardStore.addCard(card.cardType,cardContent[0],cardContent[1],selectedIDs[i],card.cardId,curDeckColor)
-        countCards += 1
+      else if(mode == "Probleme"){
+        Cards = Cards.concat(allDecks.value[i].problems)
+      }
+      else if(mode == "Aufdeckkarte"){
+        Cards = Cards.concat(allDecks.value[i].schemas)
       }
     }
   }
-  await router.push("/cards/" + CardStore.getFirst())
+
+  Cards = sortCards(Cards).slice(-numberOfCards.value).reverse()
+
+  for(const card of Cards){
+    CardStore.addCard(card)
+  }
+
+  router.push("/cards/" + CardStore.getFirst())
 }
 
 
@@ -255,6 +278,49 @@ async function startLearning() {
 </script>
 <template>
   <Searchbar @change-value="searchValue=$event" />
+
+  <v-menu
+    v-model="menu"
+    :close-on-content-click="false"
+  >
+    <template #activator="{ props }">
+      <v-btn
+        class="v-btn--flat filter-btn"
+        v-bind="props"
+        icon="mdi-filter"
+        color="primary"
+      />
+    </template>
+    <v-card min-width="300">
+      <v-list>
+        <v-list-item>
+          <v-switch
+            v-model="lexmea"
+            color="primary"
+            label="Lexmea"
+            hide-details
+          />
+        </v-list-item>
+        <v-list-item>
+          <v-switch
+            v-model="broad"
+            color="primary"
+            label="Broadcast"
+            hide-details
+          />
+        </v-list-item>
+        <v-list-item v-if="UserStore.authenticated">
+          <v-switch
+            v-model="own"
+            label="Eigene Stapel"
+            color="primary"
+            hide-details
+          />
+        </v-list-item>
+      </v-list>
+    </v-card>
+  </v-menu>
+
   <v-container class="overflow-hidden">
     <v-row
       v-if="UserStore.authenticated"
@@ -277,7 +343,7 @@ async function startLearning() {
             :style="{ borderColor: toDisplay[n - 1].color, borderStyle: 'solid', borderWidth: '10px' }"
           >
             <v-card-title
-              class="text-h5"
+              class="text-h5 no-word-break"
               style="white-space: normal;"
             >
               {{ toDisplay[n - 1].title }}
@@ -293,9 +359,9 @@ async function startLearning() {
                   class="progress_bar"
                   style="display:flex; width:250px; height:10px;  margin-left: -10px"
                 >
-                  <!--                  geht durch liste der cards für den stapel : Aufbau [Anzahl grüne Karten,Anzahl gelbe Karten,Anzahl orange Karten,Anzahl rote Karten,Anzahl graue Karten]-->
+                  <!--  geht durch liste der cards für den stapel : Aufbau [Anzahl grüne Karten,Anzahl gelbe Karten,Anzahl orange Karten,Anzahl rote Karten,Anzahl graue Karten]-->
                   <div
-                    v-for="(count, color_index) in toDisplay[n-1].cards"
+                    v-for="(count, color_index) in DeckStore.getDeckRating(toDisplay[n-1])"
                     :key="color_index"
                     :style="{
                       backgroundColor: colorNames[color_index],
@@ -356,6 +422,16 @@ async function startLearning() {
           </v-card>
         </v-sheet>
       </v-col>
+      <v-col
+        v-for="i in DeckStore.getloadingDecks()"
+        :key="i"
+        cols="auto"
+      >
+        <v-skeleton-loader
+          type="card"
+          style="width:300px; height:300px; margin:8px"
+        />
+      </v-col>
     </v-row>
     <!--      Dashboard for unauthenticated User-->
     <v-row
@@ -378,7 +454,7 @@ async function startLearning() {
             :style="{ borderColor: toDisplay[n - 1].color, borderStyle: 'solid', borderWidth: '10px' }"
           >
             <v-card-title
-              class="text-h5"
+              class="text-h5 no-word-break"
               style="white-space: normal;"
             >
               {{ toDisplay[n-1].title }}
@@ -396,7 +472,7 @@ async function startLearning() {
                 >
                   <!--geht durch liste der cards für den stapel : Aufbau [Anzahl grüne Karten,Anzahl gelbe Karten,Anzahl orange Karten,Anzahl rote Karten,Anzahl graue Karten]-->
                   <div
-                    v-for="(count, color_index) in toDisplay[n-1].cards"
+                    v-for="(count, color_index) in DeckStore.getDeckRating(toDisplay[n-1])"
                     :key="color_index"
                     :style="{
                       backgroundColor: colorNames[color_index],
@@ -455,6 +531,17 @@ async function startLearning() {
             </v-card-actions>
           </v-card>
         </v-sheet>
+      </v-col>
+
+      <v-col
+        v-for="i in DeckStore.getloadingDecks()"
+        :key="i"
+        cols="auto"
+      >
+        <v-skeleton-loader
+          type="card"
+          style="width:300px; height:300px; margin:8px"
+        />
       </v-col>
     </v-row>
   </v-container>
@@ -633,7 +720,7 @@ async function startLearning() {
         <v-btn
           color="primary"
           :disabled="!canLearn"
-          @click="startLearning"
+          @click="startLearning()"
         >
           <v-icon start>
             mdi-school
@@ -663,4 +750,14 @@ async function startLearning() {
   bottom: 20px
   right: 20px
   z-index: 100
+
+.filter-btn
+  position: fixed
+  bottom: 20px
+  left: 20px
+  z-index: 100
+
+.no-word-break
+  word-break: keep-all
+  overflow-wrap: normal
 </style>

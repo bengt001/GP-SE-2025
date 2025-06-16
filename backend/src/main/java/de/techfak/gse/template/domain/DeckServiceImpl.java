@@ -18,6 +18,12 @@ public class DeckServiceImpl implements DeckService {
     private final CardRepository cardRepository;
     private final UserRepository userRepository;
 
+    /**
+     * Implementation of the DeckService.
+     * @param deckRepository the deckRepository that is used to save the deck Data
+     * @param cardRepository the cardRepository that is used to save the card Data
+     * @param userRepository the userRepository that is used to save the user Data
+     */
     @Autowired
     public DeckServiceImpl(DeckRepository deckRepository, CardRepository cardRepository,
                            UserRepository userRepository) {

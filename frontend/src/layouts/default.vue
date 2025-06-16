@@ -16,6 +16,7 @@
                 max-height="55"
                 color="white"
                 src="@/assets/lexMeaWebsiteLogo.png"
+                alt="LexMea logo"
               />
             </v-card>
           </div>

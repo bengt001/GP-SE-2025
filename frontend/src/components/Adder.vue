@@ -106,8 +106,8 @@ const oeffirecht_lexmea = ref<TreeNode[]>([
     id: 1,
     title: 'Verfassungsrecht',
     children: [
-      { id: 2, title: 'Staatrecht I: Staatsorganisationsrecht (Lexmea)',color: color_lexmea},
-      { id: 3, title: 'Staatrecht II: Grundrechte (Lexmea)',color: color_lexmea},
+      { id: 2, title: 'Staatsrecht I: Staatsorganisationsrecht (Lexmea)',color: color_lexmea},
+      { id: 3, title: 'Staatsrecht II: Grundrechte (Lexmea)',color: color_lexmea},
     ],
   },
   {
@@ -191,8 +191,8 @@ const oeffirecht_own = ref<TreeNode[]>([
     id: 1,
     title: 'Verfassungsrecht',
     children: [
-      { id: 2, title: 'Staatrecht I: Staatsorganisationsrecht (Eigner Stapel)',color: color_own},
-      { id: 3, title: 'Staatrecht II: Grundrechte (Eigner Stapel)',color: color_own},
+      { id: 2, title: 'Staatsrecht I: Staatsorganisationsrecht (Eigner Stapel)',color: color_own},
+      { id: 3, title: 'Staatsrecht II: Grundrechte (Eigner Stapel)',color: color_own},
     ],
   },
   {
@@ -276,8 +276,8 @@ const oeffirecht_broad = ref<TreeNode[]>([
     id: 1,
     title: 'Verfassungsrecht',
     children: [
-      { id: 2, title: 'Staatrecht I: Staatsorganisationsrecht (Broadcast)',color: color_broadcast},
-      { id: 3, title: 'Staatrecht II: Grundrechte (Broadcast)',color: color_broadcast},
+      { id: 2, title: 'Staatsrecht I: Staatsorganisationsrecht (Broadcast)',color: color_broadcast},
+      { id: 3, title: 'Staatsrecht II: Grundrechte (Broadcast)',color: color_broadcast},
     ],
   },
   {
@@ -374,10 +374,10 @@ const oeffirecht_lexmea_own = ref<TreeNode[]>([
     id: 1,
     title: 'Verfassungsrecht',
     children: [
-      { id: 2, title: 'Staatrecht I: Staatsorganisationsrecht (Lexmea)',color: color_lexmea},
-      { id: 3, title: 'Staatrecht II: Grundrechte (Lexmea)',color: color_lexmea},
-      { id: 4, title: 'Staatrecht I: Staatsorganisationsrecht (Eigener Stapel)',color: color_own},
-      { id: 5, title: 'Staatrecht II: Grundrechte (Eigener Stapel)',color: color_own},
+      { id: 2, title: 'Staatsrecht I: Staatsorganisationsrecht (Lexmea)',color: color_lexmea},
+      { id: 3, title: 'Staatsrecht II: Grundrechte (Lexmea)',color: color_lexmea},
+      { id: 4, title: 'Staatsrecht I: Staatsorganisationsrecht (Eigener Stapel)',color: color_own},
+      { id: 5, title: 'Staatsrecht II: Grundrechte (Eigener Stapel)',color: color_own},
     ],
   },
   {
@@ -483,10 +483,10 @@ const oeffirecht_broadcast_own = ref<TreeNode[]>([
     id: 1,
     title: 'Verfassungsrecht',
     children: [
-      { id: 2, title: 'Staatrecht I: Staatsorganisationsrecht (Broadcast)',color: color_broadcast},
-      { id: 3, title: 'Staatrecht II: Grundrechte (Broadcast)',color: color_broadcast},
-      { id: 4, title: 'Staatrecht I: Staatsorganisationsrecht (Eigener Stapel)',color: color_own},
-      { id: 5, title: 'Staatrecht II: Grundrechte (Eigener Stapel)',color: color_own},
+      { id: 2, title: 'Staatsrecht I: Staatsorganisationsrecht (Broadcast)',color: color_broadcast},
+      { id: 3, title: 'Staatsrecht II: Grundrechte (Broadcast)',color: color_broadcast},
+      { id: 4, title: 'Staatsrecht I: Staatsorganisationsrecht (Eigener Stapel)',color: color_own},
+      { id: 5, title: 'Staatsrecht II: Grundrechte (Eigener Stapel)',color: color_own},
     ],
   },
   {
@@ -591,10 +591,10 @@ const oeffirecht_lexmea_broadcast = ref<TreeNode[]>([
     id: 1,
     title: 'Verfassungsrecht',
     children: [
-      { id: 2, title: 'Staatrecht I: Staatsorganisationsrecht (Lexmea)',color: color_lexmea},
-      { id: 3, title: 'Staatrecht II: Grundrechte (Lexmea)',color: color_lexmea},
-      { id: 4, title: 'Staatrecht I: Staatsorganisationsrecht (Broadcast)',color: color_broadcast},
-      { id: 5, title: 'Staatrecht II: Grundrechte (Broadcast)',color: color_broadcast},
+      { id: 2, title: 'Staatsrecht I: Staatsorganisationsrecht (Lexmea)',color: color_lexmea},
+      { id: 3, title: 'Staatsrecht II: Grundrechte (Lexmea)',color: color_lexmea},
+      { id: 4, title: 'Staatsrecht I: Staatsorganisationsrecht (Broadcast)',color: color_broadcast},
+      { id: 5, title: 'Staatsrecht II: Grundrechte (Broadcast)',color: color_broadcast},
     ],
   },
   {
@@ -712,12 +712,12 @@ const oeffirecht_lexmea_broadcast_own = ref<TreeNode[]>([
     id: 1,
     title: 'Verfassungsrecht',
     children: [
-      { id: 2, title: 'Staatrecht I: Staatsorganisationsrecht (Lexmea)',color: color_lexmea},
-      { id: 3, title: 'Staatrecht II: Grundrechte (Lexmea)',color: color_lexmea},
-      { id: 4, title: 'Staatrecht I: Staatsorganisationsrecht (Broadcast)',color: color_broadcast},
-      { id: 5, title: 'Staatrecht II: Grundrechte (Broadcast)',color: color_broadcast},
-      { id: 6, title: 'Staatrecht I: Staatsorganisationsrecht (Eigener Stapel)',color: color_own},
-      { id: 7, title: 'Staatrecht II: Grundrechte (Eigener Stapel)',color: color_own},
+      { id: 2, title: 'Staatsrecht I: Staatsorganisationsrecht (Lexmea)',color: color_lexmea},
+      { id: 3, title: 'Staatsrecht II: Grundrechte (Lexmea)',color: color_lexmea},
+      { id: 4, title: 'Staatsrecht I: Staatsorganisationsrecht (Broadcast)',color: color_broadcast},
+      { id: 5, title: 'Staatsrecht II: Grundrechte (Broadcast)',color: color_broadcast},
+      { id: 6, title: 'Staatsrecht I: Staatsorganisationsrecht (Eigener Stapel)',color: color_own},
+      { id: 7, title: 'Staatsrecht II: Grundrechte (Eigener Stapel)',color: color_own},
     ],
   },
   {
@@ -790,13 +790,12 @@ const zivilrecht_lexmea_broadcast_own = ref<TreeNode[]>([
 ])
 
 function addDecks() {
-  for (const selecteddeck of selected.value) {
-    deckStore.addDeck(selecteddeck.title, selecteddeck.color)
-  }
+  const deckTuples = selected.value.map(deck => [deck.title, deck.color] as [string, string | undefined]);
+  deckStore.addMultDecks(deckTuples)
   addDecksSnack.value = true
   setTimeout(() => {
     router.push('/')
-  }, 2000)
+  }, 1)
 
 
 }
@@ -867,6 +866,8 @@ const zivilrechtTree = computed(() => {
       <v-tabs
         v-model="tab"
         bg-color="primary"
+        show-arrows
+        class="overflow-auto"
       >
         <v-tab value="Strafrecht">
           Strafrecht
