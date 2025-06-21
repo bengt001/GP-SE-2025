@@ -55,7 +55,7 @@ public class InitializeLexmeaDatabase implements InitializingBean {
                     "phoenix.wright@aa.de",
                     "password",
                     "Phoenix Wright",
-                    "ROLE_USER"); //brodcaster
+                    "ROLE_USER"); //broadcaster
             Usr user2 = userService.createUser("Lexmea",
                     "lexmea@law.de",
                     "password",
@@ -92,7 +92,5 @@ public class InitializeLexmeaDatabase implements InitializingBean {
             }
             deckService.getNewUserDeck(user1, 1);
         }
-
-
     }
 }

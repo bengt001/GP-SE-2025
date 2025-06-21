@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService {
         throw new UsernameNotFoundException(email + strNotFound);
     }
 
-    public Usr loadUserByID(final String userID) throws UsernameNotFoundException {
+    public Usr loadUserById(final String userID) throws UsernameNotFoundException {
          return userRepository.findById(userID)
          .orElseThrow(() -> new UsernameNotFoundException(userID + strNotFound));
     }
@@ -55,7 +55,7 @@ public class UserServiceImpl implements UserService {
         Long counter = 0L;
         while (true) {
             try {
-                loadUserByID(String.valueOf(counter));
+                loadUserById(String.valueOf(counter));
                 counter++;
             } catch (UsernameNotFoundException e) {
                 break;

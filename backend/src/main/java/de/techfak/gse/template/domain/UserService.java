@@ -10,6 +10,8 @@ public interface UserService extends UserDetailsService {
     @Override
     Usr loadUserByUsername(String email) throws UsernameNotFoundException;
 
+    Usr loadUserById(String id);
+
     Usr createUser(String username, String email, String password, String displayName, String... roles);
 
     boolean existsEmail(String email);
