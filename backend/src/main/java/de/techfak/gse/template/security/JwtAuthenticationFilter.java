@@ -1,6 +1,6 @@
 package de.techfak.gse.template.security;
 
-import de.techfak.gse.template.domain.Usr;
+import de.techfak.gse.template.domain.entities.Usr;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.FilterChain;

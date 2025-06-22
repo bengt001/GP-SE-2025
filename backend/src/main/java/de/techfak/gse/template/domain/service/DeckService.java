@@ -1,6 +1,11 @@
-package de.techfak.gse.template.domain;
+package de.techfak.gse.template.domain.service;
 
-import java.util.Dictionary;
+import de.techfak.gse.template.domain.Rating;
+import de.techfak.gse.template.domain.entities.Card;
+import de.techfak.gse.template.domain.entities.CardInfo;
+import de.techfak.gse.template.domain.entities.Deck;
+import de.techfak.gse.template.domain.entities.Usr;
+
 import java.util.List;
 import java.util.Optional;
 

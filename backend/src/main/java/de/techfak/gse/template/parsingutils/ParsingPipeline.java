@@ -4,7 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import de.techfak.gse.template.domain.*;
+import de.techfak.gse.template.domain.entities.Deck;
+import de.techfak.gse.template.domain.service.CardService;
+import de.techfak.gse.template.domain.service.DeckService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,6 +24,10 @@ public class ParsingPipeline {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ParsingPipeline.class);
     private static final String ERROR_MSG = "Deck couldnt be created";
+
+    private int card1 = 0;
+    private int card2 = 0;
+    private int card3 = 0;
 
     private final CardService cardService;
     private final DeckService deckService;
@@ -60,6 +66,9 @@ public class ParsingPipeline {
             } else {
                 LOGGER.debug("empty root");
             }
+            System.out.println("AMOUNT OF CARDS1: " + card1 + "####################");
+            System.out.println("AMOUNT OF CARDS2: " + card2 + "####################");
+            System.out.println("AMOUNT OF CARDS3: " + card3 + "####################");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -85,7 +94,9 @@ public class ParsingPipeline {
                 throw new DeckCreationFailedException(ERROR_MSG);
             } else {
                 Deck currentDeck = deckService.addDeck(true, rechtgebietList, userId);
+
                 for (String[] content : problemBoxes) {
+                    card1++;
                     try {
                         String jsonArray = mapper.writeValueAsString(content);
                         LOGGER.debug(jsonArray);
@@ -97,6 +108,7 @@ public class ParsingPipeline {
                 }
                 for (String[] content : definitionBoxes) {
                     try {
+                        card2++;
                         String jsonArray = mapper.writeValueAsString(content);
                         LOGGER.debug(jsonArray);
                         cardService.addCard(jsonArray, "Definitionen", currentDeck);
@@ -109,6 +121,7 @@ public class ParsingPipeline {
                     String jsonArray = mapper.writeValueAsString(aufdeckCard);
                     System.out.println(jsonArray);
                     if (aufdeckCard.hasOtherData()) {
+                        card3++;
                         LOGGER.debug(jsonArray);
                         cardService.addCard(jsonArray, "Aufdeckkarte", currentDeck);
                     } else {

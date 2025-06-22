@@ -1,9 +1,8 @@
 package de.techfak.gse.template;
 
-import de.techfak.gse.template.domain.*;
+import de.techfak.gse.template.domain.service.UserService;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 /**

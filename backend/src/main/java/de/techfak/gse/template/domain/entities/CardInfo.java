@@ -1,5 +1,7 @@
-package de.techfak.gse.template.domain;
+package de.techfak.gse.template.domain.entities;
 
+import de.techfak.gse.template.domain.Rating;
+import de.techfak.gse.template.domain.SraValues;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -29,7 +31,7 @@ public class CardInfo {
     private String editedContent;
     @Column
     private Rating rating;
-    @Column
+    @Embedded
     private SraValues sraValues;
 
     protected CardInfo() {
@@ -44,12 +46,12 @@ public class CardInfo {
      * @param deckId
      * @param rating
      */
-    public CardInfo(Usr userId, Card cardId, Deck deckId, Rating rating, SraValues sraValues) {
+    public CardInfo(Usr userId, Card cardId, Deck deckId, Rating rating) {
         this.userId = userId;
         this.cardId = cardId;
         this.deckId = deckId;
         this.rating = rating;
         this.nextRepetition = LocalDate.now();
-        this.sraValues =  sraValues;
+        this.sraValues =  new SraValues();
     }
 }

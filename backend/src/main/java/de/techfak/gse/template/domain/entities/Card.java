@@ -1,6 +1,7 @@
-package de.techfak.gse.template.domain;
+package de.techfak.gse.template.domain.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import de.techfak.gse.template.domain.SraValues;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,12 +22,12 @@ public class Card {
     private String content;
     @Column
     private String cardType;
-    @Column
+   /*@Column
     private LocalDate nextRevision;
     @Column
     private int rating;
-    @Column
-    private SraValues sraValues;
+    @Embedded
+    private SraValues sraValues;*/
 
     //JsonIgnore
     @ManyToOne
@@ -50,9 +51,9 @@ public class Card {
         this.content = content;
         this.cardType = cardType;
         this.deck = deck;
-        this.nextRevision = LocalDate.now();
+        /*this.nextRevision = LocalDate.now();
         this.rating = -1;
-        this.sraValues = new SraValues();
+        this.sraValues = new SraValues();*/
     }
 
 }

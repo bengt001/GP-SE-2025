@@ -1,4 +1,7 @@
-package de.techfak.gse.template.domain;
+package de.techfak.gse.template.domain.service;
+
+import de.techfak.gse.template.domain.entities.Card;
+import de.techfak.gse.template.domain.entities.Deck;
 
 import java.util.List;
 import java.util.Optional;

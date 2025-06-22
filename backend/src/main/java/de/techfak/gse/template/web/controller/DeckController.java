@@ -1,6 +1,13 @@
 package de.techfak.gse.template.web.controller;
 
 import de.techfak.gse.template.domain.*;
+import de.techfak.gse.template.domain.entities.Card;
+import de.techfak.gse.template.domain.entities.CardInfo;
+import de.techfak.gse.template.domain.entities.Deck;
+import de.techfak.gse.template.domain.entities.Usr;
+import de.techfak.gse.template.domain.service.CardService;
+import de.techfak.gse.template.domain.service.DeckService;
+import de.techfak.gse.template.domain.service.UserService;
 import de.techfak.gse.template.web.exception.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
@@ -9,7 +16,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 
-import java.util.Dictionary;
 import java.util.List;
 import java.util.Optional;
 
@@ -193,7 +199,7 @@ public class DeckController {
     @PatchMapping("/usr/decks/{deckId:\\d+}/{cardId:\\d+}/rank")
     @Secured("ROLE_USER")
     public CardInfo rankCard(@PathVariable final long deckId, @PathVariable final long cardId,
-                           @RequestBody final String rating) {
+                             @RequestBody final String rating) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Usr usr = userService.loadUserByUsername(auth.getName());
         return deckService.rankCard(usr, deckId, cardId, Rating.getRating(rating)).orElseThrow(BadRequestException::new);
