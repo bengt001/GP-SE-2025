@@ -17,13 +17,6 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public List<Notification> getNotifications() {
-        final List<Notification> notifications = new ArrayList<>();
-        notificationRepository.findAll().forEach(notifications::add);
-        return notifications;
-    }
-
-    @Override
     public List<Notification> getNotificationByUser(Usr user) {
         final List<Notification> notifications = new ArrayList<>();
         List<Notification> temp = new ArrayList<>();

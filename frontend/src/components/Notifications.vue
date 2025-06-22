@@ -5,6 +5,16 @@ import { useNotificationStore } from '@/stores/notifications'
 const notificationStore = useNotificationStore()
 const UserStore = useUserStore()
 
+watch(
+  () => UserStore.authenticated,
+  (isAuthenticated) => {
+    if (isAuthenticated) {
+      notificationStore.getNotifications()
+    }
+  },
+  { immediate: true }
+)
+
 </script>
 
 <template>
@@ -14,13 +24,13 @@ const UserStore = useUserStore()
       v-if="UserStore.authenticated"
     >
       <v-card
-        v-for="(note, index) in notificationStore.exampleNotes"
+        v-for="(note, index) in notificationStore.notes"
         :key="index"
         class="mx-auto mb-4"
         @click="notificationStore.markAsRead(index)"
       >
         <v-card-title :class="{ 'read-text': note.read }">
-          {{ note.cardsDue }} Karten sind heute fällig!
+          Karten sind heute fällig!
         </v-card-title>
         <v-btn
           icon
@@ -33,7 +43,7 @@ const UserStore = useUserStore()
           <v-icon>mdi-delete</v-icon>
         </v-btn>
         <v-card-text :class="{ 'read-text': note.read }">
-          Der Stapel {{ note.rechtsgebiet[note.rechtsgebiet.length - 1] }} hat {{ note.cardsDue }} fällig Karten.
+          Du hast Karten, die zum Lernen bereit sind.
           Klicke hier, um sofot mit dem Lernen zu starten.
         </v-card-text>
       </v-card>

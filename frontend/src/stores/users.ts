@@ -8,6 +8,7 @@ export const useUserStore = defineStore('users', {
         authenticated: Boolean(false),
         username: String(''),
         email: String(''),
+        id: String('')
     }),
 
     actions: {

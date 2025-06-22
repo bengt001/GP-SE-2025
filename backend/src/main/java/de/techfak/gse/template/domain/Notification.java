@@ -20,11 +20,14 @@ public class Notification {
 
     private String type;
 
+    private boolean read;
+
     protected Notification() {}
 
     public Notification(Usr user, String type) {
         this.user = user;
         this.type = type;
+        this.read = false;
     }
 
 }
