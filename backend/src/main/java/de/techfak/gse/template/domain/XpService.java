@@ -10,4 +10,5 @@ public interface XpService {
      * @return Vergebene XP als Ganzzahl
      */
     int calculateXp(String cardType, int uncoveredItems, int rating);
+    int addXp(String userId, String cardType, int uncoveredItems, int rating);
 }

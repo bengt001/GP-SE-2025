@@ -1,12 +1,33 @@
 package de.techfak.gse.template.xp;
 
+import de.techfak.gse.template.domain.UserService;
+import de.techfak.gse.template.domain.Usr;
 import de.techfak.gse.template.domain.XpService;
 import de.techfak.gse.template.domain.XpServiceImpl;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class XpServiceImplTest {
-    private final XpService xpService = new XpServiceImpl();
+
+    private XpService xpService;
+
+
+    @BeforeEach
+    void setUp() {
+        // Dummy-UserService, da für calculateXp nicht benötigt
+        UserService dummyUserService = new UserService() {
+            @Override public Usr loadUserByUsername(String email) { return null; }
+            @Override public Usr createUser(String username, String email, String password, String displayName, String... roles) { return null; }
+            @Override public boolean existsEmail(String email) { return false; }
+            @Override public String getFreeID() { return ""; }
+            @Override public void saveUser(Usr user) {}
+            @Override public Usr loadUserByID(String id) { return null; }
+        };
+
+        xpService = new XpServiceImpl(dummyUserService);
+    }
 
     @Test
     void testDefinitionWithSuperRating() {

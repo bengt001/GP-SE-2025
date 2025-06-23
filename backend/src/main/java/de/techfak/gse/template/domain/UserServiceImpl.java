@@ -36,6 +36,7 @@ public class UserServiceImpl implements UserService {
         throw new UsernameNotFoundException(email + strNotFound);
     }
 
+    @Override
     public Usr loadUserByID(final String userID) throws UsernameNotFoundException {
          return userRepository.findById(userID)
          .orElseThrow(() -> new UsernameNotFoundException(userID + strNotFound));
@@ -77,6 +78,11 @@ public class UserServiceImpl implements UserService {
             }
         }
         return false;
+    }
+
+    @Override
+    public void saveUser(Usr user) {
+        userRepository.save(user);
     }
 
 }

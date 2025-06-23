@@ -6,6 +6,12 @@ import org.springframework.stereotype.Service;
 public class XpServiceImpl implements XpService {
 
 
+    private final UserService userService;
+
+    public XpServiceImpl(UserService userService) {
+        this.userService = userService;
+    }
+
     @Override
     public int calculateXp(String cardType, int uncoveredItems, int rating) {
         int baseXp = switch (cardType.toLowerCase()) {
@@ -26,4 +32,17 @@ public class XpServiceImpl implements XpService {
             default -> 0.0;
         };
     }
+
+    @Override
+    public int addXp(String userId, String cardType, int uncoveredItems, int rating) {
+        int gainedXp = calculateXp(cardType, uncoveredItems, rating);
+
+        Usr user = userService.loadUserByID(userId);
+        user.addXp(gainedXp);
+
+        userService.saveUser(user); // Methode muss existieren
+
+        return gainedXp;
+    }
+
 }
