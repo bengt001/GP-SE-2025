@@ -79,6 +79,7 @@ public class ParsingPipeline {
         ObjectMapper mapper = new ObjectMapper();
         ArrayList<String> rechtgebietList = JsonParser.extractContentAsStringFromPath(root, path, "name");
         ArrayList<String> schemaHtml = JsonParser.extractContentAsStringFromPath(root, path, "text");
+        ArrayList<String> title = JsonParser.extractContentAsStringFromPath(root, path, "title");
         if (rechtgebietList.isEmpty() || schemaHtml.isEmpty()) {
             LOGGER.error("no Content");
             throw new DeckCreationFailedException(ERROR_MSG);
@@ -100,7 +101,7 @@ public class ParsingPipeline {
                     try {
                         String jsonArray = mapper.writeValueAsString(content);
                         LOGGER.debug(jsonArray);
-                        cardService.addCard(jsonArray, "Probleme", currentDeck);
+                        cardService.addCard(jsonArray, "Probleme", currentDeck, title.getFirst());
                     } catch (JsonProcessingException e) {
                         LOGGER.error("JsonProcessingException: Probleme card fail");
                         throw new RuntimeException(e);
@@ -111,7 +112,7 @@ public class ParsingPipeline {
                         card2++;
                         String jsonArray = mapper.writeValueAsString(content);
                         LOGGER.debug(jsonArray);
-                        cardService.addCard(jsonArray, "Definitionen", currentDeck);
+                        cardService.addCard(jsonArray, "Definitionen", currentDeck, title.getFirst());
                     } catch (JsonProcessingException e) {
                         LOGGER.error("JsonProcessingException: Definitionen card fail");
                         throw new RuntimeException(e);
@@ -123,7 +124,7 @@ public class ParsingPipeline {
                     if (aufdeckCard.hasOtherData()) {
                         card3++;
                         LOGGER.debug(jsonArray);
-                        cardService.addCard(jsonArray, "Aufdeckkarte", currentDeck);
+                        cardService.addCard(jsonArray, "Aufdeckkarte", currentDeck, title.getFirst());
                     } else {
                         LOGGER.debug("Tree structure doesnt have enough content to build a card");
                     }

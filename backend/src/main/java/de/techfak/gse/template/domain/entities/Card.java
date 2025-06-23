@@ -22,6 +22,8 @@ public class Card {
     private String content;
     @Column
     private String cardType;
+    @Column
+    private String title;
    /*@Column
     private LocalDate nextRevision;
     @Column
@@ -46,11 +48,13 @@ public class Card {
      * @param content
      * @param cardType
      * @param deck
+     * @param title
      */
-    public Card(String content, String cardType, Deck deck) {
+    public Card(String content, String cardType, Deck deck, String title) {
         this.content = content;
         this.cardType = cardType;
         this.deck = deck;
+        this.title = title;
         /*this.nextRevision = LocalDate.now();
         this.rating = -1;
         this.sraValues = new SraValues();*/

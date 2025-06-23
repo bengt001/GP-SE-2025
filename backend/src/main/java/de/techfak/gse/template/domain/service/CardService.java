@@ -11,7 +11,7 @@ import java.util.Optional;
  */
 public interface CardService {
 
-    Card addCard(String content, String cardType, Deck deck);
+    Card addCard(String content, String cardType, Deck deck, String title);
 
     Card updateCard(Long id, String content, String cardType, Deck deck);
 

@@ -39,8 +39,8 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public Card addCard(final String content, final String cardType, final Deck deck) {
-        final Card card = new Card(content, cardType, deck);
+    public Card addCard(final String content, final String cardType, final Deck deck, final String title) {
+        final Card card = new Card(content, cardType, deck, title);
         return cardRepository.save(card);
     }
 
