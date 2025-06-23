@@ -56,6 +56,9 @@ public class Usr implements UserDetails {
     @ManyToMany(mappedBy = "users")
     private transient List<Deck> decks = new ArrayList<>();
 
+    @Column
+    private int totalXp;
+
     /**
      * JPA constructor.
      */
@@ -83,6 +86,7 @@ public class Usr implements UserDetails {
         this.creationDate = LocalDate.now();
         this.displayName = displayName;
         this.userId = userId;
+        this.totalXp = 0;
     }
 
     public void addRole(String role) {
@@ -129,5 +133,9 @@ public class Usr implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public void addXp(int xp) {
+        this.totalXp += xp;
     }
 }
