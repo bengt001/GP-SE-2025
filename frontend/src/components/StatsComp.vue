@@ -4,15 +4,18 @@ import {useUserStore} from "@/stores/users";
 import {ref} from "vue";
 import { computed } from 'vue';
 import type Deck from "@/types/Deck"
+import ColoredSparkline from "@/components/ColoredSparkline.vue";
 
 const UserStore = useUserStore()
 const DeckStore = useDeckStore()
-
 
 const searchValue = ref("")
 
 const colorNames = ['green', 'yellow', 'orange', 'red', 'grey'];
 const value = ref([3,6,1,12,9,3,6])
+
+const cardValue = ref([3,6,1,12,9])
+const labels = ["Easy", "Good", "Hard", "Again", "not learned"];
 
 const allDecks = computed(() => DeckStore.getAllDecks())
 
@@ -25,7 +28,6 @@ const toDisplay = computed(() => {
   }
   return items;
 });
-
 
 </script>
 <template>
@@ -77,7 +79,7 @@ const toDisplay = computed(() => {
                         >
                           <!--                  geht durch liste der cards für den stapel : Aufbau [Anzahl grüne Karten,Anzahl gelbe Karten,Anzahl orange Karten,Anzahl rote Karten,Anzahl graue Karten]-->
                           <div
-                            v-for="(count, color_index) in toDisplay[n-1].cards"
+                            v-for="(count, color_index) in cardValue"
                             :key="color_index"
                             :style="{
                               backgroundColor: colorNames[color_index],
@@ -133,7 +135,7 @@ const toDisplay = computed(() => {
                         >
                           <!--geht durch liste der cards für den stapel : Aufbau [Anzahl grüne Karten,Anzahl gelbe Karten,Anzahl orange Karten,Anzahl rote Karten,Anzahl graue Karten]-->
                           <div
-                            v-for="(count, color_index) in toDisplay[n-1].cards"
+                            v-for="(count, color_index) in cardValue"
                             :key="color_index"
                             :style="{
                               backgroundColor: colorNames[color_index],
@@ -149,15 +151,14 @@ const toDisplay = computed(() => {
                             Karteninformationen
                           </v-expansion-panel-title>
                           <v-expansion-panel-text>
-                            <v-col class="no-word-break">
-                              Definitionskarten: {{ toDisplay[n-1].definitions }}
-                            </v-col>
-                            <v-col class="no-word-break">
-                              Problemkarten: {{ toDisplay[n-1].problems }}
-                            </v-col>
-                            <v-col class="no-word-break">
-                              Schemakarten: {{ toDisplay[n-1].schemas }}
-                            </v-col>
+                            <v-sheet>
+                              <ColoredSparkline
+                                :title="Definitionen"
+                                :values="cardValue"
+                                :labels="labels"
+                                :bar-colors="colorNames"
+                              />
+                            </v-sheet>
                           </v-expansion-panel-text>
                         </v-expansion-panel>
                       </v-expansion-panels>

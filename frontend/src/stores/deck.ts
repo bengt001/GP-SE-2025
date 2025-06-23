@@ -1,4 +1,4 @@
-import {defineStore} from 'pinia'
+ import {defineStore} from 'pinia'
 import type Deck from "@/types/Deck";
 import type Card from "@/types/Card"
 import axios from "../api/config";
