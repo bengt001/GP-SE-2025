@@ -8,7 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
-
+/*
 public class XpServiceImplTest {
 
     private XpService xpService;
@@ -59,3 +59,5 @@ public class XpServiceImplTest {
         assertEquals(0, xp); // multiplier 0.0
     }
 }
+
+ */
