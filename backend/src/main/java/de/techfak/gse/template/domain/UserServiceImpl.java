@@ -13,13 +13,13 @@ public class UserServiceImpl implements UserService {
     public final String strNotFound = " not found";
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final XpService xpService;
+    //private final XpService xpService;
 
     @Autowired
     public UserServiceImpl(final UserRepository userRepository, final PasswordEncoder passwordEncoder, final XpService xpService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.xpService = xpService;
+        //this.xpService = xpService;
     }
 
 
