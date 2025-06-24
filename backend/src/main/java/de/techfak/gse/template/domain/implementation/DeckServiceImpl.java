@@ -180,6 +180,12 @@ public class DeckServiceImpl implements DeckService {
         });
     }
 
+    /**
+     * The method returns the number of cards that are rated as easy, good, hard, again and not learned as a list.
+     * @ usr used for the id.
+     * @ deckId The deck to get.
+     * @return an List of five integers.
+     */
 //    @Override
 //    public Dictionary<Rating, Long> getDeckInfo(Usr usr, long deckId) {
 //        Dictionary<Rating, Long> ratingCount = new Hashtable<>();

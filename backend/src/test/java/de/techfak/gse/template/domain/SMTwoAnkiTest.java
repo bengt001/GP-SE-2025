@@ -92,11 +92,4 @@ class SMTwoAnkiTest {
         assertThat(updatedValues).isEqualTo(new SraValues(6, 15, 245));
     }
 
-    //Kirill: Die Funktion throw gar keinen Fehler also macht der Test keinen Sinn hier.
-    /*@Test
-    void updateValuesRangeIllegalArgument() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                () -> smTwo.updateValues(initValues, Rating.NOT_LEARNED));
-        assertThat(exception).hasMessageContaining("Rating must be between");
-    }*/
 }
