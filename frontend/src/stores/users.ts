@@ -55,6 +55,15 @@ export const useUserStore = defineStore('users', {
       emailTaken(email: string): Promise<boolean> {
         return axios.get(`/api/exists`,{params: {email}})
           .then(res => res.data)
+      },
+
+      async earnXp(cardType: string, itemCount: number, rating: number): Promise<number> { // <NEU>
+        const token = localStorage.getItem('token');                                     // <NEU>
+        const response = await axios.post('/api/xp/earn',                                // <NEU>
+          { cardType, itemCount, rating },                                               // <NEU>
+          { headers: { Authorization: token } }                                          // <NEU>
+        );                                                                               // <NEU>
+        return response.data.xp;                                                         // <NEU>
       }
 
     }

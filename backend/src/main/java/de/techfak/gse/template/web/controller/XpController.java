@@ -1,4 +1,4 @@
-package de.techfak.gse.template.web.controller;
+/*package de.techfak.gse.template.web.controller;
 
 import de.techfak.gse.template.domain.XpService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,3 +58,5 @@ public class XpController {
         }
     }
 }
+
+ */

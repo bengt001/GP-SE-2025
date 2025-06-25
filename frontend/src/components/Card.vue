@@ -22,6 +22,8 @@ const ratingArr = ref<number[]>([])
 const backPossible = ref(false)
 const lastRating = ref(4)
 const ratingLabels = ['Einfach', 'Okay', 'Schwer', 'Nicht gewusst', 'Unbewertet']
+const earnedXp = ref<number | null>(null);
+
 
 const cards = computed(() => cardStore.getCards())
 const curCardIndex = computed(() => cardStore.getCardIndex())
@@ -61,6 +63,7 @@ const countRed = computed(() => {
   }
   return counted
 })
+
 
 watch(cards, newCards => {
     ratingArr.value = Array(newCards.length).fill(4);
@@ -124,12 +127,29 @@ function nextCard() {
   reveal.value = false
 }
 
-function rateCard(colorIndex: number) {
+async function rateCard(colorIndex: number) {
   ratingArr.value[cardStore.getCardIndex()] = colorIndex
   lastRating.value = colorIndex
+
+  const card = cardStore.getCardAtIndex()
+
   if(!userStore.authenticated) {
-    const card = cardStore.getCardAtIndex()
     deckStore.rate(card.id,card.deckID,colorIndex)
+  } else {
+    try {
+      //TODO: Item Count muss noch dynamisch sein. Aktuell fester wert 1 zum Testen
+      //TODO: Evtl. muss der letzt param 4-colorIndex angepasst werden je nachdem wie die Berwertungsreihenfolge im Backend ist
+      const xp = await userStore.earnXp(card.type,  1, 4 - colorIndex)
+      earnedXp.value = xp
+
+      // ⏱️ XP für 2 Sekunden anzeigen
+      setTimeout(() => {
+        earnedXp.value = null
+      }, 2000)
+
+    } catch (error) {
+      console.error("Fehler beim XP-Vergabe:", error)
+    }
   }
   nextCard()
 }
@@ -138,6 +158,22 @@ const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name
 </script>
 
 <template>
+
+
+
+  <v-alert
+    v-if="earnedXp !== null"
+    type="success"
+    variant="tonal"
+    class="earned-xp-alert"
+    transition="fade-transition"
+  >
+    +{{ earnedXp }} XP erhalten!
+  </v-alert>
+
+
+
+
   <div class="progress-container d-flex flex-column align-center mb-4">
     <div class="progress-bar d-flex">
       <div
@@ -161,6 +197,7 @@ const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name
       / {{ cards.length }}
     </div>
   </div>
+
   <div class="card-button-wrap">
     <v-responsive class="card">
       <v-card
@@ -439,6 +476,13 @@ const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name
 </template>
 
 <style scoped lang="sass">
+.earned-xp-alert
+  position: absolute
+  top: 20px
+  left: 50%
+  transform: translateX(-50%)
+  z-index: 9999
+
 .progress-container
   width: 100%
   max-width: 600px

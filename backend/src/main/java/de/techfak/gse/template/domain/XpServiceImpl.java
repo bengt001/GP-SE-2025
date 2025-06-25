@@ -1,5 +1,8 @@
+
 package de.techfak.gse.template.domain;
 
+
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -37,10 +40,10 @@ public class XpServiceImpl implements XpService {
     public int addXp(String userId, String cardType, int uncoveredItems, int rating) {
         int gainedXp = calculateXp(cardType, uncoveredItems, rating);
 
-        Usr user = userService.loadUserByID(userId);
-        user.addXp(gainedXp);
+        //Usr user = userService.loadUserByID(userId);
+        //user.addXp(gainedXp);
 
-        userService.saveUser(user); // Methode muss existieren
+        //userService.saveUser(user); // Methode muss existieren
 
         return gainedXp;
     }
