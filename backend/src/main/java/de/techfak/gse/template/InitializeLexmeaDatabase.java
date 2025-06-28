@@ -1,5 +1,9 @@
 package de.techfak.gse.template;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import de.techfak.gse.template.domain.entities.Card;
+import de.techfak.gse.template.domain.entities.CardInfo;
+import de.techfak.gse.template.domain.entities.Deck;
 import de.techfak.gse.template.domain.service.CardService;
 import de.techfak.gse.template.domain.service.DeckService;
 import de.techfak.gse.template.domain.service.UserService;
@@ -14,6 +18,8 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Service that initializes the Lexmea database.
@@ -26,6 +32,7 @@ public class InitializeLexmeaDatabase implements InitializingBean {
     private final CardService cardService;
     private final DeckService deckService;
     private final UserService userService;
+    private final ObjectMapper objectMapper;
 
     private ParsingPipeline pipeline;
 
@@ -37,11 +44,12 @@ public class InitializeLexmeaDatabase implements InitializingBean {
      */
     @Autowired
     public InitializeLexmeaDatabase(final CardService cardService, final DeckService deckService,
-                                    final UserService userService) {
+                                    final UserService userService, final ObjectMapper objectMapper) {
         this.cardService = cardService;
         this.deckService = deckService;
         this.userService = userService;
         this.pipeline = new ParsingPipeline(this.cardService, this.deckService);
+        this.objectMapper = objectMapper;
     }
 
     @SuppressWarnings({"checkstyle:TrailingComment", "checkstyle:MultipleStringLiterals",
@@ -50,6 +58,17 @@ public class InitializeLexmeaDatabase implements InitializingBean {
     public void afterPropertiesSet() {
         try {
             userService.loadUserByUsername("phoenix.wright@aa.de");
+            try {
+                Optional<Card> card = deckService.getCardByIdFromDeck(1, 1);
+                List<CardInfo> cardInfoList = deckService.getUserCards(userService.loadUserByUsername("phoenix.wright@aa.de"), 1);
+                if (card.isPresent()) {
+                    System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(card.get()));
+                }
+                System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(cardInfoList));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
         } catch (UsernameNotFoundException ex) {
             Usr user1 = userService.createUser("Phoenix Wright",
                     "phoenix.wright@aa.de",
@@ -90,7 +109,41 @@ public class InitializeLexmeaDatabase implements InitializingBean {
                 LOGGER.error("afterPropertiesSet: IOException");
                 throw new RuntimeException(e);
             }
-            deckService.getNewUserDeck(user1, 1);
+            Optional<Deck> updatedDeck = deckService.getNewUserDeck(user1, 1);
+            if (updatedDeck.isPresent()) {
+                Deck tempUpdate = updatedDeck.get();
+                tempUpdate.setVisibility(false);
+                deckService.updateDeck(user1, 1, tempUpdate);
+            }
+            deckService.getNewUserDeck(user1, 2);
+            List<Deck> decks = deckService.getUserDecks(user1);
+            Optional<Deck> deck = deckService.getUserDeckById(user1, 1);
+            List<CardInfo> cardInfoList = deckService.getUserCards(user1, 1);
+            Optional<Card> card = deckService.getCardByIdFromDeck(1, 1);
+            if (card.isPresent()) {
+                Card upCard = card.get();
+                upCard.setContent("\"{\\\"data\\\":\\\"root\\\",\\\"children\\\":[{\\\"data\\\":\\\"Dear Diary\\\",\\\"children\\\":[{\\\"data\\\":\\\"Erfolgscharakter: Erfolgs- und Tätigkeitsdelikte\\\",\\\"children\\\":[{\\\"data\\\":\\\"Erfolgsdelikte\\\",\\\"children\\\":[]},{\\\"data\\\":\\\"Tätigkeitsdelikte\\\",\\\"children\\\":[]}]},{\\\"data\\\":\\\"Begehungsform: Begehungs- und Unterlassungsdelikte\\\",\\\"children\\\":[{\\\"data\\\":\\\"Begehungsdelikte\\\",\\\"children\\\":[]},{\\\"data\\\":\\\"Unterlassungsdelikte\\\",\\\"children\\\":[]}]},{\\\"data\\\":\\\"Täterkreis: Allgemeindelikte, Sonderdelikte und eigenhändige Delikte\\\",\\\"children\\\":[{\\\"data\\\":\\\"Allgemeindelikte\\\",\\\"children\\\":[]},{\\\"data\\\":\\\"Sonderdelikte\\\",\\\"children\\\":[]},{\\\"data\\\":\\\"Eigenhändige Delikte\\\",\\\"children\\\":[]}]}]}]}\"");
+                deckService.updateCard(user1, 1, 1, upCard);
+            }
+            Optional<CardInfo> cardInfo = deckService.getUseCardById(user1, 1, 1);
+            try {
+                String json = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(decks);
+                System.out.println(json);
+                if (deck.isPresent()) {
+                    String json2 = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(deck.get());
+                    System.out.println(json2);
+                }
+                //System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(cardInfoList));
+                if (card.isPresent()) {
+                    System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(card.get()));
+                }
+                if (cardInfo.isPresent()) {
+                    System.out.println(objectMapper.writerWithDefaultPrettyPrinter().
+                            writeValueAsString(cardInfo.get()));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
 

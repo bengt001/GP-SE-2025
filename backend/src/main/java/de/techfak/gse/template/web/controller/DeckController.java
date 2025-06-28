@@ -131,7 +131,7 @@ public class DeckController {
      */
     @GetMapping("/usr/decks/{deckId:\\d+}/cards")
     @Secured("ROLE_USER")
-    public List<Card> getUserCards(@PathVariable("deckId") final long deckId) {
+    public List<CardInfo> getUserCards(@PathVariable("deckId") final long deckId) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Usr usr = userService.loadUserByUsername(auth.getName());
         return deckService.getUserCards(usr, deckId);
@@ -146,7 +146,7 @@ public class DeckController {
      */
     @GetMapping("/usr/decks/{deckId:\\d+}/cards/{cardId:\\d+}")
     @Secured("ROLE_USER")
-    public Card getUserCardById(@PathVariable("deckId") final long deckId, @PathVariable("cardId") final long cardId) {
+    public CardInfo getUserCardById(@PathVariable("deckId") final long deckId, @PathVariable("cardId") final long cardId) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Usr usr = userService.loadUserByUsername(auth.getName());
         return deckService.getUseCardById(usr, deckId, cardId).orElseThrow(BadRequestException::new);

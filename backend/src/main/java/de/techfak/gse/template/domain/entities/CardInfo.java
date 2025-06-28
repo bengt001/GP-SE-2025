@@ -1,5 +1,7 @@
 package de.techfak.gse.template.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import de.techfak.gse.template.domain.Rating;
 import de.techfak.gse.template.domain.SraValues;
 import jakarta.persistence.*;
@@ -21,10 +23,16 @@ public class CardInfo {
     private Long id;
     @ManyToOne
     private Usr userId;
+
+
     @ManyToOne
     private Card cardId;
+
+
     @ManyToOne
     private Deck deckId;
+
+
     @Column
     private LocalDate nextRepetition;
     @Lob
@@ -52,6 +60,21 @@ public class CardInfo {
         this.deckId = deckId;
         this.rating = rating;
         this.nextRepetition = LocalDate.now();
-        this.sraValues =  new SraValues();
+        this.sraValues = new SraValues();
+    }
+
+    @JsonProperty("deckId")
+    public Long getDeckIdValue() {
+        return deckId != null ? deckId.getDeckId() : null;
+    }
+
+    @JsonProperty("cardId")
+    public Long getCardIdValue() {
+        return cardId != null ? cardId.getCardId() : null;
+    }
+
+    @JsonProperty("userId")
+    public String getUserIdValue() {
+        return userId != null ? userId.getUserId() : null;
     }
 }

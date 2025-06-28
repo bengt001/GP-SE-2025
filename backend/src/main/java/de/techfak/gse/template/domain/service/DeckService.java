@@ -17,7 +17,7 @@ public interface DeckService {
 
     Deck addDeck(Boolean visibility, List<String> fieldOfLaw, int userId);
 
-    Deck updateDeck(Long id, Boolean visibility, List<String> fieldOfLaw);
+    //Deck updateDeck(Long id, Boolean visibility, List<String> fieldOfLaw);
 
 
     List<Deck> getAllDecks();
@@ -32,11 +32,11 @@ public interface DeckService {
 
     Optional<Card> getCardByIdFromDeck(long deckId, long id);
 
-    List<Card> getUserCards(Usr usr, long deckId);
+    List<CardInfo> getUserCards(Usr usr, long deckId);
 
     Optional<Card> updateCard(Usr usr, long deckId, long cardId, Card updatedCard);
 
-    Optional<Card> getUseCardById(Usr usr, long deckId, long id);
+    Optional<CardInfo> getUseCardById(Usr usr, long deckId, long id);
 
     Optional<Deck> getNewUserDeck(Usr usr, long templateDeckId);
 

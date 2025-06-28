@@ -120,7 +120,7 @@ public class ParsingPipeline {
                 }
                 try {
                     String jsonArray = mapper.writeValueAsString(aufdeckCard);
-                    System.out.println(jsonArray);
+                    //System.out.println(jsonArray);
                     if (aufdeckCard.hasOtherData()) {
                         card3++;
                         LOGGER.debug(jsonArray);

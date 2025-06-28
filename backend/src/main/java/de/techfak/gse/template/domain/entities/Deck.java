@@ -1,5 +1,6 @@
 package de.techfak.gse.template.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
@@ -24,14 +25,15 @@ public class Deck {
     private Integer authorId;
     @Column
     private LocalDate publishDate;
-    //Visibility is useless should be deleted
+    //Visibility has a use now
     @Column
     private Boolean visibility;
 
 
     //Or JsonIgnore
-    @OneToMany(mappedBy = "deck")
-    @JsonManagedReference
+    @OneToMany(mappedBy = "deck", fetch = FetchType.EAGER)
+    //@JsonManagedReference
+    @JsonIgnore
     private List<Card> cards;
 
 
@@ -43,9 +45,12 @@ public class Deck {
             inverseJoinColumns = @JoinColumn(name = "user_Id")
     )
 
+
+    //@JsonManagedReference
+    @JsonIgnore
     private List<Usr> users = new ArrayList<>();
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "deckField", joinColumns = @JoinColumn(name = "deckId"))
     @Column(name = "fieldOfLaw")
     private List<String> fieldOfLaw;

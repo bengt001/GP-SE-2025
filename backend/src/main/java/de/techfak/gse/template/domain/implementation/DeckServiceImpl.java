@@ -1,12 +1,10 @@
 package de.techfak.gse.template.domain.implementation;
 
 import de.techfak.gse.template.domain.*;
-import de.techfak.gse.template.domain.entities.Card;
-import de.techfak.gse.template.domain.entities.CardInfo;
-import de.techfak.gse.template.domain.entities.Deck;
-import de.techfak.gse.template.domain.entities.Usr;
+import de.techfak.gse.template.domain.entities.*;
 import de.techfak.gse.template.domain.repositories.CardInfoRepository;
 import de.techfak.gse.template.domain.repositories.CardRepository;
+import de.techfak.gse.template.domain.repositories.DeckInfoRepository;
 import de.techfak.gse.template.domain.repositories.DeckRepository;
 import de.techfak.gse.template.domain.service.DeckService;
 import de.techfak.gse.template.web.exception.BadRequestException;
@@ -24,14 +22,16 @@ public class DeckServiceImpl implements DeckService {
     private final DeckRepository deckRepository;
     private final CardRepository cardRepository;
     private final CardInfoRepository cardInfoRepository;
+    private final DeckInfoRepository deckInfoRepository;
     private final SpacedRepetitionAlgorithm sra;
 
     @Autowired
     public DeckServiceImpl(DeckRepository deckRepository, CardRepository cardRepository,
-                          CardInfoRepository cardInfoRepository) {
+                           CardInfoRepository cardInfoRepository, DeckInfoRepository deckInfoRepository) {
         this.deckRepository = deckRepository;
         this.cardRepository = cardRepository;
         this.cardInfoRepository = cardInfoRepository;
+        this.deckInfoRepository = deckInfoRepository;
         this.sra = new SMTwoAnki();
     }
 
@@ -51,17 +51,29 @@ public class DeckServiceImpl implements DeckService {
 
     @Override
     public List<Deck> getUserDecks(Usr usr) {
-        return usr.getDecks();
+        List<Deck> usrDecks = usr.getDecks();
+        for (int i = 0; i < usrDecks.size(); i++) {
+            System.out.println("getUserDecks: " + usrDecks.size());
+            Deck tempDeck = usrDecks.get(i);
+            Optional<Boolean> tempVisi = deckInfoRepository.findVisibilityByDeckAndUser(tempDeck, usr);
+            tempVisi.ifPresent(tempDeck::setVisibility);
+        }
+        return usrDecks;
     }
 
     @Override
     public Optional<Deck> getUserDeckById(Usr usr, long id) {
-        return deckRepository.findDeckByIdAndUserId(id, usr.getUserId());
+        Optional<Deck> tmpDeck = deckRepository.findDeckByIdAndUserId(id, usr.getUserId());
+        if (tmpDeck.isPresent()) {
+            Optional<Boolean> tempVisi = deckInfoRepository.findVisibilityByDeckAndUser(tmpDeck.get(), usr);
+            tempVisi.ifPresent(tmpDeck.get()::setVisibility);
+        }
+        return tmpDeck;
     }
 
-    @SuppressWarnings("checkstyle:TrailingComment")
+
     @Override
-    public List<Card> getCards(long deckId) { //KIRILL: muss hier ein optional davor?
+    public List<Card> getCards(long deckId) {
         return deckRepository.findById(deckId).map(Deck::getCards)
                 .orElse(Collections.emptyList());
     }
@@ -71,58 +83,92 @@ public class DeckServiceImpl implements DeckService {
         return cardRepository.findCardByIdAndDeckId(cardId, deckId);
     }
 
+
+    //Kirill:This will only get you cardInfo
     @Override
-    public List<Card> getUserCards(Usr usr, long deckId) {
-        return getCards(deckId);
+    public List<CardInfo> getUserCards(Usr usr, long deckId) {
+        Optional<Deck> deck = deckRepository.findById(deckId);
+        if (deck.isPresent()) {
+            return cardInfoRepository.findCardInfoByDeckAndUser(deck.get(), usr);
+        }
+        return new ArrayList<CardInfo>();
     }
 
 
-    //KIRILL: I would never let the user touch the cards.
-    //KIRILL: If this is meant to update card Rating this can be implemented
+    //KIRILL: THIS WILL ONLY ALLOW EDITING THE CONTENT
     @Override
     public Optional<Card> updateCard(Usr usr, long deckId, long cardId, Card updatedCard) {
         Optional<Card> tempCard = cardRepository.findCardByIdAndDeckId(cardId, deckId);
-        return tempCard.map(card -> {
+        if (tempCard.isPresent()) {
+            Optional<CardInfo> tempCardInfo = cardInfoRepository.findCardInfoByDeckIdAndCardIdAndUserId(deckId, cardId, usr.getUserId());
+            if (tempCardInfo.isPresent()) {
+                tempCardInfo.get().setEditedContent(updatedCard.getContent());
+                cardInfoRepository.save(tempCardInfo.get());
+                tempCard.get().setContent(updatedCard.getContent());
+            }
+        }
+        return tempCard;
+    }
+    /*        return tempCard.map(card -> {
             card.setCardType(updatedCard.getCardType());
             card.setContent(updatedCard.getContent());
             return cardRepository.save(card);
-        });
-    }
+        });*/
 
-    //KIRILL: users dont have unique cards?
-    //KIRILL: I will assume that i will give you the cardInfo
+
+    //Kirill:This will only get you cardInfo
     @Override
-    public Optional<Card> getUseCardById(Usr usr, long deckId, long cardId) {
+    public Optional<CardInfo> getUseCardById(Usr usr, long deckId, long cardId) {
         String userID = usr.getUserId();
-        return cardRepository.findCardByIdAndDeckId(cardId, deckId);
+        return cardInfoRepository.findCardInfoByCardIdAndUserId(cardId, userID);
     }
 
     //KIRILL: I  don't even know what this is supposed to do.
     //KIRILL: Why would a user create a deck
     @Override
     public Optional<Deck> getNewUserDeck(Usr usr, long templateDeckId) {
-        //System.out.println("AARGSJNDFNKSFKSDLFBSKJDBNFLSDFSDFÖPISDFSDFSFSDFSKDFNSDFÖSDFOSDFNJSNDFJSD");
         Optional<Deck> tempDeck = getDeck(templateDeckId);
         if (tempDeck.isPresent()) {
-            System.out.println("AARGSJNDFNKSFKSDLFBSKJDBNFLSDFSDFÖPISDFSDFSFSDFSKDFNSDFÖSDFOSDFNJSNDFJSD");
+            System.out.println("getNewUserDeck");
             tempDeck.get().getUsers().add(usr);
+            usr.getDecks().add(tempDeck.get());
             deckRepository.save(tempDeck.get());
-            //userRepository.save(usr);//this needs to be saved in deck as it is the owner
+            //I am not checking the existence of DeckInfo
+            DeckInfo newDeckInfo = new DeckInfo(usr, tempDeck.get(), true);
+            deckInfoRepository.save(newDeckInfo);
+            List<Card> cards = getCards(templateDeckId);
+            for (int i = 0; i < cards.size(); i++) {
+                Card card = cards.get(i);
+                long cardId = card.getCardId();
+                CardInfo cardInfo = new CardInfo(usr, card, tempDeck.get(), Rating.NOT_LEARNED);
+                cardInfoRepository.save(cardInfo);
+            }
+            //userRepository.save(usr);
+            // this needs to be saved in deck as it is the owner
             return tempDeck;
         }
         return tempDeck;
     }
 
-
+    //KIRILL: ONLY UPDATES VISIBILITY
     @Override
     public Optional<Deck> updateDeck(Usr usr, long deckId, Deck updatedDeck) {
         Optional<Deck> tempDeck = deckRepository.findById(deckId);
-        return tempDeck.map(deck -> {
-            deck.setVisibility(updatedDeck.getVisibility());
+        if (tempDeck.isPresent()) {
+            Optional<DeckInfo> tempDeckInfo = deckInfoRepository.findByDeckAndUser(tempDeck.get(), usr);
+            if (tempDeckInfo.isPresent()) {
+                tempDeckInfo.get().setVisibility(updatedDeck.getVisibility());
+                tempDeck.get().setVisibility(updatedDeck.getVisibility());
+                deckInfoRepository.save(tempDeckInfo.get());
+            }
+
+        }
+        return tempDeck;
+        /*return tempDeck.map(deck -> {
             deck.setFieldOfLaw(updatedDeck.getFieldOfLaw());
             deck.setCards(updatedDeck.getCards());
             return deckRepository.save(deck);
-        });
+        });*/
     }
 
     //##########################################################################
@@ -132,13 +178,15 @@ public class DeckServiceImpl implements DeckService {
         return deckRepository.findById(id);
     }
 
+
+    //Kirill: Use getNewUserDeck to add decks to the User.
     @Override
     public Deck addDeck(final Boolean visibility, final List<String> fieldOfLaw, int deckId) {
         final Deck deck = new Deck(visibility, fieldOfLaw, deckId);
         return deckRepository.save(deck);
     }
 
-    @Override
+    /*@Override
     public Deck updateDeck(final Long id, final Boolean visibility, final List<String> fieldOfLaw) {
         final Long deckId = Long.valueOf(id);
         final Deck deck = deckRepository.findById(deckId)
@@ -148,7 +196,7 @@ public class DeckServiceImpl implements DeckService {
         deck.setFieldOfLaw(fieldOfLaw);
 
         return deckRepository.save(deck);
-    }
+    }*/
 
 
     @Override
@@ -163,7 +211,8 @@ public class DeckServiceImpl implements DeckService {
 
     /**
      * The method rankCard is used to rank a card and update the values in the cardInfo table.
-     * @param usr usr used for the id, who has ranked the card.
+     *
+     * @param usr    usr used for the id, who has ranked the card.
      * @param deckId deckId not strictly needed but good to have if the database changes.
      * @param cardId cardId for the CardInfo needed.
      * @param rating Rating (Integer from 0 to 3) to rate the card.
