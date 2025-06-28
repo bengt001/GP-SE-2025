@@ -26,11 +26,11 @@ public interface CardInfoRepository extends CrudRepository<CardInfo, Long> {
     Optional<CardInfo> findCardInfoByCardIdAndUserId(@Param("cardId") long cardId, @Param("userId") String userId);
 
     /**
-     * Returns the CardInfo that has the given deck and user.
+     * Find card info by deck and user list.
      *
-     * @param deckId the Deck entity referenced in CardInfo.
-     * @param userId the Usr entity referenced in CardInfo.
-     * @return An Optional containing the CardInfo with the given deck and user.
+     * @param deck the deck
+     * @param user the user
+     * @return the list
      */
     @Query("SELECT ci FROM CardInfo ci WHERE ci.deckId = :deck AND ci.userId = :user")
     List<CardInfo> findCardInfoByDeckAndUser(@Param("deck") Deck deck, @Param("user") Usr user);
@@ -43,6 +43,7 @@ public interface CardInfoRepository extends CrudRepository<CardInfo, Long> {
      * @param userId the Usr entity referenced in CardInfo.
      * @return An Optional containing the CardInfo with the given deckId, cardId, and userId.
      */
+    @SuppressWarnings("checkstyle:LineLength")
     @Query("SELECT ci FROM CardInfo ci WHERE ci.deckId.deckId = :deckId AND ci.cardId.cardId = :cardId AND ci.userId.userId = :userId")
     Optional<CardInfo> findCardInfoByDeckIdAndCardIdAndUserId(
             @Param("deckId") long deckId,

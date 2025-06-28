@@ -146,7 +146,8 @@ public class DeckController {
      */
     @GetMapping("/usr/decks/{deckId:\\d+}/cards/{cardId:\\d+}")
     @Secured("ROLE_USER")
-    public CardInfo getUserCardById(@PathVariable("deckId") final long deckId, @PathVariable("cardId") final long cardId) {
+    public CardInfo getUserCardById(@PathVariable("deckId") final long deckId,
+                                    @PathVariable("cardId") final long cardId) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Usr usr = userService.loadUserByUsername(auth.getName());
         return deckService.getUseCardById(usr, deckId, cardId).orElseThrow(BadRequestException::new);
@@ -202,7 +203,8 @@ public class DeckController {
                              @RequestBody final String rating) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Usr usr = userService.loadUserByUsername(auth.getName());
-        return deckService.rankCard(usr, deckId, cardId, Rating.getRating(rating)).orElseThrow(BadRequestException::new);
+        return deckService.rankCard(usr, deckId, cardId,
+                Rating.getRating(rating)).orElseThrow(BadRequestException::new);
     }
 
     /**

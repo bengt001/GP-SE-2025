@@ -23,7 +23,9 @@ public class UserServiceImpl implements UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    /** loads User by ID. */
+    /**
+     * loads User by ID.
+     */
     @Override
     public Usr loadUserByUsername(final String email) throws UsernameNotFoundException {
         Iterable<Usr> users = userRepository.findAll();
@@ -36,13 +38,13 @@ public class UserServiceImpl implements UserService {
     }
 
     public Usr loadUserByID(final String userID) throws UsernameNotFoundException {
-         return userRepository.findById(userID)
-         .orElseThrow(() -> new UsernameNotFoundException(userID + strNotFound));
+        return userRepository.findById(userID)
+                .orElseThrow(() -> new UsernameNotFoundException(userID + strNotFound));
     }
 
     @Override
     public Usr createUser(final String username, final String email,
-                          final String password,  final String nickname, final String... roles) {
+                          final String password, final String nickname, final String... roles) {
         String encodedPassword = passwordEncoder.encode(password);
         String userId = getFreeID();
         final Usr usr = new Usr(username, email, encodedPassword, nickname, userId);

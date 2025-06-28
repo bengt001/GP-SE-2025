@@ -25,8 +25,11 @@ public class ParsingPipeline {
     private static final Logger LOGGER = LoggerFactory.getLogger(ParsingPipeline.class);
     private static final String ERROR_MSG = "Deck couldnt be created";
 
+    @SuppressWarnings("checkstyle:MemberName")
     private int card1 = 0;
+    @SuppressWarnings("checkstyle:MemberName")
     private int card2 = 0;
+    @SuppressWarnings("checkstyle:MemberName")
     private int card3 = 0;
 
     private final CardService cardService;
@@ -43,6 +46,7 @@ public class ParsingPipeline {
      *
      * @param is the input stream containing the JSON data
      */
+    @SuppressWarnings("checkstyle:MultipleStringLiterals")
     public void importLexmeaToDatabase(InputStream is, int userId) {
         try (BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
 
@@ -134,7 +138,7 @@ public class ParsingPipeline {
                     throw new RuntimeException(e);
                 }
                 if (cardService.getCardsByDeckId(currentDeck.getDeckId()).isEmpty()) {
-                    System.out.println("#######################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################");
+                    System.out.println("##############################################");
                     deckService.deleteDeck(currentDeck.getDeckId());
                 }
 

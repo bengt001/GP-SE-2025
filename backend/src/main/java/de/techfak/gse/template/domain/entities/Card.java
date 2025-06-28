@@ -1,12 +1,9 @@
 package de.techfak.gse.template.domain.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import de.techfak.gse.template.domain.SraValues;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.time.LocalDate;
 
 /**
  * Entity representing a card.
@@ -33,10 +30,13 @@ public class Card {
 
     //JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "deckId")
     @JsonBackReference
+    @JoinColumn(name = "deckId")
     private Deck deck;
 
+    /**
+     * Instantiates a new Card.
+     */
     protected Card() {
     }
 
@@ -44,11 +44,12 @@ public class Card {
      * New card with specified content.
      * The Values for the SRA (nextRevision, rating, sraValues) are set to the standard values for a new card.
      * This means to nextRevision: now, rating: -1, sraValues (0,0,250).
+     * Kirill: I dont think thats true anymore
      *
-     * @param content
-     * @param cardType
-     * @param deck
-     * @param title
+     * @param content  the content
+     * @param cardType the card type
+     * @param deck     the deck
+     * @param title    the title
      */
     public Card(String content, String cardType, Deck deck, String title) {
         this.content = content;

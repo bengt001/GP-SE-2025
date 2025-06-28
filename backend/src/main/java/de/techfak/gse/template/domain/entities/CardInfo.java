@@ -1,6 +1,6 @@
 package de.techfak.gse.template.domain.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import de.techfak.gse.template.domain.Rating;
 import de.techfak.gse.template.domain.SraValues;
@@ -42,17 +42,21 @@ public class CardInfo {
     @Embedded
     private SraValues sraValues;
 
+    /**
+     * Instantiates a new Card info.
+     */
     protected CardInfo() {
 
     }
 
+
     /**
-     * New card rating with specified content.
+     * Instantiates a new Card info.
      *
-     * @param userId
-     * @param cardId
-     * @param deckId
-     * @param rating
+     * @param userId the user id
+     * @param cardId the card id
+     * @param deckId the deck id
+     * @param rating the rating
      */
     public CardInfo(Usr userId, Card cardId, Deck deckId, Rating rating) {
         this.userId = userId;
@@ -63,16 +67,31 @@ public class CardInfo {
         this.sraValues = new SraValues();
     }
 
+    /**
+     * Gets deck id value.
+     *
+     * @return the deck id value
+     */
     @JsonProperty("deckId")
     public Long getDeckIdValue() {
         return deckId != null ? deckId.getDeckId() : null;
     }
 
+    /**
+     * Gets card id value.
+     *
+     * @return the card id value
+     */
     @JsonProperty("cardId")
     public Long getCardIdValue() {
         return cardId != null ? cardId.getCardId() : null;
     }
 
+    /**
+     * Gets user id value.
+     *
+     * @return the user id value
+     */
     @JsonProperty("userId")
     public String getUserIdValue() {
         return userId != null ? userId.getUserId() : null;

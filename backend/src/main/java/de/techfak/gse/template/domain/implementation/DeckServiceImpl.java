@@ -7,7 +7,6 @@ import de.techfak.gse.template.domain.repositories.CardRepository;
 import de.techfak.gse.template.domain.repositories.DeckInfoRepository;
 import de.techfak.gse.template.domain.repositories.DeckRepository;
 import de.techfak.gse.template.domain.service.DeckService;
-import de.techfak.gse.template.web.exception.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +24,14 @@ public class DeckServiceImpl implements DeckService {
     private final DeckInfoRepository deckInfoRepository;
     private final SpacedRepetitionAlgorithm sra;
 
+    /**
+     * Instantiates a new Deck service.
+     *
+     * @param deckRepository     the deck repository
+     * @param cardRepository     the card repository
+     * @param cardInfoRepository the card info repository
+     * @param deckInfoRepository the deck info repository
+     */
     @Autowired
     public DeckServiceImpl(DeckRepository deckRepository, CardRepository cardRepository,
                            CardInfoRepository cardInfoRepository, DeckInfoRepository deckInfoRepository) {

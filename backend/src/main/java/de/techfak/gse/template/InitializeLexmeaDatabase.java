@@ -34,7 +34,7 @@ public class InitializeLexmeaDatabase implements InitializingBean {
     private final UserService userService;
     private final ObjectMapper objectMapper;
 
-    private ParsingPipeline pipeline;
+    private final ParsingPipeline pipeline;
 
     /**
      * Initializes the Lexmea database with provided services.
@@ -52,8 +52,7 @@ public class InitializeLexmeaDatabase implements InitializingBean {
         this.objectMapper = objectMapper;
     }
 
-    @SuppressWarnings({"checkstyle:TrailingComment", "checkstyle:MultipleStringLiterals",
-            "checkstyle:LocalVariableName"})
+    @SuppressWarnings({"checkstyle:TrailingComment", "checkstyle:MultipleStringLiterals", "checkstyle:LocalVariableName", "checkstyle:LineLength"})
     @Override
     public void afterPropertiesSet() {
         try {
@@ -133,7 +132,7 @@ public class InitializeLexmeaDatabase implements InitializingBean {
                     String json2 = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(deck.get());
                     System.out.println(json2);
                 }
-                //System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(cardInfoList));
+                System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(cardInfoList));
                 if (card.isPresent()) {
                     System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(card.get()));
                 }
