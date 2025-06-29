@@ -179,9 +179,9 @@ onMounted(() => {
       md="4"
     >
       <v-card
+        v-if="friends.length"
         elevation="10"
         color="white"
-        v-if="friends.length"
       >
         <v-card-title>Deine Freunde</v-card-title>
         <v-card-text>
