@@ -5,16 +5,6 @@ import { useNotificationStore } from '@/stores/notifications'
 const notificationStore = useNotificationStore()
 const UserStore = useUserStore()
 
-watch(
-  () => UserStore.authenticated,
-  (isAuthenticated) => {
-    if (isAuthenticated) {
-      notificationStore.getNotifications()
-    }
-  },
-  { immediate: true }
-)
-
 </script>
 
 <template>
@@ -38,7 +28,7 @@ watch(
           color="grey"
           class="delete-btn position-absolute"
           style="top: 50%; right: 20px; transform: translateY(-50%)"
-          @click="notificationStore.deleteNote(index)"
+          @click.stop="notificationStore.deleteNote(index)"
         >
           <v-icon>mdi-delete</v-icon>
         </v-btn>

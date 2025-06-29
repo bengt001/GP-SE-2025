@@ -7,11 +7,13 @@ import type Deck from "@/types/Deck"
 import {useCardStore} from "@/stores/card";
 import axios from "../api/config";
 import router from "@/router";
+import {useNotificationStore} from "@/stores/notifications";
 
 
 const UserStore = useUserStore()
 const DeckStore = useDeckStore()
 const CardStore = useCardStore()
+const NotificationStore = useNotificationStore()
 
 const DialogReset = ref(false)
 const DialogDeactivate = ref(false)
@@ -111,6 +113,16 @@ watch([definitions, problems, schema], () => {
       numberOfCards.value = newMax
     }
   })
+
+watch(
+  () => UserStore.authenticated,
+  (isAuthenticated) => {
+    if (isAuthenticated) {
+      NotificationStore.getNotifications()
+    }
+  },
+  { immediate: true }
+)
 
 const anyTypeSelected = computed(() =>
   definitions.value || problems.value || schema.value

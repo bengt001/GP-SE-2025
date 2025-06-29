@@ -1,19 +1,30 @@
 package de.techfak.gse.template.domain;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class NotificationServiceImpl implements NotificationService {
 
     private final NotificationRepository notificationRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public NotificationServiceImpl(final NotificationRepository notificationRepository) {
+    public NotificationServiceImpl(final NotificationRepository notificationRepository, UserRepository userRepository) {
         this.notificationRepository = notificationRepository;
+        this.userRepository = userRepository;
+    }
+
+    @Override
+    public Notification getNotificationById(@PathVariable Long id) {
+        return notificationRepository.findById(id).orElse(null);
     }
 
     @Override
@@ -29,5 +40,52 @@ public class NotificationServiceImpl implements NotificationService {
         }
 
         return notifications;
+    }
+
+    @Scheduled(cron = "0 0 0 * * *")
+    @Transactional
+    public void sendNotificationToUsers() {
+        List<Usr> users = (List<Usr>) userRepository.findAll();
+        for (Usr user : users) {
+            sendNotification(user);
+        }
+    }
+
+    private void sendNotification(Usr user) {
+
+        List<Notification> notifications = getNotificationByUser(user);
+
+        if (notifications.size() < 10) {
+            notificationRepository.save(new Notification(user, "ImplTest"));
+        }
+    }
+
+    @Transactional
+    @Override
+    public boolean deleteNotificationById(Long id) {
+        Optional<Notification> note = notificationRepository.findById(id);
+        if (note.isPresent()) {
+            Notification notification = note.get();
+            notificationRepository.delete(notification);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean deleteNotificationByUser(Usr user) {
+        return false;
+    }
+    @Transactional
+    @Override
+    public boolean markNotificationAsRead(Long id) {
+        Optional<Notification> note = notificationRepository.findById(id);
+        if (note.isPresent()) {
+            Notification notification = note.get();
+            notification.setRead(true);
+            notificationRepository.save(notification);
+            return true;
+        }
+       return false;
     }
 }
