@@ -88,10 +88,12 @@ onMounted(() => {
 </script>
 
 <template>
-  <v-card class="mx-auto my-10"
-          elevation="15"
-          color="white"
-          max-width="344">
+  <v-card
+    class="mx-auto my-10"
+    elevation="15"
+    color="white"
+    max-width="344"
+  >
     <v-card-title>Freund hinzufügen</v-card-title>
     <v-card-text>
       <v-text-field
@@ -100,35 +102,47 @@ onMounted(() => {
         type="email"
         autocomplete="off"
       />
-      <v-btn color="primary"
-             block
-             @click="sendFriendRequest">
+      <v-btn
+        color="primary"
+        block
+        @click="sendFriendRequest"
+      >
         Anfrage senden
       </v-btn>
     </v-card-text>
   </v-card>
 
-  <v-snackbar v-model="successSnack"
-              :timeout="2000"
-              class="elevation-24"
-              color="success">
+  <v-snackbar
+    v-model="successSnack"
+    :timeout="2000"
+    class="elevation-24"
+    color="success"
+  >
     Freundschaftsanfrage gesendet
   </v-snackbar>
 
-  <v-snackbar v-model="errorSnack"
-              :timeout="3000"
-              class="elevation-24"
-              color="error">
+  <v-snackbar
+    v-model="errorSnack"
+    :timeout="3000"
+    class="elevation-24"
+    color="error"
+  >
     {{ errorText }}
   </v-snackbar>
 
-  <v-row class="my-10"
-         justify="center">
-    <v-col cols="12"
-           md="6">
-      <v-card elevation="10"
-              color="white"
-              v-if="pendingRequests.length">
+  <v-row
+    class="my-10"
+    justify="center"
+  >
+    <v-col
+      cols="12"
+      md="6"
+    >
+      <v-card
+        v-if="pendingRequests.length"
+        elevation="10"
+        color="white"
+      >
         <v-card-title>Eingehende Anfragen</v-card-title>
         <v-card-text>
           <div
@@ -140,14 +154,18 @@ onMounted(() => {
               {{ request.requester.email }}
             </div>
             <div class="accept-decline">
-              <v-btn small
-                     color="#E0EEE6"
-                     @click="acceptRequest(request.id)">
+              <v-btn
+                small
+                color="#E0EEE6"
+                @click="acceptRequest(request.id)"
+              >
                 Annehmen
               </v-btn>
-              <v-btn small
-                     color="#FFDFD5"
-                     @click="declineRequest(request.id)">
+              <v-btn
+                small
+                color="#FFDFD5"
+                @click="declineRequest(request.id)"
+              >
                 Ablehnen
               </v-btn>
             </div>
@@ -156,11 +174,15 @@ onMounted(() => {
       </v-card>
     </v-col>
 
-    <v-col cols="12"
-           md="4">
-      <v-card elevation="10"
-              color="white"
-              v-if="friends.length">
+    <v-col
+      cols="12"
+      md="4"
+    >
+      <v-card
+        elevation="10"
+        color="white"
+        v-if="friends.length"
+      >
         <v-card-title>Deine Freunde</v-card-title>
         <v-card-text>
           <div
