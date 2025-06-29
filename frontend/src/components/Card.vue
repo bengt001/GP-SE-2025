@@ -135,11 +135,14 @@ async function rateCard(colorIndex: number) {
 
   if(!userStore.authenticated) {
     deckStore.rate(card.id,card.deckID,colorIndex)
+    console.log("Check XP: User not authenticated")
+
   } else {
     try {
       //TODO: Item Count muss noch dynamisch sein. Aktuell fester wert 1 zum Testen
       //TODO: Evtl. muss der letzt param 4-colorIndex angepasst werden je nachdem wie die Berwertungsreihenfolge im Backend ist
       const xp = await userStore.earnXp(card.type,  1, 4 - colorIndex)
+      console.log("Check XP: "+xp.toString())
       earnedXp.value = xp
 
       // ⏱️ XP für 2 Sekunden anzeigen

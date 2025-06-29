@@ -57,14 +57,29 @@ export const useUserStore = defineStore('users', {
           .then(res => res.data)
       },
 
-      async earnXp(cardType: string, itemCount: number, rating: number): Promise<number> { // <NEU>
-        const token = localStorage.getItem('token');                                     // <NEU>
-        const response = await axios.post('/api/xp/earn',                                // <NEU>
-          { cardType, itemCount, rating },                                               // <NEU>
-          { headers: { Authorization: token } }                                          // <NEU>
-        );                                                                               // <NEU>
-        return response.data.xp;                                                         // <NEU>
+      async earnXp(cardType: string, itemCount: number, rating: number): Promise<number> {
+        const token = localStorage.getItem('token');
+        //const userId = localStorage.getItem('userId');   // <--- Nutzer-ID speichern beim Login
+
+        console.log("[Frontend] Sending XP Earn Request:", {
+          //userId,
+          cardType,
+          uncoveredItems: itemCount,
+          rating
+        });
+
+        const response = await axios.post('/api/xp/earn',
+          {
+            //userId,
+            cardType,
+            uncoveredItems: itemCount,
+            rating
+          },
+          { headers: { Authorization: token } }
+        );
+        return response.data.xp;
       }
+
 
     }
 })

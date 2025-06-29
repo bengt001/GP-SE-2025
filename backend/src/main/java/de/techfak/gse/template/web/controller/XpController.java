@@ -1,25 +1,40 @@
-/*package de.techfak.gse.template.web.controller;
+package de.techfak.gse.template.web.controller;
 
+import de.techfak.gse.template.domain.UserService;
+import de.techfak.gse.template.domain.Usr;
 import de.techfak.gse.template.domain.XpService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.Console;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping("/api/xp")
 public class XpController {
 
     private final XpService xpService;
+    private final UserService userService;                                              //ZUM XP SPERICERHN TEST
 
     @Autowired
-    public XpController(XpService xpService) {
+    public XpController(XpService xpService, UserService userService) {
         this.xpService = xpService;
+        this.userService = userService;
     }
 
     @PostMapping("/earn")
+    //@Secured("ROLE_USER")
     public ResponseEntity<XpResponse> earnXp(@RequestBody XpEarnRequest request) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Usr usr = userService.loadUserByUsername(auth.getName());                           //ZUM XP SPERICERHN TEST
+
         int gainedXp = xpService.addXp(
-                request.getUserId(),
+                usr.getUserId(),
                 request.getCardType(),
                 request.getUncoveredItems(),
                 request.getRating()
@@ -29,14 +44,14 @@ public class XpController {
 
     // einfache DTO-Klassen
     public static class XpEarnRequest {
-        private String userId;
+        //private String userId;
         private String cardType;
         private int uncoveredItems;
         private int rating;
 
         // Getter/Setter
-        public String getUserId() { return userId; }
-        public void setUserId(String userId) { this.userId = userId; }
+        //public String getUserId() { return userId; }
+        //public void setUserId(String userId) { this.userId = userId; }
 
         public String getCardType() { return cardType; }
         public void setCardType(String cardType) { this.cardType = cardType; }
@@ -59,4 +74,3 @@ public class XpController {
     }
 }
 
- */
