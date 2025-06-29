@@ -56,6 +56,7 @@ public class Usr implements UserDetails {
     @ManyToMany(mappedBy = "users")
     private transient List<Deck> decks = new ArrayList<>();
 
+
     @Column
     private int totalXp;
 

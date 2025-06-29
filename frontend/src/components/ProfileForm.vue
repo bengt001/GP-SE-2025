@@ -16,6 +16,8 @@ function logOut() {
     deckStore.reset_decks()
   }, 1000)
 }
+
+
 </script>
 
 <template>
@@ -29,6 +31,7 @@ function logOut() {
       class="mx-auto"
       max-width="900"
     >
+
       <div class="text-center">
         <h3 class="mb-4">
           Profile
@@ -39,6 +42,9 @@ function logOut() {
         </div>
         <div class="mb-4">
           Username: {{ userStore.username }}
+        </div>
+        <div class="mb-4">
+          Gesammelte XP: {{ userStore.totalXp }}
         </div>
 
         <v-btn
