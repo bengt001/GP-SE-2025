@@ -135,6 +135,7 @@ function rateCard(colorIndex: number) {
 }
 
 const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name
+//TODO: fix scrolling for longer card text
 </script>
 
 <template>

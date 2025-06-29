@@ -268,6 +268,7 @@ function startLearning() {
 
   for(const card of Cards){
     CardStore.addCard(card)
+    console.log(card)
   }
 
   router.push("/cards/" + CardStore.getFirst())

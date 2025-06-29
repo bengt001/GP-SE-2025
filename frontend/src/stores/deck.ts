@@ -81,7 +81,7 @@ export const useDeckStore = defineStore('decks', {
         const cards = await axios.get('api/decks/' + id + '/cards')
           for(const card of cards.data){
             if(card.cardType == "Definitionen"){
-              const cardContent = this.cleanDefinitionString(card.content)
+              const cardContent = JSON.parse(card.content)
               const newCard: Card = {
                 id:card.cardId,
                 deckID:id,
@@ -94,19 +94,18 @@ export const useDeckStore = defineStore('decks', {
               definitons.push(newCard)
             }
             else if(card.cardType == "Aufdeckkarte"){
-              const cardContent = this.cleanDefinitionString(card.content)
               const newCard: Card = {
                 id:card.cardId,
                 deckID:id,
                 type:card.cardType,
-                title:cardContent[0],
-                text:cardContent[1],
+                title:"card title", //TODO: get title (deck name I think)
+                text:card.content,
                 color:color,
                 lastRating:LastRating
               }
               schemas.push(newCard)            }
             else if(card.cardType == "Probleme"){
-              const cardContent = this.cleanDefinitionString(card.content)
+              const cardContent = JSON.parse(card.content)
               const newCard: Card = {
                 id:card.cardId,
                 deckID:id,
