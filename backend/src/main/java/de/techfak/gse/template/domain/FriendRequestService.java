@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+/**
+ * Service for Friendrequest.
+ */
 public interface FriendRequestService {
 
     void acceptRequest(FriendRequest request);

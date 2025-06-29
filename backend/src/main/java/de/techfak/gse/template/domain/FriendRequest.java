@@ -6,6 +6,9 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 
+/**
+ * Friend request between two users.
+ */
 @Entity
 @Getter
 @Setter
@@ -27,6 +30,9 @@ FriendRequest {
 
     private LocalDate createdAt = LocalDate.now();
 
+    /**
+     * Status of a Friend request.
+     */
     public enum Status {
         PENDING,
         ACCEPTED,
@@ -36,6 +42,12 @@ FriendRequest {
 
     }
 
+    /**
+     * Creates a new Friend request.
+     *
+     * @param requester
+     * @param recipient
+     */
     public FriendRequest(Usr requester, Usr recipient) {
         this.requester = requester;
         this.recipient = recipient;

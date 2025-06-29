@@ -11,6 +11,9 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Controller for FriendRequest.
+ */
 @RestController
 @CrossOrigin
 @RequestMapping("/api")
@@ -18,6 +21,7 @@ public class FriendRequestController {
 
     private final FriendRequestService friendRequestService;
     private final UserService userService;
+    private String anfrage = "Anfrage nicht gefunden";
 
     @Autowired
     public FriendRequestController(FriendRequestService friendRequestService, UserService userService) {
@@ -25,6 +29,12 @@ public class FriendRequestController {
         this.userService = userService;
     }
 
+    /**
+     * Sends a friend request to user.
+     *
+     * @param cmd
+     * @return
+     */
     @PostMapping("/friends/send")
     public FriendRequest sendFriendRequest(@RequestBody FriendSendCmd cmd) {
         Usr requester = userService.loadUserByUsername(cmd.requester());
@@ -40,17 +50,27 @@ public class FriendRequestController {
         return friendRequestService.getPendingRequests(user);
     }
 
+    /**
+     * Accepts request from user.
+     *
+     * @param cmd
+     */
     @PostMapping("/accept")
     public void acceptRequest(@RequestBody FriendRequestCmd cmd) {
         FriendRequest request = friendRequestService.findById(cmd.requestId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Anfrage nicht gefunden"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, anfrage));
         friendRequestService.acceptRequest(request);
     }
 
+    /**
+     * Declines request from user.
+     *
+     * @param cmd
+     */
     @PostMapping("/decline")
     public void declineRequest(@RequestBody FriendRequestCmd cmd) {
         FriendRequest request = friendRequestService.findById(cmd.requestId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Anfrage nicht gefunden"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, anfrage));
         friendRequestService.declineRequest(request);
     }
 

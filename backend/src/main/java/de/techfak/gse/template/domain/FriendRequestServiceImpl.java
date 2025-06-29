@@ -6,6 +6,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+/**
+ * Implementation for FriendRequestService.
+ */
 @Service
 public class FriendRequestServiceImpl implements FriendRequestService {
 
@@ -42,15 +45,24 @@ public class FriendRequestServiceImpl implements FriendRequestService {
             throw new IllegalStateException("Die Anfrage existiert schon");
         }
         if (friendRequestRepository.existsByRequesterAndRecipient(recipient, requester)) {
-            throw new IllegalStateException("Die Anfrage existiert schon");
+            throw new IllegalStateException("Die Anfrage existiert schon zwischen Users");
         }
 
         FriendRequest request = new FriendRequest(requester, recipient);
         return friendRequestRepository.save(request);
     }
+
+    /**
+     * Saves and gets Friends of a User.
+     *
+     * @param user
+     * @return
+     */
     public Set<Usr> getFriends(Usr user) {
-        List<FriendRequest> acceptedAsRequester = friendRequestRepository.findByRequesterAndStatus(user, FriendRequest.Status.ACCEPTED);
-        List<FriendRequest> acceptedAsRecipient = friendRequestRepository.findByRecipientAndStatus(user, FriendRequest.Status.ACCEPTED);
+        List<FriendRequest> acceptedAsRequester = friendRequestRepository.
+                findByRequesterAndStatus(user, FriendRequest.Status.ACCEPTED);
+        List<FriendRequest> acceptedAsRecipient = friendRequestRepository.
+                findByRecipientAndStatus(user, FriendRequest.Status.ACCEPTED);
         Set<Usr> friends = new LinkedHashSet<>();
         for (FriendRequest fr : acceptedAsRequester) {
             friends.add(fr.getRecipient());
