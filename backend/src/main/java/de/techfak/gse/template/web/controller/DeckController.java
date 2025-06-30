@@ -1,6 +1,13 @@
 package de.techfak.gse.template.web.controller;
 
 import de.techfak.gse.template.domain.*;
+import de.techfak.gse.template.domain.entities.Card;
+import de.techfak.gse.template.domain.entities.CardInfo;
+import de.techfak.gse.template.domain.entities.Deck;
+import de.techfak.gse.template.domain.entities.Usr;
+import de.techfak.gse.template.domain.service.CardService;
+import de.techfak.gse.template.domain.service.DeckService;
+import de.techfak.gse.template.domain.service.UserService;
 import de.techfak.gse.template.web.exception.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
@@ -124,7 +131,7 @@ public class DeckController {
      */
     @GetMapping("/usr/decks/{deckId:\\d+}/cards")
     @Secured("ROLE_USER")
-    public List<Card> getUserCards(@PathVariable("deckId") final long deckId) {
+    public List<CardInfo> getUserCards(@PathVariable("deckId") final long deckId) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Usr usr = userService.loadUserByUsername(auth.getName());
         return deckService.getUserCards(usr, deckId);
@@ -139,7 +146,8 @@ public class DeckController {
      */
     @GetMapping("/usr/decks/{deckId:\\d+}/cards/{cardId:\\d+}")
     @Secured("ROLE_USER")
-    public Card getUserCardById(@PathVariable("deckId") final long deckId, @PathVariable("cardId") final long cardId) {
+    public CardInfo getUserCardById(@PathVariable("deckId") final long deckId,
+                                    @PathVariable("cardId") final long cardId) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Usr usr = userService.loadUserByUsername(auth.getName());
         return deckService.getUseCardById(usr, deckId, cardId).orElseThrow(BadRequestException::new);
@@ -182,6 +190,24 @@ public class DeckController {
     }
 
     /**
+     * API Endpoint for sending a rankCard Patch-Request.
+     *
+     * @param deckId the deckId for the to be updated card
+     * @param cardId the cardId for the to be updated card
+     * @param rating the new rating of the card
+     * @return an updated Version of the Card
+     */
+    @PatchMapping("/usr/decks/{deckId:\\d+}/{cardId:\\d+}/rank")
+    @Secured("ROLE_USER")
+    public CardInfo rankCard(@PathVariable final long deckId, @PathVariable final long cardId,
+                             @RequestBody final String rating) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Usr usr = userService.loadUserByUsername(auth.getName());
+        return deckService.rankCard(usr, deckId, cardId,
+                Rating.getRating(rating)).orElseThrow(BadRequestException::new);
+    }
+
+    /**
      * API Endpoint for sending a updateDeck Patch-Request.
      *
      * @param deckId the deckId that shall be updated
@@ -195,4 +221,19 @@ public class DeckController {
         Usr usr = userService.loadUserByUsername(auth.getName());
         return deckService.updateDeck(usr, deckId, deck).orElseThrow(BadRequestException::new);
     }
+
+//    /**
+//     * API Endpoint for sending a updateDeck Patch-Request.
+//     *
+//     * @param deckId the deckId that shall be updated
+//     * @param deck   the updated version of the deck
+//     * @return an updated Version of the Deck
+//     */
+//    @PatchMapping("/usr/decks/{deckId:d\\+}/info")
+//    @Secured("ROLE_USER")
+//    public Dictionary<Rating, Long> deckInfo(@PathVariable final long deckId, @RequestBody final Deck deck) {
+//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//        Usr usr = userService.loadUserByUsername(auth.getName());
+//        return deckService.getDeckInfo(usr, deckId);
+//    }
 }

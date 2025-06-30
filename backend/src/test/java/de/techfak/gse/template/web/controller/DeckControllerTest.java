@@ -1,7 +1,12 @@
 package de.techfak.gse.template.web.controller;
 
 
-import de.techfak.gse.template.domain.*;
+import de.techfak.gse.template.domain.entities.Card;
+import de.techfak.gse.template.domain.entities.Deck;
+import de.techfak.gse.template.domain.entities.Usr;
+import de.techfak.gse.template.domain.service.CardService;
+import de.techfak.gse.template.domain.service.DeckService;
+import de.techfak.gse.template.domain.service.UserService;
 import de.techfak.gse.template.web.exception.BadRequestException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,9 +48,9 @@ public class DeckControllerTest {
         DECK_SINGLE.setPublishDate(LocalDate.now());
     }
     final List<Card> CARDS = List.of(
-            new Card("Tolle Karte", "Karte", DECK_SINGLE),
-            new Card("Super Karte", "Karte", DECK_SINGLE),
-            new Card("Blöde Karte", "Karte", DECK_SINGLE)
+            new Card("Tolle Karte", "Karte", DECK_SINGLE,"Title"),
+            new Card("Super Karte", "Karte", DECK_SINGLE, "Title"),
+            new Card("Blöde Karte", "Karte", DECK_SINGLE, "Title")
     );
 
 

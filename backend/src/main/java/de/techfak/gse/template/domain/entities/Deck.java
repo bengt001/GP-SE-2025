@@ -1,6 +1,6 @@
-package de.techfak.gse.template.domain;
+package de.techfak.gse.template.domain.entities;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -24,27 +24,32 @@ public class Deck {
     private Integer authorId;
     @Column
     private LocalDate publishDate;
-    //Visibility is useless should be deleted
+    //Visibility has a use now
     @Column
     private Boolean visibility;
 
 
     //Or JsonIgnore
-    @OneToMany(mappedBy = "deck")
-    @JsonManagedReference
+    @OneToMany(mappedBy = "deck", fetch = FetchType.EAGER)
+    //@JsonManagedReference
+    @JsonIgnore
     private List<Card> cards;
 
 
-    //Fetch type eager is like really bad, the reason for this that User should be the owner side, but isn't.
+    //KIRILL: Fetch type eager is like really bad, the reason for this that User should be the owner side, but isn't.
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "deck_user",
             joinColumns = @JoinColumn(name = "deck_Id"),
             inverseJoinColumns = @JoinColumn(name = "user_Id")
     )
+
+
+    //@JsonManagedReference
+    @JsonIgnore
     private List<Usr> users = new ArrayList<>();
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "deckField", joinColumns = @JoinColumn(name = "deckId"))
     @Column(name = "fieldOfLaw")
     private List<String> fieldOfLaw;

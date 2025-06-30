@@ -1,4 +1,10 @@
-package de.techfak.gse.template.domain;
+package de.techfak.gse.template.domain.service;
+
+import de.techfak.gse.template.domain.Rating;
+import de.techfak.gse.template.domain.entities.Card;
+import de.techfak.gse.template.domain.entities.CardInfo;
+import de.techfak.gse.template.domain.entities.Deck;
+import de.techfak.gse.template.domain.entities.Usr;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,7 +17,7 @@ public interface DeckService {
 
     Deck addDeck(Boolean visibility, List<String> fieldOfLaw, int userId);
 
-    Deck updateDeck(Long id, Boolean visibility, List<String> fieldOfLaw);
+    //Deck updateDeck(Long id, Boolean visibility, List<String> fieldOfLaw);
 
 
     List<Deck> getAllDecks();
@@ -26,11 +32,11 @@ public interface DeckService {
 
     Optional<Card> getCardByIdFromDeck(long deckId, long id);
 
-    List<Card> getUserCards(Usr usr, long deckId);
+    List<CardInfo> getUserCards(Usr usr, long deckId);
 
     Optional<Card> updateCard(Usr usr, long deckId, long cardId, Card updatedCard);
 
-    Optional<Card> getUseCardById(Usr usr, long deckId, long id);
+    Optional<CardInfo> getUseCardById(Usr usr, long deckId, long id);
 
     Optional<Deck> getNewUserDeck(Usr usr, long templateDeckId);
 
@@ -38,4 +44,7 @@ public interface DeckService {
 
     Optional<Deck> deleteDeck(long deckId);
 
+    Optional<CardInfo> rankCard(Usr usr, long deckId, long cardId, Rating rating);
+
+    //Dictionary<Rating, Long> getDeckInfo(Usr usr, long deckId);
 }

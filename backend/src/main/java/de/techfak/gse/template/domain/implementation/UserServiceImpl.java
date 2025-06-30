@@ -1,5 +1,8 @@
-package de.techfak.gse.template.domain;
+package de.techfak.gse.template.domain.implementation;
 
+import de.techfak.gse.template.domain.repositories.UserRepository;
+import de.techfak.gse.template.domain.service.UserService;
+import de.techfak.gse.template.domain.entities.Usr;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,7 +23,9 @@ public class UserServiceImpl implements UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    /** loads User by ID. */
+    /**
+     * loads User by ID.
+     */
     @Override
     public Usr loadUserByUsername(final String email) throws UsernameNotFoundException {
         Iterable<Usr> users = userRepository.findAll();
@@ -33,13 +38,13 @@ public class UserServiceImpl implements UserService {
     }
 
     public Usr loadUserByID(final String userID) throws UsernameNotFoundException {
-         return userRepository.findById(userID)
-         .orElseThrow(() -> new UsernameNotFoundException(userID + strNotFound));
+        return userRepository.findById(userID)
+                .orElseThrow(() -> new UsernameNotFoundException(userID + strNotFound));
     }
 
     @Override
     public Usr createUser(final String username, final String email,
-                          final String password,  final String nickname, final String... roles) {
+                          final String password, final String nickname, final String... roles) {
         String encodedPassword = passwordEncoder.encode(password);
         String userId = getFreeID();
         final Usr usr = new Usr(username, email, encodedPassword, nickname, userId);
