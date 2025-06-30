@@ -95,7 +95,7 @@ public class ParsingPipeline {
             ArrayList<String[]> definitionBoxes = HtmlParser.getDefinitionBoxes(schemaHtml.getFirst());
             TreeNode<String> aufdeckCard = HtmlParser.getTableOfContentsAsTree(schemaHtml.getFirst());
             if (problemBoxes.isEmpty() && definitionBoxes.isEmpty() && !aufdeckCard.hasOtherData()) {
-                LOGGER.error("no cards could be generated");
+                LOGGER.error("no cards could be generated(This is fine)");
                 throw new DeckCreationFailedException(ERROR_MSG);
             } else {
                 Deck currentDeck = deckService.addDeck(true, rechtgebietList, userId);

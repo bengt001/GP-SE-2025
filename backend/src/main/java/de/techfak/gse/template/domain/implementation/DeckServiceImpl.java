@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Implementation for the deck service.
@@ -234,6 +235,39 @@ public class DeckServiceImpl implements DeckService {
             cardInfo.setNextRepetition(LocalDate.now().plusDays(cardInfo.getSraValues().interval()));
             return cardInfoRepository.save(cardInfo);
         });
+    }
+
+
+    @Override
+    public List<CardInfoCardDTO> getMaxLearningCards(Usr usr, long[] deckId, int maxCards) {
+        List<CardInfoCardDTO> cardsAndInfo = new ArrayList<>();
+        for (int i = 0; i < deckId.length; i++) {
+            Optional<Deck> deck = getUserDeckById(usr, deckId[i]);
+            if (deck.isPresent()) {
+                if ((deck.get().getCards().size() == getUserCards(usr, deckId[i]).size())
+                        && !getUserCards(usr, deckId[i]).isEmpty()) {
+                    for (int j = 0; j < deck.get().getCards().size(); j++) {
+                        cardsAndInfo.add(new CardInfoCardDTO(getUserCards(usr, deckId[i]).get(j),
+                                deck.get().getCards().get(j)));
+                    }
+                }
+            }
+        }
+        LocalDate today = LocalDate.now().plusDays(1);
+        cardsAndInfo = cardsAndInfo.stream()
+                .filter(dto -> dto.getCardInfo().getNextRepetition().isBefore(today))
+                .sorted(Comparator.comparing(dto -> dto.getCardInfo().getNextRepetition()))
+                .limit(maxCards)
+                .collect(Collectors.toList());
+
+        /*cardsAndInfo.sort(Comparator.comparing(
+                (CardInfoCardDTO dto) -> dto.getCardInfo().getNextRepetition()
+        ));
+        if (cardsAndInfo.size() > maxCards) {
+            cardsAndInfo = cardsAndInfo.subList(0, maxCards);
+        }*/
+        return cardsAndInfo;
+
     }
 
     /**

@@ -1,9 +1,11 @@
 package de.techfak.gse.template;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.techfak.gse.template.domain.Rating;
 import de.techfak.gse.template.domain.entities.Card;
 import de.techfak.gse.template.domain.entities.CardInfo;
 import de.techfak.gse.template.domain.entities.Deck;
+import de.techfak.gse.template.domain.implementation.CardInfoCardDTO;
 import de.techfak.gse.template.domain.service.CardService;
 import de.techfak.gse.template.domain.service.DeckService;
 import de.techfak.gse.template.domain.service.UserService;
@@ -52,7 +54,7 @@ public class InitializeLexmeaDatabase implements InitializingBean {
         this.objectMapper = objectMapper;
     }
 
-    @SuppressWarnings({"checkstyle:TrailingComment", "checkstyle:MultipleStringLiterals", "checkstyle:LocalVariableName", "checkstyle:LineLength"})
+    @SuppressWarnings({"checkstyle:TrailingComment", "checkstyle:MultipleStringLiterals", "checkstyle:LocalVariableName", "checkstyle:LineLength", "checkstyle:MagicNumber"})
     @Override
     public void afterPropertiesSet() {
         try {
@@ -140,6 +142,17 @@ public class InitializeLexmeaDatabase implements InitializingBean {
                     System.out.println(objectMapper.writerWithDefaultPrettyPrinter().
                             writeValueAsString(cardInfo.get()));
                 }
+                deckService.rankCard(user1, 1, 1, Rating.EASY);
+
+                deckService.getNewUserDeck(user1, 3);
+                deckService.getNewUserDeck(user1, 4);
+                deckService.getNewUserDeck(user1, 5);
+                List<CardInfoCardDTO> cardsAndInfo = deckService.getMaxLearningCards(
+                        user1, new long[]{1, 2, 3, 4}, 1000);
+                System.out.println("#######################################################");
+                System.out.println(objectMapper.writerWithDefaultPrettyPrinter().
+                        writeValueAsString(cardsAndInfo));
+
             } catch (Exception e) {
                 e.printStackTrace();
             }

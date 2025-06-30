@@ -5,6 +5,7 @@ import de.techfak.gse.template.domain.entities.Card;
 import de.techfak.gse.template.domain.entities.CardInfo;
 import de.techfak.gse.template.domain.entities.Deck;
 import de.techfak.gse.template.domain.entities.Usr;
+import de.techfak.gse.template.domain.implementation.CardInfoCardDTO;
 
 import java.util.List;
 import java.util.Optional;
@@ -45,6 +46,8 @@ public interface DeckService {
     Optional<Deck> deleteDeck(long deckId);
 
     Optional<CardInfo> rankCard(Usr usr, long deckId, long cardId, Rating rating);
+
+    List<CardInfoCardDTO> getMaxLearningCards(Usr usr, long[] deckId, int maxCards);
 
     //Dictionary<Rating, Long> getDeckInfo(Usr usr, long deckId);
 }

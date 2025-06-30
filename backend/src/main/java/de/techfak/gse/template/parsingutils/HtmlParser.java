@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -36,6 +37,7 @@ public class HtmlParser {
      * @param html the html
      * @return the problem boxes
      */
+    @SuppressWarnings("checkstyle:ArrayTrailingComma")
     public static ArrayList<String[]> getProblemBoxes(String html) {
         Document doc = Jsoup.parse(html);
         doc.outputSettings().prettyPrint(false);
@@ -45,7 +47,12 @@ public class HtmlParser {
             LOGGER.debug(section.text());
             String text = section.text();
             text = text.replaceFirst(BACKSLASH_N, "");
-            String[] frontBack = text.split(TRIPLE_BACKSLASH_N);
+            String[] frontBackFirst = text.split(TRIPLE_BACKSLASH_N);
+            //This gets ugly cards too
+            String[] frontBack = {
+                    frontBackFirst[0],
+                    String.join(" ", Arrays.copyOfRange(frontBackFirst, 1, frontBackFirst.length))
+            };
             if (frontBack.length == 2) {
                 frontBack[1] = frontBack[1].replaceAll(DOUBLE_BACKSLASH_N, NEWLINE);
                 frontBack[1] = frontBack[1].replaceAll(BACKSLASH_N, NEWLINE);
@@ -56,6 +63,7 @@ public class HtmlParser {
                 problemBoxes.add(frontBack);
             } else {
                 LOGGER.debug("getProblemBoxes: Broken Split | Text: {}", text);
+                //System.out.println("Broken Split");
             }
 
         }
