@@ -48,4 +48,7 @@ public interface DeckService {
     Optional<CardInfo> rankCard(Usr usr, long deckId, long cardId, Rating rating);
 
     List<CardInfoCardDTO> getMaxLearningCards(Usr usr, long[] deckId, int maxCards, String[] cardTypes);
+
+    Optional<CardInfo> getCardInfo(long deckId, long cardId, String userId);
+
 }

@@ -255,4 +255,14 @@ public class DeckController {
         Usr usr = userService.loadUserByUsername(auth.getName());
         return deckService.getMaxLearningCards(usr, deckIds, maxCards, cardTypes);
     }
+
+    @GetMapping("/usr/decks/{deckId:\\d+}/cards/{cardId:\\d+}/info")
+    @Secured("ROLE_USER")
+    public CardInfo getCardInfo(@PathVariable("deckId") final long deckId,
+                                @PathVariable("cardId") final long cardId){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Usr usr = userService.loadUserByUsername(auth.getName());
+        return deckService.getCardInfo(deckId,cardId, usr.getUserId()).orElseThrow(BadRequestException::new);
+    }
+
 }

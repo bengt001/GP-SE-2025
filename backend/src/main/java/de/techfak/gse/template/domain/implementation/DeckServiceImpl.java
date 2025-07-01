@@ -2,10 +2,7 @@ package de.techfak.gse.template.domain.implementation;
 
 import de.techfak.gse.template.domain.*;
 import de.techfak.gse.template.domain.entities.*;
-import de.techfak.gse.template.domain.repositories.CardInfoRepository;
-import de.techfak.gse.template.domain.repositories.CardRepository;
-import de.techfak.gse.template.domain.repositories.DeckInfoRepository;
-import de.techfak.gse.template.domain.repositories.DeckRepository;
+import de.techfak.gse.template.domain.repositories.*;
 import de.techfak.gse.template.domain.service.DeckService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +20,7 @@ public class DeckServiceImpl implements DeckService {
     private final CardRepository cardRepository;
     private final CardInfoRepository cardInfoRepository;
     private final DeckInfoRepository deckInfoRepository;
+    private final UserRepository userRepository;
     private final SpacedRepetitionAlgorithm sra;
 
     /**
@@ -32,14 +30,16 @@ public class DeckServiceImpl implements DeckService {
      * @param cardRepository     the card repository
      * @param cardInfoRepository the card info repository
      * @param deckInfoRepository the deck info repository
+     * @param userRepository     the user repository
      */
     @Autowired
     public DeckServiceImpl(DeckRepository deckRepository, CardRepository cardRepository,
-                           CardInfoRepository cardInfoRepository, DeckInfoRepository deckInfoRepository) {
+                           CardInfoRepository cardInfoRepository, DeckInfoRepository deckInfoRepository,UserRepository userRepository) {
         this.deckRepository = deckRepository;
         this.cardRepository = cardRepository;
         this.cardInfoRepository = cardInfoRepository;
         this.deckInfoRepository = deckInfoRepository;
+        this.userRepository = userRepository;
         this.sra = new SMTwoAnki();
     }
 
@@ -229,7 +229,7 @@ public class DeckServiceImpl implements DeckService {
      */
     @Override
     public Optional<CardInfo> rankCard(Usr usr, long deckId, long cardId, Rating rating) {
-        Optional<CardInfo> tempCardInfo = cardInfoRepository.findCardInfoByCardIdAndUserId(cardId, usr.getUserId());
+        Optional<CardInfo> tempCardInfo = cardInfoRepository.findCardInfoByDeckIdAndCardIdAndUserId(deckId,cardId, usr.getUserId());
         return tempCardInfo.map(cardInfo -> {
             cardInfo.setRating(rating);
             cardInfo.setSraValues(sra.updateValues(cardInfo.getSraValues(), cardInfo.getRating()));
@@ -263,5 +263,25 @@ public class DeckServiceImpl implements DeckService {
                 .limit(maxCards)
                 .collect(Collectors.toList());
         return cardsAndInfo;
+    }
+
+    @Override
+    public Optional<CardInfo> getCardInfo(long deckId, long cardId, String userId) {
+        Optional<CardInfo>  info = cardInfoRepository.findCardInfoByDeckIdAndCardIdAndUserId(deckId,cardId,userId);
+        if (info.isPresent()) {
+            return info;
+        }
+        Optional<Deck> deckOpt = deckRepository.findById(deckId);
+        Optional<Card> cardOpt = cardRepository.findById(cardId);
+        Optional<Usr> userOpt = userRepository.findById(userId);
+
+        if (deckOpt.isEmpty() || cardOpt.isEmpty() || userOpt.isEmpty()) {
+            return Optional.empty();
+        }
+
+        CardInfo newInfo = new CardInfo(userOpt.get(),cardOpt.get(),deckOpt.get(),Rating.NOT_LEARNED);
+        cardInfoRepository.save(newInfo);
+        return Optional.of(newInfo);
+
     }
 }

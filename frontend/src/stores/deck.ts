@@ -69,17 +69,42 @@ export const useDeckStore = defineStore('decks', {
         this.decksLoading--
         return
       }
-      let  LastRating
-      if(useUserStore().authenticated){
-        LastRating = 4 // TODO aus backend
-      }
-      else{
-        LastRating = 4
-      }
+
 
       for(const id of IDlist){
         const cards = await axios.get('api/decks/' + id + '/cards')
           for(const card of cards.data){
+            let  LastRating
+            if(useUserStore().authenticated){
+              console.log("vor dem await")
+              const info = await axios.get('api/usr/decks/' + id + '/cards/' + card.cardId + '/info')
+              console.log("info: ",info.data)
+
+              switch (info.data.rating) {
+                case "NOT_LEARNED":
+                  LastRating = 4;
+                  break;
+                case "AGAIN":
+                  LastRating = 3;
+                  break;
+                case "HARD":
+                  LastRating = 2;
+                  break;
+                case "GOOD":
+                  LastRating = 1;
+                  break;
+                case "EASY":
+                  LastRating = 0;
+                  break;
+                default:
+                  LastRating = 4;
+                  break;
+              }
+
+            }
+            else{
+              LastRating = 4
+            }
             if(card.cardType == "Definitionen"){
               const cardContent = this.cleanDefinitionString(card.content)
               const newCard: Card = {
