@@ -76,9 +76,7 @@ export const useDeckStore = defineStore('decks', {
           for(const card of cards.data){
             let  LastRating
             if(useUserStore().authenticated){
-              console.log("vor dem await")
               const info = await axios.get('api/usr/decks/' + id + '/cards/' + card.cardId + '/info')
-              console.log("info: ",info.data)
 
               switch (info.data.rating) {
                 case "NOT_LEARNED":
@@ -143,9 +141,11 @@ export const useDeckStore = defineStore('decks', {
               }
               problems.push(newCard)            }
           }
+        if(useUserStore().authenticated){
+          await axios.post('api/usr/decks/' + id + '/add')
+        }
       }
 
-      //TODO Deck beim user speichern
       const newDeck: Deck = {
         title: deckname,
         author_id: authorID,
@@ -160,13 +160,16 @@ export const useDeckStore = defineStore('decks', {
       this.decksLoading--
     },
 
-    deactivateDeck(deckname: string): void{
+    async deactivateDeck(deckname: string): Promise<void>{
       let counter: number = 0
       while(counter < this.decks.length){
         const deck = this.decks[counter]
         if (deck.title === deckname) {
+          for(const id of deck.stapel_id){
+            await axios.delete("api/usr/" + id + "/delete")
+          }
           this.decks.splice(counter,1)
-          localStorage.setItem('decks', JSON.stringify(this.decks)); //TODO im backend vom user entfernen
+          localStorage.setItem('decks', JSON.stringify(this.decks));
         }
         counter++
       }
@@ -254,6 +257,8 @@ export const useDeckStore = defineStore('decks', {
 
       return cleanString
     },
+
+    //TODO bewerten für angemeldete
   //   Funktionene um bei unangemeldeten bewertungen zu speicher:
     rate(cardID:number,deckID:number,rateIndex:number){
       const deck = this.getDeckByOneID(deckID)

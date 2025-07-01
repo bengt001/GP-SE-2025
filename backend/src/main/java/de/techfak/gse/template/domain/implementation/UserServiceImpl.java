@@ -1,5 +1,7 @@
 package de.techfak.gse.template.domain.implementation;
 
+import de.techfak.gse.template.domain.entities.Deck;
+import de.techfak.gse.template.domain.repositories.DeckRepository;
 import de.techfak.gse.template.domain.repositories.UserRepository;
 import de.techfak.gse.template.domain.service.UserService;
 import de.techfak.gse.template.domain.entities.Usr;
@@ -7,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 /**
  * Service der das UserService Interface implementiert. Enthält methoden um mit Usern zu iteragieren.
@@ -16,11 +20,13 @@ public class UserServiceImpl implements UserService {
     public final String strNotFound = " not found";
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final DeckRepository deckRepository;
 
     @Autowired
-    public UserServiceImpl(final UserRepository userRepository, final PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(final UserRepository userRepository, final PasswordEncoder passwordEncoder,final DeckRepository deckRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.deckRepository = deckRepository;
     }
 
     /**
@@ -37,6 +43,7 @@ public class UserServiceImpl implements UserService {
         throw new UsernameNotFoundException(email + strNotFound);
     }
 
+    @Override
     public Usr loadUserByID(final String userID) throws UsernameNotFoundException {
         return userRepository.findById(userID)
                 .orElseThrow(() -> new UsernameNotFoundException(userID + strNotFound));
@@ -68,6 +75,44 @@ public class UserServiceImpl implements UserService {
         }
         return String.valueOf(counter);
 
+    }
+
+    @Override
+    public void addDeck(String userId, Long deckId) {
+        Optional<Usr> userOpt = userRepository.findById(userId);
+        Optional<Deck> deckOpt = deckRepository.findById(deckId);
+        if (userOpt.isEmpty() || deckOpt.isEmpty()) {
+            return;
+        }
+
+        Usr user = userOpt.get();
+        Deck deck = deckOpt.get();
+
+        if (!user.getDecks().contains(deck)) {
+            user.getDecks().add(deck);
+        }
+
+        userRepository.save(user);
+
+        return;
+    }
+
+    @Override
+    public void deleteDeck(String userId, Long deckId) {
+        Optional<Usr> userOpt = userRepository.findById(userId);
+        Optional<Deck> deckOpt = deckRepository.findById(deckId);
+        if (userOpt.isEmpty() || deckOpt.isEmpty()) {
+            return;
+        }
+
+        Usr user = userOpt.get();
+        Deck deck = deckOpt.get();
+
+        user.getDecks().remove(deck);
+
+        userRepository.save(user);
+
+        return;
     }
 
     @Override
