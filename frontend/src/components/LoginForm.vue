@@ -153,7 +153,7 @@ function register() {
                   color="primary"
                   @click="register"
                 >
-                  Regestrieren
+                  Registrieren
                 </v-btn>
               </v-row>
             </v-col>

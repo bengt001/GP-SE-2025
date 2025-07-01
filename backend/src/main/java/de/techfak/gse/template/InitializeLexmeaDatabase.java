@@ -81,10 +81,10 @@ public class InitializeLexmeaDatabase implements InitializingBean {
                     "password",
                     "Lexmea",
                     "ROLE_USER"); //Lexmea
-            Usr user3 = userService.createUser("Maya Fey",
-                    "maya.fey@aa.de",
+            Usr user3 = userService.createUser("Clara Ley",
+                    "clara@aa.de",
                     "password",
-                    "Maya Fey",
+                    "Clara Ley",
                     "ROLE_USER");
             try (InputStream is = TemplateApplication.class.getClassLoader().
                     getResourceAsStream("schemasWithFoLTree.json")) {
