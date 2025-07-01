@@ -5,6 +5,7 @@ import de.techfak.gse.template.domain.entities.Card;
 import de.techfak.gse.template.domain.entities.CardInfo;
 import de.techfak.gse.template.domain.entities.Deck;
 import de.techfak.gse.template.domain.entities.Usr;
+import de.techfak.gse.template.domain.implementation.CardInfoCardDTO;
 import de.techfak.gse.template.domain.service.CardService;
 import de.techfak.gse.template.domain.service.DeckService;
 import de.techfak.gse.template.domain.service.UserService;
@@ -222,18 +223,36 @@ public class DeckController {
         return deckService.updateDeck(usr, deckId, deck).orElseThrow(BadRequestException::new);
     }
 
-//    /**
-//     * API Endpoint for sending a updateDeck Patch-Request.
-//     *
-//     * @param deckId the deckId that shall be updated
-//     * @param deck   the updated version of the deck
-//     * @return an updated Version of the Deck
-//     */
-//    @PatchMapping("/usr/decks/{deckId:d\\+}/info")
-//    @Secured("ROLE_USER")
-//    public Dictionary<Rating, Long> deckInfo(@PathVariable final long deckId, @RequestBody final Deck deck) {
-//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-//        Usr usr = userService.loadUserByUsername(auth.getName());
-//        return deckService.getDeckInfo(usr, deckId);
-//    }
+
+    /**
+     * API Endpoint to get all Cards from one of the users decks.
+     *
+     * @param deckId of the deck.
+     * @return List of Card.
+     */
+    @GetMapping("/usr/decks/{deckId:\\d+}/getLearningCards")
+    @Secured("ROLE_USER")
+    public List<CardInfoCardDTO> getLearningCardsFromThisDeck(@PathVariable("deckId") final long deckId,
+                                                       @RequestParam final int maxCards,
+                                                       @RequestParam final String[] cardTypes) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Usr usr = userService.loadUserByUsername(auth.getName());
+        return deckService.getMaxLearningCards(usr, new long[]{deckId}, maxCards, cardTypes);
+    }
+
+    /**
+     * API Endpoint to get Cards to learn (max) from the list of given decks.
+     * @param deckIds Ids of the decks to consider.
+     *
+     * @return List of CardInfoCardDTO with the Cards to learn.
+     */
+    @GetMapping("/usr/getLearningCards")
+    @Secured("ROLE_USER")
+    public List<CardInfoCardDTO> getLearningCardsFromThisDeck(@RequestParam final long[] deckIds,
+                                                              @RequestParam final int maxCards,
+                                                              @RequestParam final String[] cardTypes) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Usr usr = userService.loadUserByUsername(auth.getName());
+        return deckService.getMaxLearningCards(usr, deckIds, maxCards, cardTypes);
+    }
 }

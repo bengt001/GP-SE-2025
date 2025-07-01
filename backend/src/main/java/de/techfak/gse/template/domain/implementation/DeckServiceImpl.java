@@ -108,7 +108,8 @@ public class DeckServiceImpl implements DeckService {
     public Optional<Card> updateCard(Usr usr, long deckId, long cardId, Card updatedCard) {
         Optional<Card> tempCard = cardRepository.findCardByIdAndDeckId(cardId, deckId);
         if (tempCard.isPresent()) {
-            Optional<CardInfo> tempCardInfo = cardInfoRepository.findCardInfoByDeckIdAndCardIdAndUserId(deckId, cardId, usr.getUserId());
+            Optional<CardInfo> tempCardInfo = cardInfoRepository.findCardInfoByDeckIdAndCardIdAndUserId(
+                    deckId, cardId, usr.getUserId());
             if (tempCardInfo.isPresent()) {
                 tempCardInfo.get().setEditedContent(updatedCard.getContent());
                 cardInfoRepository.save(tempCardInfo.get());
@@ -239,7 +240,7 @@ public class DeckServiceImpl implements DeckService {
 
 
     @Override
-    public List<CardInfoCardDTO> getMaxLearningCards(Usr usr, long[] deckId, int maxCards) {
+    public List<CardInfoCardDTO> getMaxLearningCards(Usr usr, long[] deckId, int maxCards, String[] cardTypes) {
         List<CardInfoCardDTO> cardsAndInfo = new ArrayList<>();
         for (int i = 0; i < deckId.length; i++) {
             Optional<Deck> deck = getUserDeckById(usr, deckId[i]);
@@ -247,8 +248,10 @@ public class DeckServiceImpl implements DeckService {
                 if ((deck.get().getCards().size() == getUserCards(usr, deckId[i]).size())
                         && !getUserCards(usr, deckId[i]).isEmpty()) {
                     for (int j = 0; j < deck.get().getCards().size(); j++) {
-                        cardsAndInfo.add(new CardInfoCardDTO(getUserCards(usr, deckId[i]).get(j),
-                                deck.get().getCards().get(j)));
+                        if (Arrays.asList(cardTypes).contains(deck.get().getCards().get(j).getCardType())) {
+                            cardsAndInfo.add(new CardInfoCardDTO(getUserCards(usr, deckId[i]).get(j),
+                                    deck.get().getCards().get(j)));
+                        }
                     }
                 }
             }
@@ -259,30 +262,6 @@ public class DeckServiceImpl implements DeckService {
                 .sorted(Comparator.comparing(dto -> dto.getCardInfo().getNextRepetition()))
                 .limit(maxCards)
                 .collect(Collectors.toList());
-
-        /*cardsAndInfo.sort(Comparator.comparing(
-                (CardInfoCardDTO dto) -> dto.getCardInfo().getNextRepetition()
-        ));
-        if (cardsAndInfo.size() > maxCards) {
-            cardsAndInfo = cardsAndInfo.subList(0, maxCards);
-        }*/
         return cardsAndInfo;
-
     }
-
-    /**
-     * The method returns the number of cards that are rated as easy, good, hard, again and not learned as a list.
-     * @ usr used for the id.
-     * @ deckId The deck to get.
-     * @return an List of five integers.
-     */
-//    @Override
-//    public Dictionary<Rating, Long> getDeckInfo(Usr usr, long deckId) {
-//        Dictionary<Rating, Long> ratingCount = new Hashtable<>();
-//        for (Rating rating : Rating.values()) {
-//            ratingCount.put(rating, cardInfoRepository.countByDeckIdAndRatingEqualsAndUserIdEquals(
-//                    deckId, rating, usr.getUserId()));
-//        }
-//        return ratingCount;
-//    }
 }

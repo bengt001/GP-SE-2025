@@ -21,12 +21,6 @@ public class Card {
     private String cardType;
     @Column
     private String title;
-   /*@Column
-    private LocalDate nextRevision;
-    @Column
-    private int rating;
-    @Embedded
-    private SraValues sraValues;*/
 
     //JsonIgnore
     @ManyToOne
@@ -42,9 +36,6 @@ public class Card {
 
     /**
      * New card with specified content.
-     * The Values for the SRA (nextRevision, rating, sraValues) are set to the standard values for a new card.
-     * This means to nextRevision: now, rating: -1, sraValues (0,0,250).
-     * Kirill: I dont think thats true anymore
      *
      * @param content  the content
      * @param cardType the card type
@@ -56,9 +47,6 @@ public class Card {
         this.cardType = cardType;
         this.deck = deck;
         this.title = title;
-        /*this.nextRevision = LocalDate.now();
-        this.rating = -1;
-        this.sraValues = new SraValues();*/
     }
 
 }

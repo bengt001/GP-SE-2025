@@ -148,7 +148,7 @@ public class InitializeLexmeaDatabase implements InitializingBean {
                 deckService.getNewUserDeck(user1, 4);
                 deckService.getNewUserDeck(user1, 5);
                 List<CardInfoCardDTO> cardsAndInfo = deckService.getMaxLearningCards(
-                        user1, new long[]{1, 2, 3, 4}, 1000);
+                        user1, new long[]{1, 2, 3, 4}, 1000, new String[]{"Probleme", "Definitionen", "Aufdeckkarte"});
                 System.out.println("#######################################################");
                 System.out.println(objectMapper.writerWithDefaultPrettyPrinter().
                         writeValueAsString(cardsAndInfo));
