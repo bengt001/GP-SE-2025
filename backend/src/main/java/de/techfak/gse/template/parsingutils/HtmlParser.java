@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -53,10 +52,11 @@ public class HtmlParser {
             text = text.replaceFirst(BACKSLASH_N, "");
             String[] frontBackFirst = text.split(TRIPLE_BACKSLASH_N);
             //This gets ugly cards too
-            String[] frontBack = {
+            /*String[] frontBack = {
                     frontBackFirst[0],
                     String.join(" ", Arrays.copyOfRange(frontBackFirst, 1, frontBackFirst.length))
-            };
+            };*/
+            String[] frontBack = frontBackFirst;
             if (frontBack.length == 2) {
                 frontBack[1] = frontBack[1].replaceAll(DOUBLE_BACKSLASH_N, NEWLINE);
                 frontBack[1] = frontBack[1].replaceAll(BACKSLASH_N, NEWLINE);
