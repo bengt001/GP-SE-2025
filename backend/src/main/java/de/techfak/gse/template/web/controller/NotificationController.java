@@ -13,13 +13,21 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
+/**
+ * API für Notifications.
+ */
 @RestController
 @RequestMapping("/api")
 public class NotificationController {
 
+    /**
+     * Service that sends notifications to users.
+     */
     private final NotificationService notificationService;
+    /**
+     * Service that manages interactions with users.
+     */
     private final UserService userService;
 
     @Autowired
@@ -30,7 +38,6 @@ public class NotificationController {
 
     /**
      * API Endpoint to get all Notifications of a User.
-     *
      * @return List of Notifications for one User.
      */
     @GetMapping("/notification")
@@ -41,11 +48,11 @@ public class NotificationController {
         return notificationService.getNotificationByUser(userService.loadUserById(user.getUserId()));
     }
 
-    @GetMapping("/notification/status")
-    public String getStatus() {
-        return "Message send at " + LocalDateTime.now();
-    }
-
+    /**
+     * Marks a notification as read.
+     * @param id id of the notifications that has been read
+     * @return {@code 200 OK} if successfully marked as read, else {@code 404 Not Found}
+     */
     @PutMapping("/notification/{id}/read")
     public ResponseEntity<Void> markAsRead(@PathVariable Long id) {
         boolean success = notificationService.markNotificationAsRead(id);
@@ -55,6 +62,11 @@ public class NotificationController {
         return ResponseEntity.notFound().build();
     }
 
+    /**
+     * Deletes a Notification.
+     * @param id id of notification to be deleted
+     * @return {@code 200 OK} if successfully deleted, else {@code 404 Not Found}
+     */
     @DeleteMapping("/notification/{id}/delete")
     public ResponseEntity<Void> deleteNotification(@PathVariable Long id) {
         boolean success = notificationService.deleteNotificationById(id);

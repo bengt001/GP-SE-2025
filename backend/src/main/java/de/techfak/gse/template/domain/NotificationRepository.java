@@ -1,7 +1,8 @@
 package de.techfak.gse.template.domain;
 import org.springframework.data.repository.CrudRepository;
 
-import java.util.List;
-
+/**
+ * Interface for the Notification Repository.
+ */
 public interface NotificationRepository extends CrudRepository<Notification, Long> {
 }

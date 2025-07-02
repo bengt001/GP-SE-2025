@@ -4,4 +4,5 @@ export default interface Notification {
   cardsDue: number;
   type: string;
   read: boolean;
+  creationDate: Date;
 }

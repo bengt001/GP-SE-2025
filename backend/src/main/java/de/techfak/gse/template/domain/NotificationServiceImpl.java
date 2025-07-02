@@ -10,10 +10,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Service that manages the notification of users.
+ */
 @Service
 public class NotificationServiceImpl implements NotificationService {
 
+    /**
+     * Service that manages the notifications of user.
+     */
     private final NotificationRepository notificationRepository;
+    /**
+     * Service that manages all user interactions.
+     */
     private final UserRepository userRepository;
 
     @Autowired
@@ -42,7 +51,7 @@ public class NotificationServiceImpl implements NotificationService {
         return notifications;
     }
 
-    @Scheduled(cron = "0 0 0 * * *")
+    @Scheduled(cron = "0 */1 * * * *")
     @Transactional
     public void sendNotificationToUsers() {
         List<Usr> users = (List<Usr>) userRepository.findAll();
@@ -55,7 +64,7 @@ public class NotificationServiceImpl implements NotificationService {
 
         List<Notification> notifications = getNotificationByUser(user);
 
-        if (notifications.size() < 10) {
+        if (notifications.size() < 5) {
             notificationRepository.save(new Notification(user, "ImplTest"));
         }
     }
@@ -87,5 +96,9 @@ public class NotificationServiceImpl implements NotificationService {
             return true;
         }
        return false;
+    }
+
+    public void sendWelcomeNote(Usr user) {
+        notificationRepository.save(new Notification(user, "WELCOME"));
     }
 }

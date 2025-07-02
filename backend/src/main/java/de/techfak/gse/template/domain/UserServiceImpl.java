@@ -13,11 +13,13 @@ public class UserServiceImpl implements UserService {
     public final String strNotFound = " not found";
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final NotificationService notificationService;
 
     @Autowired
-    public UserServiceImpl(final UserRepository userRepository, final PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(final UserRepository userRepository, final PasswordEncoder passwordEncoder, final NotificationService notificationService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.notificationService = notificationService;
     }
 
     /** loads User by ID. */
@@ -47,7 +49,10 @@ public class UserServiceImpl implements UserService {
             usr.addRole(role);
         }
 
-        return userRepository.save(usr);
+        userRepository.save(usr);
+        notificationService.sendWelcomeNote(usr);
+
+        return usr;
     }
 
     @Override

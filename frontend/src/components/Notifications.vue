@@ -19,8 +19,23 @@ const UserStore = useUserStore()
         class="mx-auto mb-4"
         @click="notificationStore.markAsRead(index)"
       >
-        <v-card-title :class="{ 'read-text': note.read }">
-          Karten sind heute fällig!
+        <v-card-title
+          v-if="note.type === 'WELCOME'"
+          :class="{ 'read-text': note.read }"
+        >
+          Herzlich Willkommen!
+        </v-card-title>
+        <v-card-title
+          v-else-if="note.type === 'ImplTest'"
+          :class="{ 'read-text': note.read }"
+        >
+          Test-Nachricht!
+        </v-card-title>
+        <v-card-title
+          v-else
+          :class="{ 'read-text': note.read }"
+        >
+          Heute sind Karten fällig!
         </v-card-title>
         <v-btn
           icon
@@ -32,9 +47,24 @@ const UserStore = useUserStore()
         >
           <v-icon>mdi-delete</v-icon>
         </v-btn>
-        <v-card-text :class="{ 'read-text': note.read }">
+        <v-card-text
+          v-if="note.type==='ImplTest'"
+          :class="{ 'read-text': note.read }"
+        >
+          Nachricht wurde erstellt am {{ note.creationDate }}.
+        </v-card-text>
+        <v-card-text
+          v-else-if="note.type === 'WELCOME'"
+          :class="{ 'read-text': note.read }"
+        >
+          Herzlich Willkommen zu LexArtes!
+        </v-card-text>
+        <v-card-text
+          v-else
+          :class="{ 'read-text': note.read }"
+        >
           Du hast Karten, die zum Lernen bereit sind.
-          Klicke hier, um sofot mit dem Lernen zu starten.
+          Klicke hier, um sofort mit dem Lernen zu starten.
         </v-card-text>
       </v-card>
     </v-col>
