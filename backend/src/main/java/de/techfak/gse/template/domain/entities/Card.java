@@ -21,6 +21,14 @@ public class Card {
     private String cardType;
     @Column
     private String title;
+    @Column
+    private String ueberschrift;
+   /*@Column
+    private LocalDate nextRevision;
+    @Column
+    private int rating;
+    @Embedded
+    private SraValues sraValues;*/
 
     //JsonIgnore
     @ManyToOne
@@ -37,16 +45,21 @@ public class Card {
     /**
      * New card with specified content.
      *
-     * @param content  the content
-     * @param cardType the card type
-     * @param deck     the deck
-     * @param title    the title
+     * @param content      the content
+     * @param cardType     the card type
+     * @param deck         the deck
+     * @param title        the title
+     * @param ueberschrift the ueberschrift
      */
-    public Card(String content, String cardType, Deck deck, String title) {
+    public Card(String content, String cardType, Deck deck, String title, String ueberschrift) {
         this.content = content;
         this.cardType = cardType;
         this.deck = deck;
         this.title = title;
+        this.ueberschrift = ueberschrift;
+        /*this.nextRevision = LocalDate.now();
+        this.rating = -1;
+        this.sraValues = new SraValues();*/
     }
 
 }
