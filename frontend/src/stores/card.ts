@@ -33,9 +33,38 @@ export const useCardStore = defineStore('card', {
     },
 
     async updateCard(updatedCard:Card){
-      const index = this.cards.findIndex(card => card.id === updatedCard.id)
-      if (index !== -1){
-        this.cards[index] = updatedCard
+      const userToken = localStorage.getItem('userToken');
+
+      if (!userToken) {
+        console.error("user token not found, cant update Card.")
+        return;
+      }
+
+      const payload = {
+        title: updatedCard.title,
+        text: updatedCard.text,
+      };
+
+      try {
+        const response = await fetch(`api/usr/decks/${updatedCard.deckID}/${updatedCard.id}`,
+          {
+            method: 'PATCH',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${userToken}`,
+            },
+            body: JSON.stringify(payload),
+          });
+        if (!response.ok) {
+          throw new Error(`Failed to update card: ${response.statusText}`);
+        }
+        const savedCard: Card = await response.json();
+        const index = this.cards.findIndex(card => card.id == savedCard.id);
+        if (index !== -1) {
+          this.cards[index] = savedCard;
+        }
+      } catch (error) {
+        console.error("Failed to update Card.", error);
       }
     },
 
