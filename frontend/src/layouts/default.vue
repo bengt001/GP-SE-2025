@@ -16,6 +16,7 @@
                 max-height="55"
                 color="white"
                 src="@/assets/lexMeaWebsiteLogo.png"
+                alt="LexMea logo"
               />
             </v-card>
           </div>
@@ -25,7 +26,6 @@
         <div v-if="$vuetify.display.mdAndUp && userStore.authenticated">
           Hallo,  {{ userStore.username }}!
         </div>
-
 
         <div v-if="$vuetify.display.mdAndUp">
           <v-btn
@@ -69,6 +69,7 @@
       <v-main>
         <!--        Subheader mit Home-Button und Buttons für Benachrichtigungen, Statistiken und Karteikartenhinzufügen -->
         <v-tabs
+          v-if="!route.fullPath.includes('cards')"
           v-model="subheader"
           align-tabs="center"
           bg-color="lexmea_blue_300"
@@ -98,7 +99,6 @@
 
 <script lang="ts" setup>
 import {useUserStore} from "@/stores/users";
-
 const userStore = useUserStore();
 
 // Liste der Subheader-Tabs für for-Loop
@@ -123,8 +123,15 @@ const subheader_tabs = ref([
     title: 'Benachrichtigungen',
     icon: 'mdi-message-text',
     to: ' ',
+  },
+  {
+    title: 'Freunde',
+    icon: 'mdi-account-multiple',
+    to: '/addfriend',
   }
 ])
+
+const route = useRoute()
 
 const drawer = ref(false)
 const group = ref()
