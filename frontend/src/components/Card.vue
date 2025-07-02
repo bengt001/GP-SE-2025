@@ -32,12 +32,12 @@ const cards = computed(() => cardStore.getCards())
 const curCardIndex = computed(() => cardStore.getCardIndex())
 const countGreen = computed(() => {
   let counted = 0
-for(const rating of ratingArr.value){
-  if (rating === 0){
-    counted += 1
+  for(const rating of ratingArr.value){
+    if (rating === 0){
+      counted += 1
+    }
   }
-}
-return counted
+  return counted
 })
 const countYellow = computed(() => {
   let counted = 0
@@ -78,12 +78,12 @@ watch (() => route.params.id, (newId) => {
 })
 
 function getLastRatingText(): string {
-    const curCard = card.value
-    if (curCard) {
-      return ratingLabels[curCard.lastRating]
-    } else {
-      return ratingLabels[4]
-    }
+  const curCard = card.value
+  if (curCard) {
+    return ratingLabels[curCard.lastRating]
+  } else {
+    return ratingLabels[4]
+  }
 
 }
 
@@ -329,7 +329,13 @@ const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name
             class="d-flex justify-center flex-wrap"
             style="gap: 8px;"
           >
-            <v-icon>mdi-alpha-x</v-icon>
+            <v-btn
+              icon
+              color="red"
+              @click="rateCard(3)"
+            >
+              <v-icon>mdi-alpha-x</v-icon>
+            </v-btn>
             <v-btn
               icon
               color="orange"
