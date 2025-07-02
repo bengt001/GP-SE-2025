@@ -52,6 +52,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Usr createUser(final String username, final String email,
                           final String password, final String nickname, final String... roles) {
+        System.out.println("User created" + username);
         String encodedPassword = passwordEncoder.encode(password);
         String userId = getFreeID();
         final Usr usr = new Usr(username, email, encodedPassword, nickname, userId);

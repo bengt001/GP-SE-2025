@@ -198,7 +198,8 @@ export const useDeckStore = defineStore('decks', {
             if (useUserStore().authenticated) {
               await axios.patch('api/usr/decks/' + card.deckID + '/' + card.id + '/rank', {
                 rating: "NOT_LEARNED"
-              });            }
+              });
+            }
             card.lastRating = 4
           }
           for(const card of deck.problems){
@@ -222,10 +223,11 @@ export const useDeckStore = defineStore('decks', {
     getCardNumber(deck:Deck):number{
       return deck.schemas.length + deck.problems.length + deck.definitions.length
     },
+
+    //TODO richtig laden
     async get_my_active_decks(): Promise<void>{
       //MOCK um es zu leeren
       this.clear_decks();
-      await this.addMultDecks([["Strafrecht AT (Lexmea)", "#03364D"]]);
     },
     clear_decks(): void {
       this.decks.splice(0, this.decks.length)
@@ -273,15 +275,44 @@ export const useDeckStore = defineStore('decks', {
       return cleanString
     },
 
-    //TODO bewerten für angemeldete
-  //   Funktionene um bei unangemeldeten bewertungen zu speicher:
-    rate(cardID:number,deckID:number,rateIndex:number){
+    async rate(cardID:number,deckID:number,rateIndex:number){
       const deck = this.getDeckByOneID(deckID)
       if(deck){
         const allCards = deck.problems.concat(deck.schemas,deck.definitions)
         for(const card of allCards){
           if(card.id == cardID){
             card.lastRating = rateIndex
+            if (useUserStore().authenticated) {
+              switch (rateIndex)
+              {
+                case 0:
+                  await axios.patch('api/usr/decks/' + card.deckID + '/' + card.id + '/rank', {
+                    rating: "EASY"
+                  });
+                  break
+                case 1:
+                  await axios.patch('api/usr/decks/' + card.deckID + '/' + card.id + '/rank', {
+                    rating: "GOOD"
+                  });
+                  break
+                case 2:
+                  await axios.patch('api/usr/decks/' + card.deckID + '/' + card.id + '/rank', {
+                    rating: "HARD"
+                  });
+                  break
+                case 3:
+                  await axios.patch('api/usr/decks/' + card.deckID + '/' + card.id + '/rank', {
+                    rating: "AGAIN"
+                  });
+                  break
+                case 4:
+                  await axios.patch('api/usr/decks/' + card.deckID + '/' + card.id + '/rank', {
+                    rating: "NOT_LEARNED"
+                  });
+                  break
+              }
+
+            }
             break
           }
         }

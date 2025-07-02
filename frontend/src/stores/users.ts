@@ -37,13 +37,13 @@ export const useUserStore = defineStore('users', {
         this.email = email;
       },
 
-      saveUsr(user: Credentials): Promise<AxiosResponse<Credentials>> {
+      async saveUsr(user: Credentials): Promise<AxiosResponse<Credentials>> {
         const usrCmd = {
           username: user.username,
           email: user.email,
           password: user.password
         };
-        return axios.post('/api/register', usrCmd);
+        return await axios.post('/api/register', usrCmd);
       },
       logout() {
         this.authenticated = false;

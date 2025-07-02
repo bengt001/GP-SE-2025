@@ -30,7 +30,7 @@ public class UsrController {
 
     @PostMapping("/register")
     public Usr createUser(@RequestBody UsrCmd usrCmd) {
-        return userService.createUser(usrCmd.username(), usrCmd.email(), usrCmd.password(), "ROLE_USER");
+        return userService.createUser(usrCmd.username(), usrCmd.email(), usrCmd.password(),usrCmd.username(), "ROLE_USER");
     }
 
     @GetMapping("/exists")

@@ -73,6 +73,7 @@ function register() {
             console.log('Token requestet')
             registerDone_snack.value = true
             userStore.setNameEmail(username.value, email.value);
+            deckStore.clear_decks();
             setTimeout(() => {
               router.push('/')
             }, 1000)
