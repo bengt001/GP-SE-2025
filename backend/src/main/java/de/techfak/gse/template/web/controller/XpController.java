@@ -28,7 +28,6 @@ public class XpController {
     }
 
     @PostMapping("/earn")
-    //@Secured("ROLE_USER")
     public ResponseEntity<XpResponse> earnXp(@RequestBody XpEarnRequest request) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Usr usr = userService.loadUserByUsername(auth.getName());                           //ZUM XP SPERICERHN TEST
@@ -44,14 +43,11 @@ public class XpController {
 
     // einfache DTO-Klassen
     public static class XpEarnRequest {
-        //private String userId;
         private String cardType;
         private int uncoveredItems;
         private int rating;
 
         // Getter/Setter
-        //public String getUserId() { return userId; }
-        //public void setUserId(String userId) { this.userId = userId; }
 
         public String getCardType() { return cardType; }
         public void setCardType(String cardType) { this.cardType = cardType; }

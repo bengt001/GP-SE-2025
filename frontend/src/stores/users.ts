@@ -63,14 +63,13 @@ export const useUserStore = defineStore('users', {
 
         const response = await axios.post('/api/xp/earn',
           {
-            //userId,
             cardType,
             uncoveredItems: itemCount,
             rating
           },
           { headers: { Authorization: token } }
         );
-        return response.data.xp;
+        return response.data.gainedXp; //vorher .xp
       },
 
       async loadProfile(): Promise<void> {

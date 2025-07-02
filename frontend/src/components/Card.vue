@@ -128,6 +128,7 @@ function nextCard() {
 }
 
 async function rateCard(colorIndex: number) {
+  console.log("TESTUNG LOG")
   ratingArr.value[cardStore.getCardIndex()] = colorIndex
   lastRating.value = colorIndex
 
@@ -135,25 +136,28 @@ async function rateCard(colorIndex: number) {
 
   if(!userStore.authenticated) {
     deckStore.rate(card.id,card.deckID,colorIndex)
-    console.log("Check XP: User not authenticated")
-
+    nextCard();
   } else {
     try {
+      console.log("[Check respnse]: try block")
       //TODO: Item Count muss noch dynamisch sein. Aktuell fester wert 1 zum Testen
-      const xp = await userStore.earnXp(card.type,  1, 4 - colorIndex)
-      console.log("Check XP: "+xp.toString())
-      earnedXp.value = xp
+      const gainedXp = await userStore.earnXp(card.type,  1, 4 - colorIndex)
+      earnedXp.value = gainedXp
 
-      // ⏱️ XP für 2 Sekunden anzeigen
+      console.log("[Check respone gainedXp]: " + gainedXp)
+      console.log("[Check response earnedXp]: " + earnedXp.value)
+      //XP für 2 Sekunden anzeigen
       setTimeout(() => {
         earnedXp.value = null
-      }, 4000)
+        nextCard();
+      }, 2000)
 
     } catch (error) {
       console.error("Fehler beim XP-Vergabe:", error)
+      nextCard();
     }
   }
-  nextCard()
+  //nextCard()
 }
 
 const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name

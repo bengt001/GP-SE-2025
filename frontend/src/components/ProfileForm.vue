@@ -17,7 +17,9 @@ function logOut() {
   }, 1000)
 }
 
-
+onMounted(async () => {
+  await userStore.loadProfile();
+});
 </script>
 
 <template>
