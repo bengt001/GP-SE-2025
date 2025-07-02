@@ -22,6 +22,11 @@ const ratingArr = ref<number[]>([])
 const backPossible = ref(false)
 const lastRating = ref(4)
 const ratingLabels = ['Einfach', 'Okay', 'Schwer', 'Nicht gewusst', 'Unbewertet']
+const isEditing = ref(false)
+const editedText = ref(card.value?.text ?? '')
+const editedTitle = ref(card.value?.title ?? '')
+
+
 
 const cards = computed(() => cardStore.getCards())
 const curCardIndex = computed(() => cardStore.getCardIndex())
@@ -134,6 +139,33 @@ function rateCard(colorIndex: number) {
   nextCard()
 }
 
+
+function startEditingCard() {
+  isEditing.value = true
+}
+
+function cancelEditingCard() {
+  isEditing.value = false
+  if(card.value) {
+    editedText.value = card.value.text
+    editedTitle.value = card.value.title
+  }
+}
+
+async function saveCardChanges() {
+  if(card.value) {
+    const updateCard = {
+      ...card.value,
+      title: editedTitle.value,
+      text: editedText.value
+    }
+
+    await cardStore.updateCard(updateCard)
+    card.value = updateCard
+    isEditing.value = false
+  }
+}
+
 const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name
 </script>
 
@@ -212,12 +244,19 @@ const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name
 
         <v-card-title>
           <h3
-            v-if="card"
+            v-if="card && !isEditing"
             class="text-center text-wrap"
             style="word-break: break-word;"
           >
             {{ card.title }}
           </h3>
+          <v-text-field
+            v-else-if="card && isEditing"
+            v-model="editedTitle"
+            lable="Title"
+            variant="outlined"
+            dense
+          />
           <h3
             v-else
             class="text-center"
@@ -230,11 +269,19 @@ const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name
           v-if="reveal"
         >
           <p
-            v-if="card"
+            v-if="card && !isEditing"
             class="text-center text-justify"
           >
             {{ card.text }}
           </p>
+          <v-textarea
+            v-else-if="card && isEditing"
+            v-model="editedText"
+            label="Card Content"
+            variant="outlined"
+            auto-grow
+            rows="4"
+          />
           <p
             v-else
             class="text-center"
@@ -251,6 +298,7 @@ const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name
       fluid
     >
       <div
+        v-if="!isEditing"
         class="d-flex justify-between align-center flex-wrap"
         style="gap: 12px;"
       >
@@ -281,13 +329,7 @@ const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name
             class="d-flex justify-center flex-wrap"
             style="gap: 8px;"
           >
-            <v-btn
-              icon
-              color="red"
-              @click="rateCard(3)"
-            >
-              <v-icon>mdi-alpha-x</v-icon>
-            </v-btn>
+            <v-icon>mdi-alpha-x</v-icon>
             <v-btn
               icon
               color="orange"
@@ -311,6 +353,13 @@ const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name
             </v-btn>
           </div>
         </div>
+        <v-btn
+          v-if="reveal"
+          icon
+          @click="startEditingCard"
+        >
+          <v-icon>mdi-pencil</v-icon>
+        </v-btn>
 
         <v-btn
           icon
@@ -318,6 +367,24 @@ const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name
           @click="goHome"
         >
           <v-icon>mdi-home</v-icon>
+        </v-btn>
+      </div>
+      <div
+        v-else
+        class="d-flex justify-center"
+        style="gap: 12px;"
+      >
+        <v-btn
+          color="primary"
+          @click="saveCardChanges"
+        >
+          save
+        </v-btn>
+        <v-btn
+          color="grey"
+          @click="cancelEditingCard"
+        >
+          Cancel
         </v-btn>
       </div>
     </v-container>
