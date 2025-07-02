@@ -32,6 +32,13 @@ export const useCardStore = defineStore('card', {
       this.currentCardIndex -= 1
     },
 
+    async updateCard(updatedCard:Card){
+      const index = this.cards.findIndex(card => card.id === updatedCard.id)
+      if (index !== -1){
+        this.cards[index] = updatedCard
+      }
+    },
+
     getFirst(): number{
       return this.cards[0].id
     },
