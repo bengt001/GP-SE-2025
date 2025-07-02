@@ -166,7 +166,7 @@ export const useDeckStore = defineStore('decks', {
         const deck = this.decks[counter]
         if (deck.title === deckname) {
           for(const id of deck.stapel_id){
-            await axios.delete("api/usr/" + id + "/delete")
+            await axios.delete('api/usr/' + id + '/delete')
           }
           this.decks.splice(counter,1)
           localStorage.setItem('decks', JSON.stringify(this.decks));
@@ -185,25 +185,40 @@ export const useDeckStore = defineStore('decks', {
       }
       return selectedTitles.join(",")
     },
+
     getFaellig(deck: Deck): number{
+      //TODO richtig mit backend lösen
       return deck.stapel_id.length
     },
-    resetCards(deckName : string): void{
+
+    async resetCards(deckName : string): Promise<void>{
       for(const deck of this.decks){
         if(deck.title === deckName){
-          //TODO im backend deck resetten
           for(const card of deck.schemas){
+            if (useUserStore().authenticated) {
+              await axios.patch('api/usr/decks/' + card.deckID + '/' + card.id + '/rank', {
+                rating: "NOT_LEARNED"
+              });            }
             card.lastRating = 4
           }
           for(const card of deck.problems){
+            if (useUserStore().authenticated) {
+              await axios.patch('api/usr/decks/' + card.deckID + '/' + card.id + '/rank', {
+                rating: "NOT_LEARNED"
+              });            }
             card.lastRating = 4
           }
           for(const card of deck.definitions){
+            if (useUserStore().authenticated) {
+              await axios.patch('api/usr/decks/' + card.deckID + '/' + card.id + '/rank', {
+                rating: "NOT_LEARNED"
+              });            }
             card.lastRating = 4
           }
         }
       }
     },
+
     getCardNumber(deck:Deck):number{
       return deck.schemas.length + deck.problems.length + deck.definitions.length
     },

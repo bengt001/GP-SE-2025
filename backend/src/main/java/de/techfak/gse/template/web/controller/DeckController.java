@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -195,13 +196,14 @@ public class DeckController {
      *
      * @param deckId the deckId for the to be updated card
      * @param cardId the cardId for the to be updated card
-     * @param rating the new rating of the card
+     * @param body the new rating of the card
      * @return an updated Version of the Card
      */
     @PatchMapping("/usr/decks/{deckId:\\d+}/{cardId:\\d+}/rank")
     @Secured("ROLE_USER")
     public CardInfo rankCard(@PathVariable final long deckId, @PathVariable final long cardId,
-                             @RequestBody final String rating) {
+                             @RequestBody Map<String, String> body) {
+        String rating = body.get("rating");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Usr usr = userService.loadUserByUsername(auth.getName());
         return deckService.rankCard(usr, deckId, cardId,
@@ -256,6 +258,12 @@ public class DeckController {
         return deckService.getMaxLearningCards(usr, deckIds, maxCards, cardTypes);
     }
 
+    /**
+     * API Endpoint to get the CardInfo of an Card and creates a new one if it doesnt exist already
+     * @param deckId Id of the Deck
+     * @param cardId Id of the card
+     * @return the CardInfo
+     */
     @GetMapping("/usr/decks/{deckId:\\d+}/cards/{cardId:\\d+}/info")
     @Secured("ROLE_USER")
     public CardInfo getCardInfo(@PathVariable("deckId") final long deckId,

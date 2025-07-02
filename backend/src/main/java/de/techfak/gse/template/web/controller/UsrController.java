@@ -38,14 +38,14 @@ public class UsrController {
         return userService.existsEmail(email);
     }
 
-    @PostMapping("usr/decks/{deckId}/add")
+    @PostMapping("/usr/decks/{deckId}/add")
     public void addDeck(@PathVariable Long deckId) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Usr usr = userService.loadUserByUsername(auth.getName());
         userService.addDeck(usr.getUserId(),deckId);
     }
 
-    @DeleteMapping("api/usr/{deckId}/delete")
+    @DeleteMapping("/usr/{deckId}/delete")
     public void deleteDeck(@PathVariable Long deckId) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Usr usr = userService.loadUserByUsername(auth.getName());
