@@ -56,7 +56,7 @@ export const useCardStore = defineStore('card', {
             body: JSON.stringify(payload),
           });
         if (!response.ok) {
-          throw new Error(`Failed to update card: ${response.statusText}`);
+          console.error("Failed to update Card.");
         }
         const savedCard: Card = await response.json();
         const index = this.cards.findIndex(card => card.id == savedCard.id);
