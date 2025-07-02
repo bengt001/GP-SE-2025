@@ -11,6 +11,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -45,10 +48,19 @@ public class UsrController {
         userService.addDeck(usr.getUserId(),deckId);
     }
 
-    @DeleteMapping("/usr/{deckId}/delete")
+    @DeleteMapping("/usr/decks/{deckId}/delete")
     public void deleteDeck(@PathVariable Long deckId) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Usr usr = userService.loadUserByUsername(auth.getName());
         userService.deleteDeck(usr.getUserId(),deckId);
+    }
+
+    @GetMapping("/usr/activeDecks")
+    public List<List<String>> activeDecks() {
+        List<List<String>> result = new ArrayList<>();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Usr usr = userService.loadUserByUsername(auth.getName());
+        result = userService.activeDeckNames(usr.getUserId());
+        return result;
     }
 }

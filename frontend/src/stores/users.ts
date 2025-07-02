@@ -50,6 +50,7 @@ export const useUserStore = defineStore('users', {
         this.email = '';
         this.username = '';
         localStorage.removeItem('token')
+        localStorage.removeItem('decks');
       },
 
       emailTaken(email: string): Promise<boolean> {

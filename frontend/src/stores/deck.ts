@@ -6,11 +6,17 @@ import {useUserStore} from "@/stores/users";
 
 export const useDeckStore = defineStore('decks', {
   state: () => ({
-    decks: JSON.parse(localStorage.getItem('decks') || '[]') as Deck[],
+    decks: [] as Deck[],
     decksLoading: 0
   }),
 
   actions: {
+    loadFromLocalStorage() {
+      const data = localStorage.getItem('decks')
+      if (data) {
+        this.decks = JSON.parse(data)
+      }
+    },
     getloadingDecks(){
       return this.decksLoading
     },
@@ -24,6 +30,9 @@ export const useDeckStore = defineStore('decks', {
     },
 
     async addMultDecks(decks: [string, string | undefined][]): Promise<void> {
+      if (decks.length <= 0){
+        return
+      }
       this.decksLoading = decks.length
       for (const [deckname, color] of decks) {
         await this.addDeck(deckname, color);
@@ -166,7 +175,7 @@ export const useDeckStore = defineStore('decks', {
         const deck = this.decks[counter]
         if (deck.title === deckname) {
           for(const id of deck.stapel_id){
-            await axios.delete('api/usr/' + id + '/delete')
+            await axios.delete('api/usr/decks/' + id + '/delete')
           }
           this.decks.splice(counter,1)
           localStorage.setItem('decks', JSON.stringify(this.decks));
@@ -224,10 +233,11 @@ export const useDeckStore = defineStore('decks', {
       return deck.schemas.length + deck.problems.length + deck.definitions.length
     },
 
-    //TODO richtig laden
-    async get_my_active_decks(): Promise<void>{
-      //MOCK um es zu leeren
-      this.clear_decks();
+    async loadMyDecks() {
+      this.decks = [];
+      localStorage.removeItem('decks');
+      const tuples = await axios.get('api/usr/activeDecks');
+      await this.addMultDecks(tuples.data);
     },
     clear_decks(): void {
       this.decks.splice(0, this.decks.length)

@@ -11,7 +11,9 @@ const deckStore = useDeckStore()
 const userStore = useUserStore()
 
 onMounted(() => {
-  if(!userStore.authenticated){
+  if (userStore.authenticated) {
+    deckStore.loadMyDecks()
+  } else {
     userStore.logout()
     deckStore.reset_decks()
   }

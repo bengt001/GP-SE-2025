@@ -66,6 +66,15 @@ const selectedDecksTitle = computed(() => {
   return selected
 })
 
+onMounted(() => {
+  DeckStore.loadFromLocalStorage()
+})
+
+watch(() => DeckStore.decks, (newVal) => {
+  localStorage.setItem('decks', JSON.stringify(newVal))
+}, { deep: true })
+
+
 watch(
   allDecks,
   (newDecks) => {
@@ -278,7 +287,6 @@ function startLearning() {
 </script>
 <template>
   <Searchbar @change-value="searchValue=$event" />
-
   <v-menu
     v-model="menu"
     :close-on-content-click="false"

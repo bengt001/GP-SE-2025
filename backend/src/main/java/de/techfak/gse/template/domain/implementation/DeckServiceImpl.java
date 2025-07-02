@@ -139,7 +139,6 @@ public class DeckServiceImpl implements DeckService {
         Optional<Deck> tempDeck = getDeck(templateDeckId);
         if (tempDeck.isPresent()) {
             System.out.println("getNewUserDeck");
-            tempDeck.get().getUsers().add(usr);
             usr.getDecks().add(tempDeck.get());
             deckRepository.save(tempDeck.get());
             //I am not checking the existence of DeckInfo
