@@ -34,6 +34,7 @@ function login() {
     login_snack.value = false
     loginSuccess_snack.value = true
     userStore.setNameEmail(username.value, email.value);
+    deckStore.abortDeckLoading()
     deckStore.loadMyDecks()
     setTimeout(() => {
       router.push('/')

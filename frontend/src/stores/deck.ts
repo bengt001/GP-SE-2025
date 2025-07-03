@@ -7,7 +7,8 @@ import {useUserStore} from "@/stores/users";
 export const useDeckStore = defineStore('decks', {
   state: () => ({
     decks: [] as Deck[],
-    decksLoading: 0
+    decksLoading: 0,
+    abortController: null as AbortController | null
   }),
 
   actions: {
@@ -21,6 +22,12 @@ export const useDeckStore = defineStore('decks', {
     getloadingDecks(){
       return this.decksLoading
     },
+    abortDeckLoading() {
+      if (this.abortController) {
+        this.abortController.abort();
+        this.abortController = null;
+      }
+    },
     getDeckRating(deck:Deck){
       const ratingArr:number[] = [0,0,0,0,0]
       const allCards:Card[] = deck.definitions.concat(deck.schemas,deck.problems)
@@ -31,16 +38,27 @@ export const useDeckStore = defineStore('decks', {
     },
 
     async addMultDecks(decks: [string, string | undefined][]): Promise<void> {
+      this.abortDeckLoading();
+      this.abortController = new AbortController();
+      const signal = this.abortController.signal;
       if (decks.length <= 0){
         return
       }
       this.decksLoading = decks.length
       for (const [deckname, color] of decks) {
-        await this.addDeck(deckname, color);
+        try {
+          await this.addDeck(deckname, color, signal);
+        } catch (e) {
+          if (signal.aborted) {
+            console.log(`Aborted loading deck ${deckname}`);
+          } else {
+            console.error(e);
+          }
+        }
       }
     },
 
-    async addDeck(deckname: string,color: string|undefined): Promise<void>{
+    async addDeck(deckname: string,color: string|undefined,signal: AbortSignal): Promise<void>{
       const exists = this.decks.some(deck => deck.title === deckname);
       if (exists){
         this.decksLoading--
@@ -67,7 +85,7 @@ export const useDeckStore = defineStore('decks', {
       const schemas:Card[] = []
 
       const IDlist = []
-      const response = await axios.get('api/decks')
+      const response = await axios.get('api/decks',{signal})
       const allDecks = response.data
       for(const deck of allDecks){
         if(deck.fieldOfLaw.includes(nameSplit[0]) && deck.authorId === authorID){
@@ -82,12 +100,12 @@ export const useDeckStore = defineStore('decks', {
 
 
       for(const id of IDlist){
-        const cards = await axios.get('/api/decks/' + id + '/cards')
+        const cards = await axios.get('/api/decks/' + id + '/cards',{signal})
           for(const card of cards.data){
             let  LastRating
             let nextRep = undefined
             if(useUserStore().authenticated){
-              const info = await axios.get('/api/usr/decks/' + id + '/cards/' + card.cardId + '/info')
+              const info = await axios.get('/api/usr/decks/' + id + '/cards/' + card.cardId + '/info',{signal})
 
               nextRep = info.data.nextRepetition
 
@@ -158,7 +176,7 @@ export const useDeckStore = defineStore('decks', {
               problems.push(newCard)            }
           }
         if(useUserStore().authenticated){
-          await axios.post('/api/usr/decks/' + id + '/add')
+          await axios.post('/api/usr/decks/' + id + '/add',{signal})
         }
       }
 
@@ -205,22 +223,18 @@ export const useDeckStore = defineStore('decks', {
     getFaellig(deck: Deck): number{
       const date = new Date();
 
-      let day = String(date.getDate()).padStart(2, '0');
-      let month = String(date.getMonth() + 1).padStart(2, '0');
-      let year = date.getFullYear();
-      let currentDate = `${year}-${month}-${day}`;
-
-      console.log("currenDate:",currentDate)
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = date.getFullYear();
+      const currentDate = `${year}-${month}-${day}`;
 
       let faellig = 0
       let Cards: Card[] = []
       Cards = Cards.concat(deck.definitions)
       Cards = Cards.concat(deck.schemas)
       Cards = Cards.concat(deck.problems)
-      console.log(Cards.length)
       for(const curCard of Cards)
       {
-        console.log("CardDate:",curCard.nextRepetition)
 
         if(curCard.nextRepetition === currentDate){
           faellig += 1
@@ -241,6 +255,9 @@ export const useDeckStore = defineStore('decks', {
               );
             }
             card.lastRating = 4
+            const newInfo = await axios.get('/api/usr/decks/' + card.deckID + '/cards/' + card.id + '/info')
+            const nextRep = newInfo.data.nextRepetition;
+            card.nextRepetition = nextRep;
           }
           for(const card of deck.problems){
             if (useUserStore().authenticated) {
@@ -251,6 +268,9 @@ export const useDeckStore = defineStore('decks', {
               );
             }
             card.lastRating = 4
+            const newInfo = await axios.get('/api/usr/decks/' + card.deckID + '/cards/' + card.id + '/info')
+            const nextRep = newInfo.data.nextRepetition;
+            card.nextRepetition = nextRep;
           }
           for(const card of deck.definitions){
             if (useUserStore().authenticated) {
@@ -261,6 +281,9 @@ export const useDeckStore = defineStore('decks', {
               );
             }
             card.lastRating = 4
+            const newInfo = await axios.get('/api/usr/decks/' + card.deckID + '/cards/' + card.id + '/info')
+            const nextRep = newInfo.data.nextRepetition;
+            card.nextRepetition = nextRep;
           }
         }
       }
@@ -274,6 +297,7 @@ export const useDeckStore = defineStore('decks', {
       this.decks = [];
       localStorage.removeItem('decks');
       const tuples = await axios.get('api/usr/activeDecks');
+      this.abortDeckLoading()
       await this.addMultDecks(tuples.data);
     },
     clear_decks(): void {
@@ -286,6 +310,7 @@ export const useDeckStore = defineStore('decks', {
         this.decks.splice(counter ,1)
         localStorage.setItem('decks',JSON.stringify(this.decks))
       }
+      this.abortDeckLoading()
       await this.addMultDecks([["Strafrecht AT (Lexmea)", "#03364D"]]);
     },
     getDeckByOneID(id:number):Deck|undefined{

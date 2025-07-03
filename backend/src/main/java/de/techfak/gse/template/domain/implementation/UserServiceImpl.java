@@ -108,7 +108,6 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
         deckRepository.save(deck);
 
-        Usr reloaded = userRepository.findById(userId).get();
     }
 
     @Override
@@ -143,8 +142,7 @@ public class UserServiceImpl implements UserService {
 
         for (Deck d : decks) {
             if (d.getFieldOfLaw().size() <= 1) continue;
-
-            String field = d.getFieldOfLaw().get(1);
+            String field = d.getFieldOfLaw().get(d.getFieldOfLaw().size() - 1);
             if (seenFields.contains(field)) continue;
 
             seenFields.add(field);

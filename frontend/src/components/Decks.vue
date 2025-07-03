@@ -161,7 +161,6 @@ function openLearnDialog() {
 
 
   DialogLearn.value = true
-  console.log( DeckStore.getTitleOfSelected(selectedDecksTitle.value))
 }
 
 function plus5() {
@@ -272,6 +271,8 @@ function startLearning() {
       }
     }
   }
+
+  console.log(Cards.length)
 
   Cards = sortCards(Cards).slice(-numberOfCards.value).reverse()
 
