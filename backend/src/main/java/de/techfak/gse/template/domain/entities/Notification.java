@@ -1,4 +1,4 @@
-package de.techfak.gse.template.domain;
+package de.techfak.gse.template.domain.entities;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.time.LocalDate;

@@ -1,5 +1,6 @@
-package de.techfak.gse.template.domain;
+package de.techfak.gse.template.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -53,7 +54,8 @@ public class Usr implements UserDetails {
     @SuppressWarnings("serial")
     private List<String> roles = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "users")
+    @ManyToMany(mappedBy = "users", fetch = FetchType.EAGER)
+    @JsonBackReference
     private transient List<Deck> decks = new ArrayList<>();
 
     /**

@@ -1,9 +1,9 @@
 package de.techfak.gse.template.web.controller;
 
-import de.techfak.gse.template.domain.Notification;
-import de.techfak.gse.template.domain.NotificationService;
-import de.techfak.gse.template.domain.UserService;
-import de.techfak.gse.template.domain.Usr;
+import de.techfak.gse.template.domain.entities.Notification;
+import de.techfak.gse.template.domain.entities.Usr;
+import de.techfak.gse.template.domain.service.NotificationService;
+import de.techfak.gse.template.domain.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;

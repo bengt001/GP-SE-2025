@@ -1,5 +1,7 @@
-package de.techfak.gse.template.domain;
+package de.techfak.gse.template.domain.service;
 
+import de.techfak.gse.template.domain.entities.Notification;
+import de.techfak.gse.template.domain.entities.Usr;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;

@@ -7,6 +7,8 @@ import {useUserStore} from "@/stores/users";
 
 
 const colorNames = ['green', 'yellow', 'orange', 'red', 'grey'];
+const colorsChip = ['#92C1A5', '#FBDC5C', '#FFB571', '#FFAA9F', '#CBD0D7'];
+
 const cardStore = useCardStore()
 const deckStore = useDeckStore()
 const userStore = useUserStore()
@@ -19,6 +21,7 @@ const reveal = ref(false)
 const ratingArr = ref<number[]>([])
 const backPossible = ref(false)
 const lastRating = ref(4)
+const ratingLabels = ['Einfach', 'Okay', 'Schwer', 'Nicht gewusst', 'Unbewertet']
 
 const cards = computed(() => cardStore.getCards())
 const curCardIndex = computed(() => cardStore.getCardIndex())
@@ -69,14 +72,30 @@ watch (() => route.params.id, (newId) => {
   card.value = cardStore.findCardById(parseInt(newId))
 })
 
+function getLastRatingText(): string {
+    const curCard = card.value
+    if (curCard) {
+      return ratingLabels[curCard.lastRating]
+    } else {
+      return ratingLabels[4]
+    }
+
+}
+
+function getLastColor():string{
+  const curCard = card.value
+  if(curCard){
+    return colorsChip[curCard.lastRating]
+  }
+  else{
+    return colorsChip[4]
+  }
+}
+
 function goBack(){
   DialogEnd.value = false
   backPossible.value = false
   cardStore.indexMinusOne()
-  if(!userStore.authenticated) {
-    const card = cardStore.getCardAtIndex()
-    deckStore.undoRate(card.deckId, lastRating.value)
-  }
   const prevId = cardStore.getCardAtIndex().id;
   router.replace(`/cards/${prevId}`);
 }
@@ -110,7 +129,7 @@ function rateCard(colorIndex: number) {
   lastRating.value = colorIndex
   if(!userStore.authenticated) {
     const card = cardStore.getCardAtIndex()
-    deckStore.rate(card.deckId, colorIndex)
+    deckStore.rate(card.id,card.deckID,colorIndex)
   }
   nextCard()
 }
@@ -158,12 +177,38 @@ const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name
           </p>
         </v-card-text>
 
-        <p
+
+        <v-row
           v-if="card"
-          class="text-center text-decoration-underline"
+          class="mb-2"
+          align="center"
+          justify="center"
+          no-gutters
         >
-          {{ card.type }}
-        </p>
+          <v-col
+            cols="12"
+            class="text-center"
+          >
+            <span class="text-decoration-underline">{{ card.type }}</span>
+          </v-col>
+        </v-row>
+
+        <v-row
+          v-if="card && reveal"
+          class="mb-2"
+          justify="center"
+        >
+          <v-col cols="auto">
+            <v-chip
+              v-if="reveal"
+              :style="{ backgroundColor: getLastColor(), color: 'black' }"
+              class="ma-2"
+              label
+            >
+              Letzte Bewertung: {{ getLastRatingText() }}
+            </v-chip>
+          </v-col>
+        </v-row>
 
         <v-card-title>
           <h3

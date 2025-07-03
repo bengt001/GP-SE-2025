@@ -1,4 +1,5 @@
-package de.techfak.gse.template.domain;
+package de.techfak.gse.template.domain.repositories;
+import de.techfak.gse.template.domain.entities.Notification;
 import org.springframework.data.repository.CrudRepository;
 
 /**

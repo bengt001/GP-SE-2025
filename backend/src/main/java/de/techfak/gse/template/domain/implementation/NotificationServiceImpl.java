@@ -1,5 +1,10 @@
-package de.techfak.gse.template.domain;
+package de.techfak.gse.template.domain.implementation;
 
+import de.techfak.gse.template.domain.entities.Notification;
+import de.techfak.gse.template.domain.entities.Usr;
+import de.techfak.gse.template.domain.repositories.UserRepository;
+import de.techfak.gse.template.domain.service.NotificationService;
+import de.techfak.gse.template.domain.repositories.NotificationRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;

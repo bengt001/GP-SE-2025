@@ -9,17 +9,8 @@ export const useCardStore = defineStore('card', {
   }),
 
   actions: {
-    addCard(type: string, title: string, text: string, deckId: number,cardId: number,color: string) {
-      this.cards.push(
-        {
-          id: cardId,
-          type: type,
-          title: title,
-          text: text,
-          deckId : deckId,
-          color: color
-        }
-      )
+    addCard(card:Card) {
+      this.cards.push(card)
     },
     getCardIndex(){
       return this.currentCardIndex
@@ -29,6 +20,7 @@ export const useCardStore = defineStore('card', {
     },
     clearCards(): void{
       this.cards = []
+      this.currentCardIndex = 0
     },
 
     resetIndex(): void{
@@ -86,15 +78,6 @@ export const useCardStore = defineStore('card', {
       return this.cards
     },
 
-    getCard(deckIds: number[], types: string[]): Card | undefined {
-      for (const card of this.cards) {
-        if (deckIds.includes(card.deckId) && types.includes(card.type)) {
-          console.log("found card: " + card.title)
-          return card
-        }
-      }
-      console.log("no card found")
-    },
     loadCardPage(id: number, type: string) {
       if (type == "Definition" || type == "Problem") {
         router.push("/cards/" + id)
