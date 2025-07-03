@@ -51,6 +51,10 @@ public class NotificationServiceImpl implements NotificationService {
         return notifications;
     }
 
+    /**
+     * Sends daily message to user.
+     * TODO: Change to midnight oder 6 am after SRA implemantation
+     */
     @Scheduled(cron = "0 */1 * * * *")
     @Transactional
     public void sendNotificationToUsers() {
