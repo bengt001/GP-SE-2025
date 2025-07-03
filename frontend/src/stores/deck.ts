@@ -85,8 +85,11 @@ export const useDeckStore = defineStore('decks', {
         const cards = await axios.get('/api/decks/' + id + '/cards')
           for(const card of cards.data){
             let  LastRating
+            let nextRep = undefined
             if(useUserStore().authenticated){
               const info = await axios.get('/api/usr/decks/' + id + '/cards/' + card.cardId + '/info')
+
+              nextRep = info.data.nextRepetition
 
               switch (info.data.rating) {
                 case "NOT_LEARNED":
@@ -122,7 +125,8 @@ export const useDeckStore = defineStore('decks', {
                 title:cardContent[0],
                 text:cardContent[1],
                 color:color,
-                lastRating:LastRating
+                lastRating:LastRating,
+                nextRepetition:nextRep
               }
               definitons.push(newCard)
             }
@@ -135,7 +139,8 @@ export const useDeckStore = defineStore('decks', {
                 title:cardContent[0],
                 text:cardContent[1],
                 color:color,
-                lastRating:LastRating
+                lastRating:LastRating,
+                nextRepetition:nextRep
               }
               schemas.push(newCard)            }
             else if(card.cardType == "Probleme"){
@@ -147,7 +152,8 @@ export const useDeckStore = defineStore('decks', {
                 title:cardContent[0],
                 text:cardContent[1],
                 color:color,
-                lastRating:LastRating
+                lastRating:LastRating,
+                nextRepetition:nextRep
               }
               problems.push(newCard)            }
           }
@@ -197,8 +203,30 @@ export const useDeckStore = defineStore('decks', {
     },
 
     getFaellig(deck: Deck): number{
-      //TODO richtig mit backend lösen
-      return deck.stapel_id.length
+      const date = new Date();
+
+      let day = String(date.getDate()).padStart(2, '0');
+      let month = String(date.getMonth() + 1).padStart(2, '0');
+      let year = date.getFullYear();
+      let currentDate = `${year}-${month}-${day}`;
+
+      console.log("currenDate:",currentDate)
+
+      let faellig = 0
+      let Cards: Card[] = []
+      Cards = Cards.concat(deck.definitions)
+      Cards = Cards.concat(deck.schemas)
+      Cards = Cards.concat(deck.problems)
+      console.log(Cards.length)
+      for(const curCard of Cards)
+      {
+        console.log("CardDate:",curCard.nextRepetition)
+
+        if(curCard.nextRepetition === currentDate){
+          faellig += 1
+        }
+      }
+      return faellig
     },
 
     async resetCards(deckName : string): Promise<void>{
@@ -294,60 +322,42 @@ export const useDeckStore = defineStore('decks', {
       return cleanString
     },
 
-    async rate(cardID:number,deckID:number,rateIndex:number){
-      const deck = this.getDeckByOneID(deckID)
-      if(deck){
-        const allCards = deck.problems.concat(deck.schemas,deck.definitions)
-        for(const card of allCards){
-          if(card.id == cardID){
-            card.lastRating = rateIndex
+    async rate(cardID: number, deckID: number, rateIndex: number) {
+      const deck = this.getDeckByOneID(deckID);
+      if (deck) {
+        const allCards = deck.problems.concat(deck.schemas, deck.definitions);
+        for (const card of allCards) {
+          if (card.id == cardID) {
+            card.lastRating = rateIndex;
+
             if (useUserStore().authenticated) {
-              switch (rateIndex)
-              {
-                case 0:
-                  await axios.patch(
-                    '/api/usr/decks/' + card.deckID + '/' + card.id + '/rank',
-                    "EASY",
-                    { headers: { "Content-Type": "text/plain" } }
-                  );
-                  break
-                case 1:
-                  await axios.patch(
-                    '/api/usr/decks/' + card.deckID + '/' + card.id + '/rank',
-                    "GOOD",
-                    { headers: { "Content-Type": "text/plain" } }
-                  );
-                  break
-                case 2:
-                  await axios.patch(
-                    '/api/usr/decks/' + card.deckID + '/' + card.id + '/rank',
-                    "HARD",
-                    { headers: { "Content-Type": "text/plain" } }
-                  );
-                  break
-                case 3:
-                  await axios.patch(
-                    '/api/usr/decks/' + card.deckID + '/' + card.id + '/rank',
-                    "AGAIN",
-                    { headers: { "Content-Type": "text/plain" } }
-                  );
-                  break
-                case 4:
-                  await axios.patch(
-                    '/api/usr/decks/' + card.deckID + '/' + card.id + '/rank',
-                    "NOT_LEARNED",
-                    { headers: { "Content-Type": "text/plain" } }
-                  );
-                  break
+              let rankString = "";
+              switch (rateIndex) {
+                case 0: rankString = "EASY"; break;
+                case 1: rankString = "GOOD"; break;
+                case 2: rankString = "HARD"; break;
+                case 3: rankString = "AGAIN"; break;
+                case 4: rankString = "NOT_LEARNED"; break;
               }
 
+              await axios.patch(
+                '/api/usr/decks/' + card.deckID + '/' + card.id + '/rank',
+                rankString,
+                { headers: { "Content-Type": "text/plain" } }
+              );
+
+              const newInfo = await axios.get('/api/usr/decks/' + card.deckID + '/cards/' + card.id + '/info')
+              const nextRep = newInfo.data.nextRepetition;
+              card.nextRepetition = nextRep;
             }
-            break
+
+            break;
           }
         }
       }
-      localStorage.setItem('decks', JSON.stringify(this.decks))
-    },
+
+      localStorage.setItem('decks', JSON.stringify(this.decks));
+    }
 
   },
 })
