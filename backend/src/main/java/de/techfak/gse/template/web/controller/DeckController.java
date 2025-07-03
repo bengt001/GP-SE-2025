@@ -196,14 +196,13 @@ public class DeckController {
      *
      * @param deckId the deckId for the to be updated card
      * @param cardId the cardId for the to be updated card
-     * @param body the new rating of the card
+     * @param rating the new rating of the card
      * @return an updated Version of the Card
      */
     @PatchMapping("/usr/decks/{deckId:\\d+}/{cardId:\\d+}/rank")
     @Secured("ROLE_USER")
     public CardInfo rankCard(@PathVariable final long deckId, @PathVariable final long cardId,
-                             @RequestBody Map<String, String> body) {
-        String rating = body.get("rating");
+                             @RequestBody String rating) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Usr usr = userService.loadUserByUsername(auth.getName());
         return deckService.rankCard(usr, deckId, cardId,

@@ -109,7 +109,6 @@ public class UserServiceImpl implements UserService {
         deckRepository.save(deck);
 
         Usr reloaded = userRepository.findById(userId).get();
-        System.out.println("In add Active decks: " + reloaded.getDecks().size());
     }
 
     @Override
@@ -168,7 +167,6 @@ public class UserServiceImpl implements UserService {
 
             deckTuples.add(List.of(field, color));
         }
-        System.out.println("Active decks: " + deckTuples.size());
         return deckTuples;
     }
 

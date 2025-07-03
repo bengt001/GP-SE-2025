@@ -127,10 +127,8 @@ function nextCard() {
 function rateCard(colorIndex: number) {
   ratingArr.value[cardStore.getCardIndex()] = colorIndex
   lastRating.value = colorIndex
-  if(!userStore.authenticated) {
-    const card = cardStore.getCardAtIndex()
-    deckStore.rate(card.id,card.deckID,colorIndex)
-  }
+  const card = cardStore.getCardAtIndex()
+  deckStore.rate(card.id,card.deckID,colorIndex)
   nextCard()
 }
 

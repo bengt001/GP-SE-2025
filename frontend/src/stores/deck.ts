@@ -12,6 +12,7 @@ export const useDeckStore = defineStore('decks', {
 
   actions: {
     loadFromLocalStorage() {
+      this.decks = [];
       const data = localStorage.getItem('decks')
       if (data) {
         this.decks = JSON.parse(data)
@@ -81,11 +82,11 @@ export const useDeckStore = defineStore('decks', {
 
 
       for(const id of IDlist){
-        const cards = await axios.get('api/decks/' + id + '/cards')
+        const cards = await axios.get('/api/decks/' + id + '/cards')
           for(const card of cards.data){
             let  LastRating
             if(useUserStore().authenticated){
-              const info = await axios.get('api/usr/decks/' + id + '/cards/' + card.cardId + '/info')
+              const info = await axios.get('/api/usr/decks/' + id + '/cards/' + card.cardId + '/info')
 
               switch (info.data.rating) {
                 case "NOT_LEARNED":
@@ -151,7 +152,7 @@ export const useDeckStore = defineStore('decks', {
               problems.push(newCard)            }
           }
         if(useUserStore().authenticated){
-          await axios.post('api/usr/decks/' + id + '/add')
+          await axios.post('/api/usr/decks/' + id + '/add')
         }
       }
 
@@ -175,7 +176,7 @@ export const useDeckStore = defineStore('decks', {
         const deck = this.decks[counter]
         if (deck.title === deckname) {
           for(const id of deck.stapel_id){
-            await axios.delete('api/usr/decks/' + id + '/delete')
+            await axios.delete('/api/usr/decks/' + id + '/delete')
           }
           this.decks.splice(counter,1)
           localStorage.setItem('decks', JSON.stringify(this.decks));
@@ -205,24 +206,32 @@ export const useDeckStore = defineStore('decks', {
         if(deck.title === deckName){
           for(const card of deck.schemas){
             if (useUserStore().authenticated) {
-              await axios.patch('api/usr/decks/' + card.deckID + '/' + card.id + '/rank', {
-                rating: "NOT_LEARNED"
-              });
+              await axios.patch(
+                '/api/usr/decks/' + card.deckID + '/' + card.id + '/rank',
+                "NOT_LEARNED",
+                { headers: { "Content-Type": "text/plain" } }
+              );
             }
             card.lastRating = 4
           }
           for(const card of deck.problems){
             if (useUserStore().authenticated) {
-              await axios.patch('api/usr/decks/' + card.deckID + '/' + card.id + '/rank', {
-                rating: "NOT_LEARNED"
-              });            }
+              await axios.patch(
+                '/api/usr/decks/' + card.deckID + '/' + card.id + '/rank',
+                "NOT_LEARNED",
+                { headers: { "Content-Type": "text/plain" } }
+              );
+            }
             card.lastRating = 4
           }
           for(const card of deck.definitions){
             if (useUserStore().authenticated) {
-              await axios.patch('api/usr/decks/' + card.deckID + '/' + card.id + '/rank', {
-                rating: "NOT_LEARNED"
-              });            }
+              await axios.patch(
+                '/api/usr/decks/' + card.deckID + '/' + card.id + '/rank',
+                "NOT_LEARNED",
+                { headers: { "Content-Type": "text/plain" } }
+              );
+            }
             card.lastRating = 4
           }
         }
@@ -296,29 +305,39 @@ export const useDeckStore = defineStore('decks', {
               switch (rateIndex)
               {
                 case 0:
-                  await axios.patch('api/usr/decks/' + card.deckID + '/' + card.id + '/rank', {
-                    rating: "EASY"
-                  });
+                  await axios.patch(
+                    '/api/usr/decks/' + card.deckID + '/' + card.id + '/rank',
+                    "EASY",
+                    { headers: { "Content-Type": "text/plain" } }
+                  );
                   break
                 case 1:
-                  await axios.patch('api/usr/decks/' + card.deckID + '/' + card.id + '/rank', {
-                    rating: "GOOD"
-                  });
+                  await axios.patch(
+                    '/api/usr/decks/' + card.deckID + '/' + card.id + '/rank',
+                    "GOOD",
+                    { headers: { "Content-Type": "text/plain" } }
+                  );
                   break
                 case 2:
-                  await axios.patch('api/usr/decks/' + card.deckID + '/' + card.id + '/rank', {
-                    rating: "HARD"
-                  });
+                  await axios.patch(
+                    '/api/usr/decks/' + card.deckID + '/' + card.id + '/rank',
+                    "HARD",
+                    { headers: { "Content-Type": "text/plain" } }
+                  );
                   break
                 case 3:
-                  await axios.patch('api/usr/decks/' + card.deckID + '/' + card.id + '/rank', {
-                    rating: "AGAIN"
-                  });
+                  await axios.patch(
+                    '/api/usr/decks/' + card.deckID + '/' + card.id + '/rank',
+                    "AGAIN",
+                    { headers: { "Content-Type": "text/plain" } }
+                  );
                   break
                 case 4:
-                  await axios.patch('api/usr/decks/' + card.deckID + '/' + card.id + '/rank', {
-                    rating: "NOT_LEARNED"
-                  });
+                  await axios.patch(
+                    '/api/usr/decks/' + card.deckID + '/' + card.id + '/rank',
+                    "NOT_LEARNED",
+                    { headers: { "Content-Type": "text/plain" } }
+                  );
                   break
               }
 
@@ -326,8 +345,8 @@ export const useDeckStore = defineStore('decks', {
             break
           }
         }
-        localStorage.setItem('decks', JSON.stringify(this.decks))
       }
+      localStorage.setItem('decks', JSON.stringify(this.decks))
     },
 
   },
