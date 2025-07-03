@@ -17,6 +17,67 @@ const route = useRoute<'/cards/[id]/'>()
 const id = route.params.id
 const DialogEnd = ref(false)
 const card = ref(cardStore.findCardById(parseInt(id)))
+
+interface content {
+  data: string
+  index: number
+  spacing: number
+}
+
+const contentList: Ref<content[]> = ref(getContentList(getHeadlines(), 0, 0))
+const revealedText: Ref<content[]> = ref([])
+
+if (card.value) {
+  if (card.value.type == "Aufdeckkarte") {
+    console.log(JSON.parse(card.value.text))
+  }
+}
+
+function getHeadlines() {
+  if (card.value && card.value.type == "Aufdeckkarte") {
+    const root = JSON.parse(card.value.text)
+    const content = root.children
+    return content[0].children
+  }
+}
+
+
+
+/*
+function test() {
+  const content = getContent()
+  for (const object of content) {
+    contentList.push(object.data)
+
+    for (const object2 of object.children) {
+      contentList.push("\t" + object2.data)
+
+      for (const object3 of object2.children) {
+        contentList.push("\t\t" + object3.data)
+      }
+    }
+  }
+  console.log(contentList)
+}
+ */
+
+function getContentList(content, i: number, depth: number): content[] {
+  if (content) {
+    let list: content[] = []
+
+    for (const item of content) {
+      list.push({data: item.data, index: i, spacing: depth}) //doesnt work
+      i++
+
+      if (item.children) {
+        list = list.concat(getContentList(item.children, i, depth + 1))
+      }
+    }
+    return list
+  }
+  return []
+}
+
 const reveal = ref(false)
 const ratingArr = ref<number[]>([])
 const backPossible = ref(false)
@@ -70,6 +131,13 @@ watch(cards, newCards => {
 
 watch (() => route.params.id, (newId) => {
   card.value = cardStore.findCardById(parseInt(newId))
+  contentList.value = getContentList(getHeadlines(), 0, 0)
+  if (backPossible.value) {
+    revealedText.value = []
+  } else {
+    revealedText.value = contentList.value
+  }
+
 })
 
 function getLastRatingText(): string {
@@ -101,7 +169,23 @@ function goBack(){
 }
 
 function showAnswer() {
-  reveal.value = true;
+  if (card.value && card.value.type == "Aufdeckkarte") {
+    const linesRevealed = revealedText.value.length
+
+    /*
+    if (contentList.value.length == 0) {
+      contentList.value = getContentList(getHeadlines(), 0, 0)
+    }
+     */
+    if (linesRevealed >= contentList.value.length) {
+      reveal.value = true;
+    } else {
+      revealedText.value.push(contentList.value[linesRevealed])
+    }
+
+  } else {
+    reveal.value = true;
+  }
 }
 
 function goHome() {
@@ -122,6 +206,8 @@ function nextCard() {
   }
   router.push('/cards/' + nextId)
   reveal.value = false
+  revealedText.value = []
+  contentList.value = []
 }
 
 function rateCard(colorIndex: number) {
@@ -135,7 +221,7 @@ function rateCard(colorIndex: number) {
 }
 
 const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name
-//TODO: fix scrolling for longer card text
+//TODO: fix formatting on problem/definition
 </script>
 
 <template>
@@ -168,9 +254,9 @@ const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name
         class="mx-auto pa-4"
         color="grey_300"
         elevation="16"
-        style="width: 100%; max-width: 600px; max-height: 80vh; overflow-y: auto;"
+        style="width: 100%; max-width: 600px; overflow-y: auto;"
         :style="{borderColor: card?.color ?? 'transparent', borderStyle: 'solid', borderWidth: '10px'}"
-        @click="reveal = true"
+        @click="showAnswer()"
       >
         <v-card-text>
           <p class="text-center">
@@ -227,22 +313,30 @@ const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name
           </h3>
         </v-card-title>
 
-        <v-card-text
-          v-if="reveal"
+        <template
+          v-if="card"
         >
+          <v-card-text
+            v-if="card.type == 'Aufdeckkarte'"
+            class="text-pre-wrap"
+          >
+            <div
+              v-for="item in revealedText"
+              :key="item.data"
+            >
+              <h3> {{ "\t".repeat(item.spacing) + item.data }} </h3>
+            </div>
+          </v-card-text>
           <p
-            v-if="card"
+            v-if="reveal && card.type != 'Aufdeckkarte'"
             class="text-center text-justify"
           >
             {{ card.text }}
           </p>
-          <p
-            v-else
-            class="text-center"
-          >
-            card content
-          </p>
-        </v-card-text>
+        </template>
+        <template v-else>
+          card text
+        </template>
       </v-card>
     </v-responsive>
 
