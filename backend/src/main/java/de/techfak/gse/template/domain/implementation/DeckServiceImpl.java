@@ -34,7 +34,8 @@ public class DeckServiceImpl implements DeckService {
      */
     @Autowired
     public DeckServiceImpl(DeckRepository deckRepository, CardRepository cardRepository,
-                           CardInfoRepository cardInfoRepository, DeckInfoRepository deckInfoRepository,UserRepository userRepository) {
+                           CardInfoRepository cardInfoRepository, DeckInfoRepository deckInfoRepository,
+                           UserRepository userRepository) {
         this.deckRepository = deckRepository;
         this.cardRepository = cardRepository;
         this.cardInfoRepository = cardInfoRepository;
@@ -228,7 +229,8 @@ public class DeckServiceImpl implements DeckService {
      */
     @Override
     public Optional<CardInfo> rankCard(Usr usr, long deckId, long cardId, Rating rating) {
-        Optional<CardInfo> tempCardInfo = cardInfoRepository.findCardInfoByDeckIdAndCardIdAndUserId(deckId,cardId, usr.getUserId());
+        Optional<CardInfo> tempCardInfo =
+                cardInfoRepository.findCardInfoByDeckIdAndCardIdAndUserId(deckId, cardId, usr.getUserId());
         return tempCardInfo.map(cardInfo -> {
             cardInfo.setRating(rating);
             cardInfo.setSraValues(sra.updateValues(cardInfo.getSraValues(), cardInfo.getRating()));
@@ -266,7 +268,7 @@ public class DeckServiceImpl implements DeckService {
 
     @Override
     public Optional<CardInfo> getCardInfo(long deckId, long cardId, String userId) {
-        Optional<CardInfo>  info = cardInfoRepository.findCardInfoByDeckIdAndCardIdAndUserId(deckId,cardId,userId);
+        Optional<CardInfo>  info = cardInfoRepository.findCardInfoByDeckIdAndCardIdAndUserId(deckId, cardId, userId);
         if (info.isPresent()) {
             return info;
         }
@@ -278,7 +280,7 @@ public class DeckServiceImpl implements DeckService {
             return Optional.empty();
         }
 
-        CardInfo newInfo = new CardInfo(userOpt.get(),cardOpt.get(),deckOpt.get(),Rating.NOT_LEARNED);
+        CardInfo newInfo = new CardInfo(userOpt.get(), cardOpt.get(), deckOpt.get(), Rating.NOT_LEARNED);
         cardInfoRepository.save(newInfo);
         return Optional.of(newInfo);
 

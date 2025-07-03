@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -258,7 +257,7 @@ public class DeckController {
     }
 
     /**
-     * API Endpoint to get the CardInfo of an Card and creates a new one if it doesnt exist already
+     * API Endpoint to get the CardInfo of an Card and creates a new one if it doesnt exist already.
      * @param deckId Id of the Deck
      * @param cardId Id of the card
      * @return the CardInfo
@@ -266,10 +265,10 @@ public class DeckController {
     @GetMapping("/usr/decks/{deckId:\\d+}/cards/{cardId:\\d+}/info")
     @Secured("ROLE_USER")
     public CardInfo getCardInfo(@PathVariable("deckId") final long deckId,
-                                @PathVariable("cardId") final long cardId){
+                                @PathVariable("cardId") final long cardId) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Usr usr = userService.loadUserByUsername(auth.getName());
-        return deckService.getCardInfo(deckId,cardId, usr.getUserId()).orElseThrow(BadRequestException::new);
+        return deckService.getCardInfo(deckId, cardId, usr.getUserId()).orElseThrow(BadRequestException::new);
     }
 
 }

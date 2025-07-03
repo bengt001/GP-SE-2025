@@ -1,12 +1,10 @@
 package de.techfak.gse.template.domain.service;
 
-import de.techfak.gse.template.domain.entities.Deck;
 import de.techfak.gse.template.domain.entities.Usr;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.List;
-import java.util.Map;
 
 /**
 * Interface für den UserService, extends die Klasse UserDetailsService.

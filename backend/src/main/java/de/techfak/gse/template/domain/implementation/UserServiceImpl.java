@@ -24,8 +24,15 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final DeckRepository deckRepository;
 
+    /**
+     * Implementaton of the UserService to manage users.
+     * @param userRepository user Repository to work with the database
+     * @param passwordEncoder Encoder to encode the password
+     * @param deckRepository deck Repository to work with the database
+     */
     @Autowired
-    public UserServiceImpl(final UserRepository userRepository, final PasswordEncoder passwordEncoder,final DeckRepository deckRepository) {
+    public UserServiceImpl(final UserRepository userRepository, final PasswordEncoder passwordEncoder,
+                           final DeckRepository deckRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.deckRepository = deckRepository;
@@ -141,9 +148,13 @@ public class UserServiceImpl implements UserService {
         Set<String> seenFields = new HashSet<>();
 
         for (Deck d : decks) {
-            if (d.getFieldOfLaw().size() <= 1) continue;
+            if (d.getFieldOfLaw().size() <= 1) {
+                continue;
+            }
             String field = d.getFieldOfLaw().get(d.getFieldOfLaw().size() - 1);
-            if (seenFields.contains(field)) continue;
+            if (seenFields.contains(field)) {
+                continue;
+            }
 
             seenFields.add(field);
 

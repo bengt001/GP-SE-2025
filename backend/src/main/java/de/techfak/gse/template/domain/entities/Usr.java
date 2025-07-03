@@ -56,6 +56,7 @@ public class Usr implements UserDetails {
 
     @ManyToMany(mappedBy = "users", fetch = FetchType.EAGER)
     @JsonBackReference
+    @Transient
     private List<Deck> decks = new ArrayList<>();
     /**
      * JPA constructor.
