@@ -106,8 +106,10 @@
 
 <script lang="ts" setup>
 import {useUserStore} from "@/stores/users";
+import {useNotificationStore} from "@/stores/notifications";
 
 const userStore = useUserStore();
+const notificationStore = useNotificationStore();
 
 // Liste der Subheader-Tabs für for-Loop
 const subheader = ref(' ')
