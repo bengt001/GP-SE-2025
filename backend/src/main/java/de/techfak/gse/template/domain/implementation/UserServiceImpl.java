@@ -147,32 +147,33 @@ public class UserServiceImpl implements UserService {
         List<List<String>> deckTuples = new ArrayList<>();
         Set<String> seenFields = new HashSet<>();
 
+        System.out.println(decks.size());
+
         for (Deck d : decks) {
             if (d.getFieldOfLaw().size() <= 1) {
                 continue;
             }
-            String field = d.getFieldOfLaw().get(d.getFieldOfLaw().size() - 1);
+            String field = d.getFieldOfLaw().getLast();
             if (seenFields.contains(field)) {
                 continue;
             }
 
             seenFields.add(field);
 
-            String color;
-            switch (d.getAuthorId()) {
-                case 0:
+            String color = switch (d.getAuthorId()) {
+                case 0 -> {
                     field = field + " (Broadcast)";
-                    color = "#78B390";
-                    break;
-                case 1:
+                    yield "#78B390";
+                }
+                case 1 -> {
                     field = field + " (Lexmea)";
-                    color = "#03364D";
-                    break;
-                default:
+                    yield "#03364D";
+                }
+                default -> {
                     field = field + " (Eigener Stapel)";
-                    color = "#FF968B";
-                    break;
-            }
+                    yield "#FF968B";
+                }
+            };
 
             deckTuples.add(List.of(field, color));
         }

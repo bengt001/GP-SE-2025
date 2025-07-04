@@ -256,8 +256,7 @@ export const useDeckStore = defineStore('decks', {
             }
             card.lastRating = 4
             const newInfo = await axios.get('/api/usr/decks/' + card.deckID + '/cards/' + card.id + '/info')
-            const nextRep = newInfo.data.nextRepetition;
-            card.nextRepetition = nextRep;
+            card.nextRepetition = newInfo.data.nextRepetition;
           }
           for(const card of deck.problems){
             if (useUserStore().authenticated) {
@@ -269,8 +268,7 @@ export const useDeckStore = defineStore('decks', {
             }
             card.lastRating = 4
             const newInfo = await axios.get('/api/usr/decks/' + card.deckID + '/cards/' + card.id + '/info')
-            const nextRep = newInfo.data.nextRepetition;
-            card.nextRepetition = nextRep;
+            card.nextRepetition = newInfo.data.nextRepetition;
           }
           for(const card of deck.definitions){
             if (useUserStore().authenticated) {
@@ -282,8 +280,7 @@ export const useDeckStore = defineStore('decks', {
             }
             card.lastRating = 4
             const newInfo = await axios.get('/api/usr/decks/' + card.deckID + '/cards/' + card.id + '/info')
-            const nextRep = newInfo.data.nextRepetition;
-            card.nextRepetition = nextRep;
+            card.nextRepetition = newInfo.data.nextRepetition;
           }
         }
       }
@@ -372,8 +369,7 @@ export const useDeckStore = defineStore('decks', {
               );
 
               const newInfo = await axios.get('/api/usr/decks/' + card.deckID + '/cards/' + card.id + '/info')
-              const nextRep = newInfo.data.nextRepetition;
-              card.nextRepetition = nextRep;
+              card.nextRepetition = newInfo.data.nextRepetition;
             }
 
             break;

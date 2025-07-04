@@ -56,7 +56,6 @@ public class Usr implements UserDetails {
 
     @ManyToMany(mappedBy = "users", fetch = FetchType.EAGER)
     @JsonBackReference
-    @Transient
     private List<Deck> decks = new ArrayList<>();
     /**
      * JPA constructor.
@@ -79,7 +78,7 @@ public class Usr implements UserDetails {
                final String password,
                final String displayName,
                final String userId) {
-        this.username = email;
+        this.username = username;
         this.email = email;
         this.password = password;
         this.creationDate = LocalDate.now();
