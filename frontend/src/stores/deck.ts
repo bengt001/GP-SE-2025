@@ -243,6 +243,32 @@ export const useDeckStore = defineStore('decks', {
       return faellig
     },
 
+    async getCardsToLearn(deckIds:number[],numberOfCards : number,selectedMode: string[],Cards :Card[]){
+      const params = new URLSearchParams();
+      params.append('deckIds', deckIds.join(','));
+      params.append('maxCards', numberOfCards.toString());
+      selectedMode.forEach(mode => params.append('cardTypes', mode));
+
+      const response = await axios.get('/api/usr/decks/cards/getLearningCards/ids', {
+        params,
+      });
+
+
+      const idPairs: { cardId: number, deckId: number }[] = response.data
+
+      console.log(idPairs)
+
+      const tmpCards:Card[] = []
+      for(const pair of idPairs){
+        for(const card of Cards){
+          if(card.id === pair.cardId && card.deckID === pair.deckId){
+            tmpCards.push(card)
+          }
+        }
+      }
+      return  tmpCards
+    },
+
     async resetCards(deckName : string): Promise<void>{
       for(const deck of this.decks){
         if(deck.title === deckName){

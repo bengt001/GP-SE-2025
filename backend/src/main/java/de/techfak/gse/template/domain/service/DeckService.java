@@ -5,6 +5,7 @@ import de.techfak.gse.template.domain.entities.Card;
 import de.techfak.gse.template.domain.entities.CardInfo;
 import de.techfak.gse.template.domain.entities.Deck;
 import de.techfak.gse.template.domain.entities.Usr;
+import de.techfak.gse.template.domain.implementation.CardIdDeckIdPair;
 import de.techfak.gse.template.domain.implementation.CardInfoCardDTO;
 
 import java.util.List;
@@ -51,4 +52,5 @@ public interface DeckService {
 
     Optional<CardInfo> getCardInfo(long deckId, long cardId, String userId);
 
+    List<CardIdDeckIdPair> getMaxLearningCardsIds(Usr usr, long[] deckIds, int maxCards, String[] cardTypes);
 }

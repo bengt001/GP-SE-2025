@@ -285,4 +285,16 @@ public class DeckServiceImpl implements DeckService {
         return Optional.of(newInfo);
 
     }
+
+    @Override
+    public List<CardIdDeckIdPair> getMaxLearningCardsIds(Usr usr, long[] deckIds, int maxCards, String[] cardTypes) {
+        List<CardIdDeckIdPair> result = new ArrayList<>();
+        List<CardInfoCardDTO> cardDTOs = getMaxLearningCards(usr, deckIds, maxCards, cardTypes);
+        for (CardInfoCardDTO cardDTO : cardDTOs) {
+            Long cardId = cardDTO.getCard().getCardId();
+            Long deckId = cardDTO.getCard().getDeck().getDeckId();
+            result.add(new CardIdDeckIdPair(cardId, deckId));
+        }
+        return result;
+    }
 }

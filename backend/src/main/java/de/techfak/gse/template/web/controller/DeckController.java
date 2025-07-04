@@ -5,6 +5,7 @@ import de.techfak.gse.template.domain.entities.Card;
 import de.techfak.gse.template.domain.entities.CardInfo;
 import de.techfak.gse.template.domain.entities.Deck;
 import de.techfak.gse.template.domain.entities.Usr;
+import de.techfak.gse.template.domain.implementation.CardIdDeckIdPair;
 import de.techfak.gse.template.domain.implementation.CardInfoCardDTO;
 import de.techfak.gse.template.domain.service.CardService;
 import de.techfak.gse.template.domain.service.DeckService;
@@ -17,6 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -254,6 +256,31 @@ public class DeckController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Usr usr = userService.loadUserByUsername(auth.getName());
         return deckService.getMaxLearningCards(usr, deckIds, maxCards, cardTypes);
+    }
+
+    /**
+     * API Endpoint to get Cards to learn (max) from the list of given decks.
+     * @param deckIds Ids of the decks to consider.
+     *
+     * @return List of CardId and DeckId of the Cards to learn.
+     */
+    @GetMapping("/usr/decks/cards/getLearningCards/ids")
+    @Secured("ROLE_USER")
+    public List<CardIdDeckIdPair> getLearningCardsIdsFromThisDeck(@RequestParam String deckIds,
+                                                                  @RequestParam final int maxCards,
+                                                                  @RequestParam final String[] cardTypes) {
+        long[] ids = Arrays.stream(deckIds.split(","))
+                .mapToLong(Long::parseLong)
+                .toArray();
+        System.out.println("ids: " + Arrays.toString(ids));
+
+        System.out.println("maxCards: " + maxCards);
+        System.out.println("cardTypes: " + Arrays.toString(cardTypes));
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println("auth: " + auth);
+        Usr usr = userService.loadUserByUsername(auth.getName());
+        System.out.println("usr: " + usr);
+        return deckService.getMaxLearningCardsIds(usr, ids, maxCards, cardTypes);
     }
 
     /**
