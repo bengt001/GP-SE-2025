@@ -1,5 +1,6 @@
 package de.techfak.gse.template.domain.service;
 
+import de.techfak.gse.template.domain.entities.DueDeckInfo;
 import de.techfak.gse.template.domain.entities.Notification;
 import de.techfak.gse.template.domain.entities.Usr;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,4 +22,6 @@ public interface NotificationService {
     boolean markNotificationAsRead(@PathVariable Long id);
 
     void sendWelcomeNote(Usr user);
+
+    List<DueDeckInfo> getDueDeckInfos(Notification notification);
 }

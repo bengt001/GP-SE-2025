@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 /**
  * The type Deck info.
  */
@@ -21,6 +23,12 @@ public class DeckInfo {
     //Kirill: 0 false, 1 true, maybe
     @Column
     private Boolean visibility;
+
+    /**
+     * Relation to number of due Cards in Deck for one user on one day.
+     */
+    @OneToMany(mappedBy = "deckInfo",  cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DueDeckInfo> dueDeckInfos;
 
 
     /**

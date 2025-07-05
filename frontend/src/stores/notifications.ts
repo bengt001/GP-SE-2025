@@ -21,6 +21,8 @@ export const useNotificationStore = defineStore('notification', {
         }
       })
 
+      console.log(response)
+
       this.notes = response.data
     },
     async markAsRead(index: number) {

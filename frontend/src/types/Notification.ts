@@ -1,7 +1,7 @@
 export default interface Notification {
   id: number;
-  userid: number;
-  cardsDue: number;
+  title: string;
+  messages: string[];
   type: string;
   read: boolean;
   creationDate: Date;

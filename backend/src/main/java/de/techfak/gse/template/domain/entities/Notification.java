@@ -1,7 +1,9 @@
 package de.techfak.gse.template.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.time.LocalDate;
+import java.util.List;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -14,6 +16,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Notification {
     /**
      * Unique id of Notification.
@@ -44,6 +47,13 @@ public class Notification {
      * Information if the message has been read, default is 'false'.
      */
     private boolean read;
+
+    /**
+     * Information of due decks and their number of due cards.
+     */
+    @OneToMany(mappedBy = "notification", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<DueDeckInfo> dueDecks;
 
     protected Notification() {
     }

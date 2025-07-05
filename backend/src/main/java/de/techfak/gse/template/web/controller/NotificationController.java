@@ -1,5 +1,9 @@
 package de.techfak.gse.template.web.controller;
 
+import de.techfak.gse.template.domain.dto.AbstractGeneralNotes;
+import de.techfak.gse.template.domain.dto.DueCardsNote;
+import de.techfak.gse.template.domain.dto.WelcomeNote;
+import de.techfak.gse.template.domain.entities.DueDeckInfo;
 import de.techfak.gse.template.domain.entities.Notification;
 import de.techfak.gse.template.domain.entities.Usr;
 import de.techfak.gse.template.domain.service.NotificationService;
@@ -11,6 +15,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -29,10 +35,17 @@ public class NotificationController {
      */
     private final UserService userService;
 
+
+    /**
+     * Constructor for NotificationController.
+     * @param notificationService Service that handles Notifications
+     * @param userService Service that handles User information
+     */
     @Autowired
     public NotificationController(NotificationService notificationService, UserService userService) {
         this.notificationService = notificationService;
         this.userService = userService;
+
     }
 
     /**
@@ -41,10 +54,48 @@ public class NotificationController {
      */
     @GetMapping("/notification")
     @Secured("ROLE_USER")
-    public List<Notification> getNotifications() {
+    public List<AbstractGeneralNotes> getNotifications() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Usr user = userService.loadUserByUsername(auth.getName());
-        return notificationService.getNotificationByUser(userService.loadUserById(user.getUserId()));
+
+        List<Notification> notifications = notificationService.getNotificationByUser(
+                userService.loadUserById(user.getUserId()));
+        List<AbstractGeneralNotes> notificationsDTO = new ArrayList<>();
+
+        for  (Notification note : notifications) {
+            if (note.getType().equals("DUECARDS")) {
+                List<DueDeckInfo> dueDeckInfo = notificationService.getDueDeckInfos(note);
+                int allDueCards = 0;
+
+                List<String> messages = new ArrayList<>();
+                HashMap<String, Integer> dueCards = new HashMap<>();
+                for (DueDeckInfo info : dueDeckInfo) {
+                    String fieldOfLaw = info.getDeckInfo().getDeckId().getFieldOfLaw().getLast();
+                    if (!dueCards.containsKey(fieldOfLaw)) {
+                        dueCards.put(fieldOfLaw, info.getDueCardsCount());
+                    } else {
+                        dueCards.put(fieldOfLaw, dueCards.get(fieldOfLaw) + info.getDueCardsCount());
+                    }
+                    allDueCards += info.getDueCardsCount();
+                }
+
+                for (String fieldOfLaw : dueCards.keySet()) {
+                    messages.add(fieldOfLaw + ": " + dueCards.get(fieldOfLaw) + " Karten sind fällig.");
+                }
+
+                if (!messages.isEmpty()) {
+                    DueCardsNote dueCardsNote = new DueCardsNote(note.getId(), "Heute sind " + allDueCards
+                            + " Karten fällig!", note.isRead());
+
+                    dueCardsNote.setMessages(messages);
+                    notificationsDTO.add(dueCardsNote);
+                }
+
+            } else if (note.getType().equals("WELCOME")) {
+                notificationsDTO.add(new WelcomeNote(note.getId(), note.isRead()));
+            }
+        }
+        return notificationsDTO;
     }
 
     /**
@@ -73,5 +124,15 @@ public class NotificationController {
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.notFound().build();
+    }
+
+    /**
+     * Returns all DueDeckInfo for one Note.
+     * @param noteId Id of Notification
+     * @return List of DueDeckInfo
+     */
+    @GetMapping("/notification/{noteId}/dueCards")
+    public List<DueDeckInfo> getDueDeckInfos(@PathVariable Long noteId) {
+        return notificationService.getDueDeckInfos(notificationService.getNotificationById(noteId));
     }
 }

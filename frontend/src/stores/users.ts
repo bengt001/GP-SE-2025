@@ -57,6 +57,5 @@ export const useUserStore = defineStore('users', {
         return axios.get(`/api/exists`,{params: {email}})
           .then(res => res.data)
       }
-
     }
 })

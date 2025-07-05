@@ -43,7 +43,7 @@ const allDecks = computed(() => DeckStore.getAllDecks())
 const toDisplay = computed(() => {
   const items: Deck[] = [];
   for (let i = 0; i < allDecks.value.length; i++) {
-    if (allDecks.value[i].title.includes(searchValue.value)) {
+    if (allDecks.value[i].title.toLowerCase().includes(searchValue.value)) {
       if(lexmea.value && allDecks.value[i].title.includes("Lexmea")){
         items.push(allDecks.value[i])
       }

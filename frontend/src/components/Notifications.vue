@@ -26,10 +26,10 @@ const UserStore = useUserStore()
           Herzlich Willkommen!
         </v-card-title>
         <v-card-title
-          v-else-if="note.type === 'ImplTest'"
+          v-else-if="note.type === 'DUECARDS'"
           :class="{ 'read-text': note.read }"
         >
-          Test-Nachricht!
+          {{ note.title }}
         </v-card-title>
         <v-card-title
           v-else
@@ -48,16 +48,10 @@ const UserStore = useUserStore()
           <v-icon>mdi-delete</v-icon>
         </v-btn>
         <v-card-text
-          v-if="note.type==='ImplTest'"
+          v-if="note.type === 'WELCOME'"
           :class="{ 'read-text': note.read }"
         >
-          Nachricht wurde erstellt am {{ note.creationDate }}.
-        </v-card-text>
-        <v-card-text
-          v-else-if="note.type === 'WELCOME'"
-          :class="{ 'read-text': note.read }"
-        >
-          Herzlich Willkommen zu LexArtes!
+          {{ note.messages?.[0] }}
         </v-card-text>
         <v-card-text
           v-else

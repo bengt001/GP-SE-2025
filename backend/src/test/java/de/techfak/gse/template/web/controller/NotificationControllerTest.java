@@ -1,9 +1,13 @@
 package de.techfak.gse.template.web.controller;
 
+import de.techfak.gse.template.domain.dto.AbstractGeneralNotes;
+import de.techfak.gse.template.domain.entities.Deck;
+import de.techfak.gse.template.domain.entities.DueDeckInfo;
 import de.techfak.gse.template.domain.entities.Notification;
 import de.techfak.gse.template.domain.entities.Usr;
 import de.techfak.gse.template.domain.service.NotificationService;
 import de.techfak.gse.template.domain.service.UserService;
+import io.jsonwebtoken.lang.Arrays;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -15,6 +19,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -22,8 +27,6 @@ import static org.mockito.Mockito.when;
 
 public class NotificationControllerTest {
     final Usr TESTUSR = new Usr("testuser", "test@mytest.com", "{bcrypt}$2a$10$WoG5Z4YN9Z37EWyNCkltyeFr6PtrSXSLMeFWOeDUwcanht5CIJgPa", "TEST", "1");
-    Principal principal = Mockito.mock(Principal.class);
-
 
     @Mock
     private NotificationService notificationService;
@@ -64,11 +67,11 @@ public class NotificationControllerTest {
         );
         when(notificationService.getNotificationByUser(TESTUSR)).thenReturn(notifications);
 
-        List<Notification> notes = notificationController.getNotifications();
+        List<AbstractGeneralNotes> notes = notificationController.getNotifications();
 
         assertThat(notes).isNotNull();
-        assertThat(notes).hasSize(2);
-        assertThat(notes).extracting("type").containsExactly("WELCOME", "DUECARDS");
+        assertThat(notes).hasSize(1);
+        assertThat(notes).extracting("type").containsExactly("WELCOME");
     }
 
     @Test

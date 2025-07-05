@@ -25,5 +25,4 @@ public class CardInfoCardDTO {
         this.cardInfo = cardInfo;
         this.card = card;
     }
-
 }
