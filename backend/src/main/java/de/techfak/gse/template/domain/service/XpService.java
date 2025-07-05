@@ -1,5 +1,5 @@
 
-package de.techfak.gse.template.domain;
+package de.techfak.gse.template.domain.service;
 
 /**
  * Interface für den XpService.

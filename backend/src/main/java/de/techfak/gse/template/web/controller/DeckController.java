@@ -1,6 +1,11 @@
 package de.techfak.gse.template.web.controller;
 
-import de.techfak.gse.template.domain.*;
+import de.techfak.gse.template.domain.entities.Card;
+import de.techfak.gse.template.domain.entities.Deck;
+import de.techfak.gse.template.domain.entities.Usr;
+import de.techfak.gse.template.domain.service.CardService;
+import de.techfak.gse.template.domain.service.DeckService;
+import de.techfak.gse.template.domain.service.UserService;
 import de.techfak.gse.template.web.exception.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;

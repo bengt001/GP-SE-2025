@@ -1,7 +1,7 @@
 package de.techfak.gse.template.web.controller;
 
-import de.techfak.gse.template.domain.UserService;
-import de.techfak.gse.template.domain.Usr;
+import de.techfak.gse.template.domain.service.UserService;
+import de.techfak.gse.template.domain.entities.Usr;
 import de.techfak.gse.template.web.command.UsrCmd;
 import de.techfak.gse.template.web.dto.UsrDto;
 import org.springframework.beans.factory.annotation.Autowired;

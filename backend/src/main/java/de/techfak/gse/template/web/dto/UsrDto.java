@@ -1,6 +1,6 @@
 package de.techfak.gse.template.web.dto;
 
-import de.techfak.gse.template.domain.Usr;
+import de.techfak.gse.template.domain.entities.Usr;
 
 /**
  * Data Transfer Object (DTO) für Benutzerdaten.

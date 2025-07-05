@@ -1,5 +1,12 @@
-package de.techfak.gse.template.domain;
+package de.techfak.gse.template.domain.implementations;
 
+import de.techfak.gse.template.domain.repositories.CardRepository;
+import de.techfak.gse.template.domain.repositories.DeckRepository;
+import de.techfak.gse.template.domain.service.DeckService;
+import de.techfak.gse.template.domain.repositories.UserRepository;
+import de.techfak.gse.template.domain.entities.Card;
+import de.techfak.gse.template.domain.entities.Deck;
+import de.techfak.gse.template.domain.entities.Usr;
 import de.techfak.gse.template.web.exception.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

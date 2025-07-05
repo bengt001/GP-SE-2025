@@ -4,7 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import de.techfak.gse.template.domain.*;
+import de.techfak.gse.template.domain.entities.Deck;
+import de.techfak.gse.template.domain.service.CardService;
+import de.techfak.gse.template.domain.service.DeckService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

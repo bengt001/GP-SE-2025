@@ -1,8 +1,8 @@
 package de.techfak.gse.template.web.controller;
 
-import de.techfak.gse.template.domain.UserService;
-import de.techfak.gse.template.domain.Usr;
-import de.techfak.gse.template.domain.XpService;
+import de.techfak.gse.template.domain.service.UserService;
+import de.techfak.gse.template.domain.entities.Usr;
+import de.techfak.gse.template.domain.service.XpService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;

@@ -1,5 +1,8 @@
-package de.techfak.gse.template.domain;
+package de.techfak.gse.template.domain.implementations;
 
+import de.techfak.gse.template.domain.repositories.UserRepository;
+import de.techfak.gse.template.domain.service.UserService;
+import de.techfak.gse.template.domain.entities.Usr;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;

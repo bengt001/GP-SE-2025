@@ -1,5 +1,6 @@
-package de.techfak.gse.template.domain;
+package de.techfak.gse.template.domain.repositories;
 
+import de.techfak.gse.template.domain.entities.CardInfo;
 import org.springframework.data.repository.CrudRepository;
 
 /**

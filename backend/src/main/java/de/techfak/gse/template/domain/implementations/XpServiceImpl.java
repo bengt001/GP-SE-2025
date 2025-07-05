@@ -1,6 +1,10 @@
 
-package de.techfak.gse.template.domain;
+package de.techfak.gse.template.domain.implementations;
 
+import de.techfak.gse.template.domain.repositories.UserRepository;
+import de.techfak.gse.template.domain.service.UserService;
+import de.techfak.gse.template.domain.service.XpService;
+import de.techfak.gse.template.domain.entities.Usr;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

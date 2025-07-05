@@ -1,9 +1,9 @@
 package de.techfak.gse.template;
 
-import de.techfak.gse.template.domain.CardService;
-import de.techfak.gse.template.domain.DeckService;
-import de.techfak.gse.template.domain.UserService;
-import de.techfak.gse.template.domain.Usr;
+import de.techfak.gse.template.domain.service.CardService;
+import de.techfak.gse.template.domain.service.DeckService;
+import de.techfak.gse.template.domain.service.UserService;
+import de.techfak.gse.template.domain.entities.Usr;
 import de.techfak.gse.template.parsingutils.ParsingPipeline;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
