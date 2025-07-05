@@ -14,10 +14,8 @@ import java.io.Serializable;
 @Getter
 @Setter
 @Entity
-public class Card implements Serializable {
+public class Card {
 
-    @Serial
-    private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long cardId;

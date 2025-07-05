@@ -414,7 +414,7 @@ async function startLearning() {
 
                 <v-menu
                   v-model="dot_menu[n - 1]"
-                  :close-on-content-click="false"
+                  :close-on-content-click="true"
                 >
                   <template #activator="{ props }">
                     <v-btn

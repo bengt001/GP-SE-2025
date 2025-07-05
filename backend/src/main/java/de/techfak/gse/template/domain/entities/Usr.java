@@ -22,9 +22,7 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-public class Usr implements UserDetails, Serializable {
-    @Serial
-    private static final long serialVersionUID = 1L;
+public class Usr implements UserDetails {
 
     @Id
     @Column

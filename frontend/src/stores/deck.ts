@@ -199,8 +199,10 @@ export const useDeckStore = defineStore('decks', {
       while(counter < this.decks.length){
         const deck = this.decks[counter]
         if (deck.title === deckname) {
+          if(useUserStore().authenticated){
           for(const id of deck.stapel_id){
             await axios.delete('/api/usr/decks/' + id + '/delete')
+          }
           }
           this.decks.splice(counter,1)
           localStorage.setItem('decks', JSON.stringify(this.decks));
@@ -279,10 +281,10 @@ export const useDeckStore = defineStore('decks', {
                 "NOT_LEARNED",
                 { headers: { "Content-Type": "text/plain" } }
               );
+              const newInfo = await axios.get('/api/usr/decks/' + card.deckID + '/cards/' + card.id + '/info')
+              card.nextRepetition = newInfo.data.nextRepetition;
             }
             card.lastRating = 4
-            const newInfo = await axios.get('/api/usr/decks/' + card.deckID + '/cards/' + card.id + '/info')
-            card.nextRepetition = newInfo.data.nextRepetition;
           }
           for(const card of deck.problems){
             if (useUserStore().authenticated) {
@@ -291,10 +293,10 @@ export const useDeckStore = defineStore('decks', {
                 "NOT_LEARNED",
                 { headers: { "Content-Type": "text/plain" } }
               );
+              const newInfo = await axios.get('/api/usr/decks/' + card.deckID + '/cards/' + card.id + '/info')
+              card.nextRepetition = newInfo.data.nextRepetition;
             }
             card.lastRating = 4
-            const newInfo = await axios.get('/api/usr/decks/' + card.deckID + '/cards/' + card.id + '/info')
-            card.nextRepetition = newInfo.data.nextRepetition;
           }
           for(const card of deck.definitions){
             if (useUserStore().authenticated) {
@@ -303,10 +305,10 @@ export const useDeckStore = defineStore('decks', {
                 "NOT_LEARNED",
                 { headers: { "Content-Type": "text/plain" } }
               );
+              const newInfo = await axios.get('/api/usr/decks/' + card.deckID + '/cards/' + card.id + '/info')
+              card.nextRepetition = newInfo.data.nextRepetition;
             }
             card.lastRating = 4
-            const newInfo = await axios.get('/api/usr/decks/' + card.deckID + '/cards/' + card.id + '/info')
-            card.nextRepetition = newInfo.data.nextRepetition;
           }
         }
       }
