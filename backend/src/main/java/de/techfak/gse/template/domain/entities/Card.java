@@ -5,13 +5,19 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 /**
  * Entity representing a card.
  */
 @Getter
 @Setter
 @Entity
-public class Card {
+public class Card implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long cardId;

@@ -10,6 +10,7 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,9 +22,9 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-public class Usr implements UserDetails {
+public class Usr implements UserDetails, Serializable {
     @Serial
-    private static final long serialVersionUID = 0L;
+    private static final long serialVersionUID = 1L;
 
     @Id
     @Column
