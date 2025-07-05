@@ -39,6 +39,10 @@ public class UsrController {
         return userService.existsEmail(email);
     }
 
+    /**
+     * Liefert das Profil des aktuell eingeloggten Nutzers.
+     * @return ResponseEntity mit den Profildaten des Nutzers als {@link UsrDto}
+     */
     @GetMapping("/profile")
     public ResponseEntity<UsrDto> getCurrentUserProfile() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

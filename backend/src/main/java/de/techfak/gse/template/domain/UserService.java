@@ -18,5 +18,5 @@ public interface UserService extends UserDetailsService {
 
     String getFreeID();
 
-    void saveUser (Usr user);
+    void saveUser(Usr user);
 }

@@ -140,7 +140,6 @@ async function rateCard(colorIndex: number) {
   } else {
     try {
       console.log("[Check respnse]: try block")
-      //TODO: Item Count muss noch dynamisch sein. Aktuell fester wert 1 zum Testen
       const gainedXp = await userStore.earnXp(card.type,  1, 4 - colorIndex)
       earnedXp.value = gainedXp
 
@@ -165,8 +164,6 @@ const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name
 
 <template>
 
-
-
   <v-alert
     v-if="earnedXp !== null"
     type="success"
@@ -176,9 +173,6 @@ const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name
   >
     +{{ earnedXp }} XP erhalten!
   </v-alert>
-
-
-
 
   <div class="progress-container d-flex flex-column align-center mb-4">
     <div class="progress-bar d-flex">

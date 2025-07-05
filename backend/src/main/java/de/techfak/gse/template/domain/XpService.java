@@ -1,6 +1,9 @@
 
 package de.techfak.gse.template.domain;
 
+/**
+ * Interface für den XpService.
+ */
 public interface XpService {
 
 

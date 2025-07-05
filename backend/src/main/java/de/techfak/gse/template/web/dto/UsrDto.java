@@ -2,6 +2,11 @@ package de.techfak.gse.template.web.dto;
 
 import de.techfak.gse.template.domain.Usr;
 
+/**
+ * Data Transfer Object (DTO) für Benutzerdaten.
+ * Enthält grundlegende Informationen über einen Nutzer, z. B. Benutzername,
+ * E-Mail, Anzeigename und gesammelte XP.
+ */
 public class UsrDto {
     private String userId;
     private String username;
@@ -9,6 +14,10 @@ public class UsrDto {
     private String displayName;
     private int totalXp;
 
+    /**
+     * Erstellt ein {@code UsrDto}-Objekt aus einer {@link Usr}-Entität.
+     * @param user die Usr-Entität, aus der die Daten übernommen werden
+     */
     public UsrDto(Usr user) {
         this.userId = user.getUserId();
         this.username = user.getUsername();
@@ -18,7 +27,6 @@ public class UsrDto {
     }
 
     // Getter und Setter
-
     public String getUserId() {
         return userId;
     }
