@@ -1,5 +1,8 @@
 package de.techfak.gse.template.domain.implementation;
 
+/**
+ * CardIdDeckIdPair as pair of cardId with the right deckId to handle in frontend.
+ */
 public class CardIdDeckIdPair {
     private Long cardId;
     private Long deckId;
