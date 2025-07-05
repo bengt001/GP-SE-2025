@@ -4,6 +4,7 @@ import {useDeckStore} from "@/stores/deck";
 import {useRoute} from "vue-router";
 import {ref} from 'vue'
 import {useUserStore} from "@/stores/users";
+import type Card from "@/types/Card";
 
 
 const colorNames = ['green', 'yellow', 'orange', 'red', 'grey'];
@@ -22,61 +23,12 @@ interface content {
   data: string
   index: number
   spacing: number
+  cards?: Card[]
 }
 
 const contentList: Ref<content[]> = ref(getContentList(getHeadlines(), 0, 0))
 const revealedText: Ref<content[]> = ref([])
-
-if (card.value) {
-  if (card.value.type == "Aufdeckkarte") {
-    console.log(JSON.parse(card.value.text))
-  }
-}
-
-function getHeadlines() {
-  if (card.value && card.value.type == "Aufdeckkarte") {
-    const root = JSON.parse(card.value.text)
-    const content = root.children
-    return content[0].children
-  }
-}
-
-
-
-/*
-function test() {
-  const content = getContent()
-  for (const object of content) {
-    contentList.push(object.data)
-
-    for (const object2 of object.children) {
-      contentList.push("\t" + object2.data)
-
-      for (const object3 of object2.children) {
-        contentList.push("\t\t" + object3.data)
-      }
-    }
-  }
-  console.log(contentList)
-}
- */
-
-function getContentList(content, i: number, depth: number): content[] {
-  if (content) {
-    let list: content[] = []
-
-    for (const item of content) {
-      list.push({data: item.data, index: i, spacing: depth}) //doesnt work
-      i++
-
-      if (item.children) {
-        list = list.concat(getContentList(item.children, i, depth + 1))
-      }
-    }
-    return list
-  }
-  return []
-}
+const showCardBoxes = ref(false)
 
 const reveal = ref(false)
 const ratingArr = ref<number[]>([])
@@ -171,12 +123,6 @@ function goBack(){
 function showAnswer() {
   if (card.value && card.value.type == "Aufdeckkarte") {
     const linesRevealed = revealedText.value.length
-
-    /*
-    if (contentList.value.length == 0) {
-      contentList.value = getContentList(getHeadlines(), 0, 0)
-    }
-     */
     if (linesRevealed >= contentList.value.length) {
       reveal.value = true;
     } else {
@@ -218,6 +164,49 @@ function rateCard(colorIndex: number) {
     deckStore.rate(card.id,card.deckID,colorIndex)
   }
   nextCard()
+}
+
+
+function toggleCardBoxes() {
+  showCardBoxes.value = !showCardBoxes.value;
+}
+
+if (card.value) {
+  if (card.value.type == "Aufdeckkarte") {
+    console.log(JSON.parse(card.value.text))
+  }
+}
+
+function getHeadlines() {
+  if (card.value && card.value.type == "Aufdeckkarte") {
+    const root = JSON.parse(card.value.text)
+    const content = root.children
+    return content[0].children
+  }
+}
+
+function getContentList(content, i: number, depth: number): content[] {
+  if (content) {
+    let list: content[] = []
+
+    for (const item of content) {
+      list.push({data: item.data, index: i, spacing: depth}) //doesnt work
+      i++
+
+      //TODO: get cards for headline
+
+      if (item.children.length > 0) {
+        list = list.concat(getContentList(item.children, i, depth + 1))
+      } else { //adds test boxes
+        const cards: Card[] = []
+        cards.push({id: 0, deckID: 0, type: "Definition", title: "Notstandslage i.S.d. § 228 BGB", text: "Von einer fremden Sache ausgehende, drohende Gefahr für ein Rechtsgut des Handelnden oder eines Dritten", lastRating: 0, color: undefined})
+        cards.push({id: 0, deckID: 0, type: "Problem", title: "problem title", text: "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.", lastRating: 0, color: undefined})
+        list[list.length - 1].cards = cards
+      }
+    }
+    return list
+  }
+  return []
 }
 
 const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name
@@ -325,6 +314,33 @@ const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name
               :key="item.data"
             >
               <h3> {{ "\t".repeat(item.spacing) + item.data }} </h3>
+              <div
+                v-if="item.cards && showCardBoxes"
+              >
+                <div
+                  v-for="cardBox in item.cards"
+                  :key="cardBox.title"
+                  class="ma-3"
+                >
+                  <v-card
+                    class="mx-auto"
+                  >
+                    <v-card-text
+                      class="text-decoration-underline"
+                    >
+                      {{ cardBox.type }}
+                    </v-card-text>
+                    <v-card-text
+                      class="font-weight-bold text-wrap"
+                    >
+                      {{ cardBox.title }}
+                    </v-card-text>
+                    <v-card-text>
+                      {{ cardBox.text }}
+                    </v-card-text>
+                  </v-card>
+                </div>
+              </div>
             </div>
           </v-card-text>
           <p
@@ -349,6 +365,15 @@ const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name
         class="d-flex justify-between align-center flex-wrap"
         style="gap: 12px;"
       >
+        <v-btn
+          v-if="card && card.type == 'Aufdeckkarte'"
+          color="primary"
+          class="position-absolute left-0 ma-10"
+          @click="toggleCardBoxes()"
+        >
+          Definitionen/Probleme
+        </v-btn>
+
         <v-btn
           icon
           style="flex: 0 0 auto;"
