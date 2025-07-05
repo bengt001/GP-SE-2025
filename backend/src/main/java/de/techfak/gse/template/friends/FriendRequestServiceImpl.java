@@ -1,9 +1,6 @@
-package de.techfak.gse.template.domain.implementation;
+package de.techfak.gse.template.friends;
 
 import de.techfak.gse.template.domain.entities.Usr;
-import de.techfak.gse.template.domain.repositories.FriendRequestRepository;
-import de.techfak.gse.template.domain.service.FriendRequestService;
-import de.techfak.gse.template.domain.entities.FriendRequest;
 import de.techfak.gse.template.domain.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

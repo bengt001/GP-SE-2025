@@ -1,6 +1,5 @@
-package de.techfak.gse.template.domain.service;
+package de.techfak.gse.template.friends;
 
-import de.techfak.gse.template.domain.entities.FriendRequest;
 import de.techfak.gse.template.domain.entities.Usr;
 
 import java.util.List;

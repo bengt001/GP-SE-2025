@@ -1,8 +1,8 @@
 package de.techfak.gse.template.web.controller;
 
-import de.techfak.gse.template.domain.entities.FriendRequest;
+import de.techfak.gse.template.friends.FriendRequest;
 import de.techfak.gse.template.domain.entities.Usr;
-import de.techfak.gse.template.domain.service.FriendRequestService;
+import de.techfak.gse.template.friends.FriendRequestService;
 import de.techfak.gse.template.domain.service.UserService;
 import de.techfak.gse.template.web.command.FriendRequestCmd;
 import de.techfak.gse.template.web.command.FriendSendCmd;

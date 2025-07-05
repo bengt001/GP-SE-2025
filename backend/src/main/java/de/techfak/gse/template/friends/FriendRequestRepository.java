@@ -1,6 +1,5 @@
-package de.techfak.gse.template.domain.repositories;
+package de.techfak.gse.template.friends;
 
-import de.techfak.gse.template.domain.entities.FriendRequest;
 import de.techfak.gse.template.domain.entities.Usr;
 import org.springframework.data.repository.CrudRepository;
 

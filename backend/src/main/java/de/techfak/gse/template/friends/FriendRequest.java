@@ -1,5 +1,6 @@
-package de.techfak.gse.template.domain.entities;
+package de.techfak.gse.template.friends;
 
+import de.techfak.gse.template.domain.entities.Usr;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
