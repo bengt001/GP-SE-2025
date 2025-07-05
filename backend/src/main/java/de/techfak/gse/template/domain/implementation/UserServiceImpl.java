@@ -14,13 +14,32 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class UserServiceImpl implements UserService {
-    public final String strNotFound = " not found";
+    /**
+     * String for not-Found message.
+     */
+    private final String strNotFound = " not found";
+    /**
+     * Service that handles all user Interaction.
+     */
     private final UserRepository userRepository;
+    /**
+     * Service that handles passwordEncoder interactions.
+     */
     private final PasswordEncoder passwordEncoder;
+    /**
+     * Service that handles notification interactions.
+     */
     private final NotificationService notificationService;
 
+    /**
+     * Constructor for UserServiceImpl.
+     * @param userRepository userRepository
+     * @param passwordEncoder passwordEncoder
+     * @param notificationService notificationService
+     */
     @Autowired
-    public UserServiceImpl(final UserRepository userRepository, final PasswordEncoder passwordEncoder, final NotificationService notificationService) {
+    public UserServiceImpl(final UserRepository userRepository, final PasswordEncoder passwordEncoder,
+                           final NotificationService notificationService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.notificationService = notificationService;

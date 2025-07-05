@@ -5,23 +5,41 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Abstract class for Notifiacitons.
+ */
 public abstract class AbstractGeneralNotes {
+    /**
+     * ID of Notification.
+     */
     @Getter
     @Setter
     Long id;
 
+    /**
+     * Type of Notification.
+     */
     @Getter
     @Setter
     String type;
 
+    /**
+     * List of messages, that will be displayed in v-card textbox.
+     */
     @Getter
     @Setter
     List<String> messages;
 
+    /**
+     * String that will be displayed on v-card.
+     */
     @Getter
     @Setter
     String title;
 
+    /**
+     * If note has been read.
+     */
     @Getter
     @Setter
     boolean read;
