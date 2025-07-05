@@ -59,7 +59,9 @@ public class XpController {
         private int rating;
 
         // Getter/Setter
-        public String getCardType() { return cardType; }
+        public String getCardType() {
+            return cardType;
+        }
         public void setCardType(String cardType) {
             this.cardType = cardType;
         }

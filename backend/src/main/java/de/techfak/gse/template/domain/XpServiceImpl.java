@@ -13,26 +13,25 @@ import java.util.Optional;
 @Service
 public class XpServiceImpl implements XpService {
 
-
-    private final UserService userService;
-    @Autowired
-    private UserRepository userRepository;
-
-    private static final double MULTIPLIER_RATING_4 = 1.0;
-    private static final double MULTIPLIER_RATING_3 = 0.75;
-    private static final double MULTIPLIER_RATING_2 = 0.5;
-    private static final double MULTIPLIER_RATING_1 = 0.25;
+    private static final double MULTIPLIER_RATING_HIGH = 1.0;
+    private static final double MULTIPLIER_RATING_MEDIUM_HEIGH = 0.75;
+    private static final double MULTIPLIER_RATING_MEDIUM_LOW = 0.5;
+    private static final double MULTIPLIER_RATING_LOW = 0.25;
     private static final double MULTIPLIER_DEFAULT = 0.0;
 
-    private static final int RATING_4 = 4;
-    private static final int RATING_3 = 3;
-    private static final int RATING_2 = 2;
-    private static final int RATING_1 = 1;
+    private static final int RATING_HIGH = 4;
+    private static final int RATING_MEDIUM_HIGH = 3;
+    private static final int RATING_MEDIUM_LOW = 2;
+    private static final int RATING_LOW = 1;
 
     private static final int BASE_XP_DEFINITIONEN = 10;
     private static final int BASE_XP_PROBLEME = 10;
     private static final int BASE_XP_PER_ITEM_SCHEMA = 5;
     private static final int DEFAULT_BASE_XP = 0;
+
+    private final UserService userService;
+    @Autowired
+    private UserRepository userRepository;
 
     public XpServiceImpl(UserService userService) {
         this.userService = userService;
@@ -51,12 +50,17 @@ public class XpServiceImpl implements XpService {
         return (int) (baseXp * getRatingMultiplier(rating));
     }
 
+    /**
+     * Gibt einen Multiplier Wert abhängig vom Rating aus.
+     * @param rating das Rating der Karte
+     * @return Multiplier Faktor
+     */
     public double getRatingMultiplier(int rating) {
         return switch (rating) {
-            case RATING_4 -> MULTIPLIER_RATING_4;
-            case RATING_3 -> MULTIPLIER_RATING_3;
-            case RATING_2 -> MULTIPLIER_RATING_2;
-            case RATING_1 -> MULTIPLIER_RATING_1;
+            case RATING_HIGH -> MULTIPLIER_RATING_HIGH;
+            case RATING_MEDIUM_HIGH -> MULTIPLIER_RATING_MEDIUM_HEIGH;
+            case RATING_MEDIUM_LOW -> MULTIPLIER_RATING_MEDIUM_LOW;
+            case RATING_LOW -> MULTIPLIER_RATING_LOW;
             default -> MULTIPLIER_DEFAULT;
         };
     }

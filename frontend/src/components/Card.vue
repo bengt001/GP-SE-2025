@@ -163,7 +163,6 @@ const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name
 </script>
 
 <template>
-
   <v-alert
     v-if="earnedXp !== null"
     type="success"
