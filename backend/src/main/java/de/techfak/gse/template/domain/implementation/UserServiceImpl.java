@@ -1,4 +1,4 @@
-package de.techfak.gse.template.domain.implementations;
+package de.techfak.gse.template.domain.implementation;
 
 import de.techfak.gse.template.domain.repositories.UserRepository;
 import de.techfak.gse.template.domain.service.UserService;
