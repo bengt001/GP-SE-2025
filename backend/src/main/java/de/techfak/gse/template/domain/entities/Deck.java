@@ -37,6 +37,7 @@ public class Deck implements Serializable {
     @OneToMany(mappedBy = "deck", fetch = FetchType.EAGER)
     //@JsonManagedReference
     @JsonIgnore
+    @SuppressWarnings("serial")
     private List<Card> cards;
 
 
@@ -51,11 +52,13 @@ public class Deck implements Serializable {
 
     //@JsonManagedReference
     @JsonIgnore
+    @SuppressWarnings("serial")
     private List<Usr> users = new ArrayList<>();
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "deckField", joinColumns = @JoinColumn(name = "deckId"))
     @Column(name = "fieldOfLaw")
+    @SuppressWarnings("serial")
     private List<String> fieldOfLaw;
 
     /**
