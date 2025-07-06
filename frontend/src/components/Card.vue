@@ -162,7 +162,7 @@ async function rateCard(colorIndex: number) {
     } catch (error) {
       console.error("Fehler beim XP-Vergabe:", error)
       nextCard();
-      isRatingInProgress = false;
+      isRatingInProgress.value = false;
     }
   }
   //nextCard()
