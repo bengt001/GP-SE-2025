@@ -16,6 +16,8 @@ const CardStore = useCardStore()
 const DialogReset = ref(false)
 const DialogDeactivate = ref(false)
 const DialogLearn = ref(false)
+const learnFinished = ref(false)
+
 
 const SelectedDeck = ref<boolean[]>([])
 const minOneSelected = ref(false)
@@ -66,6 +68,15 @@ const selectedDecksTitle = computed(() => {
   return selected
 })
 
+onMounted(() => {
+  DeckStore.loadFromLocalStorage()
+})
+
+watch(() => DeckStore.decks, (newVal) => {
+  localStorage.setItem('decks', JSON.stringify(newVal))
+}, { deep: true })
+
+
 watch(
   allDecks,
   (newDecks) => {
@@ -84,11 +95,11 @@ watch(
 
 
 watch(
-    allDecks,
-    (newDecks) => {
-      SelectedDeck.value = Array(newDecks.length).fill(false)
-    },
-    { immediate: true }
+  allDecks,
+  (newDecks) => {
+    SelectedDeck.value = Array(newDecks.length).fill(false)
+  },
+  { immediate: true }
 )
 
 watch(schema, (newVal) => {
@@ -105,12 +116,12 @@ watch([definitions, problems], ([newDefinitions, newProblems]) => {
 })
 
 watch([definitions, problems, schema], () => {
-    const selectedTypes = getSelectedTypes()
-    const newMax = getCardCount(selectedTypes)
-    if (numberOfCards.value > newMax) {
-      numberOfCards.value = newMax
-    }
-  })
+  const selectedTypes = getSelectedTypes()
+  const newMax = getCardCount(selectedTypes)
+  if (numberOfCards.value > newMax) {
+    numberOfCards.value = newMax
+  }
+})
 
 const anyTypeSelected = computed(() =>
   definitions.value || problems.value || schema.value
@@ -152,7 +163,6 @@ function openLearnDialog() {
 
 
   DialogLearn.value = true
-  console.log( DeckStore.getTitleOfSelected(selectedDecksTitle.value))
 }
 
 function plus5() {
@@ -238,7 +248,7 @@ function sortCards(cardsToSort:Card[]):Card[]{
   return green.concat(yellow,orange,red,grey)
 }
 
-function startLearning() {
+async function startLearning() {
   CardStore.clearCards()
   let Cards:Card[] = []
 
@@ -264,7 +274,29 @@ function startLearning() {
     }
   }
 
-  Cards = sortCards(Cards).slice(-numberOfCards.value).reverse()
+
+  if(!UserStore.authenticated) {
+    Cards = sortCards(Cards).slice(-numberOfCards.value).reverse()
+  }
+  else{
+    const deckIds:number[] = []
+    for (let i = 0; i < SelectedDeck.value.length; i++) {
+      if (!SelectedDeck.value[i]) {
+        continue
+      }
+      for(const curId of allDecks.value[i].stapel_id){
+        deckIds.push(curId)
+      }
+    }
+
+    Cards = await DeckStore.getCardsToLearn(deckIds,numberOfCards.value,selectedMode,Cards)
+
+  }
+
+  if(Cards.length <= 0){
+    learnFinished.value = true
+    return
+  }
 
   for(const card of Cards){
     CardStore.addCard(card)
@@ -278,7 +310,6 @@ function startLearning() {
 </script>
 <template>
   <Searchbar @change-value="searchValue=$event" />
-
   <v-menu
     v-model="menu"
     :close-on-content-click="false"
@@ -383,7 +414,7 @@ function startLearning() {
 
                 <v-menu
                   v-model="dot_menu[n - 1]"
-                  :close-on-content-click="false"
+                  :close-on-content-click="true"
                 >
                   <template #activator="{ props }">
                     <v-btn
@@ -742,6 +773,15 @@ function startLearning() {
     </v-icon>
     lernen
   </v-btn>
+
+  <v-snackbar
+    v-model="learnFinished"
+    :timeout="2000"
+    class="elevation-24"
+    color="error"
+  >
+    Alle Karten für heute gelernt
+  </v-snackbar>
 </template>
 
 <style scoped lang="sass">

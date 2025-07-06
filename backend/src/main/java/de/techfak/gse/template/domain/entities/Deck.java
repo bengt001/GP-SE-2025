@@ -1,8 +1,10 @@
 package de.techfak.gse.template.domain.entities;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +18,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-public class Deck {
+public class Deck implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long deckId;
@@ -24,29 +28,37 @@ public class Deck {
     private Integer authorId;
     @Column
     private LocalDate publishDate;
-    //Visibility is useless should be deleted
+    //Visibility has a use now
     @Column
     private Boolean visibility;
 
 
     //Or JsonIgnore
-    @OneToMany(mappedBy = "deck")
-    @JsonManagedReference
+    @OneToMany(mappedBy = "deck", fetch = FetchType.EAGER)
+    //@JsonManagedReference
+    @JsonIgnore
+    @SuppressWarnings("serial")
     private List<Card> cards;
 
 
-    //Fetch type eager is like really bad, the reason for this that User should be the owner side, but isn't.
+    //KIRILL: Fetch type eager is like really bad, the reason for this that User should be the owner side, but isn't.
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "deck_user",
             joinColumns = @JoinColumn(name = "deck_Id"),
             inverseJoinColumns = @JoinColumn(name = "user_Id")
     )
+
+
+    //@JsonManagedReference
+    @JsonIgnore
+    @SuppressWarnings("serial")
     private List<Usr> users = new ArrayList<>();
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "deckField", joinColumns = @JoinColumn(name = "deckId"))
     @Column(name = "fieldOfLaw")
+    @SuppressWarnings("serial")
     private List<String> fieldOfLaw;
 
     /**

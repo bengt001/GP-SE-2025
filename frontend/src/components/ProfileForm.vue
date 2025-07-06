@@ -9,6 +9,7 @@ const router = useRouter()
 const LogOutSuccess_snack = ref(false)
 
 function logOut() {
+  deckStore.abortDeckLoading()
   LogOutSuccess_snack.value = true
   setTimeout(() => {
     router.push('/')

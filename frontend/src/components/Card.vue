@@ -64,7 +64,6 @@ const countRed = computed(() => {
   return counted
 })
 
-
 watch(cards, newCards => {
     ratingArr.value = Array(newCards.length).fill(4);
   },
@@ -140,6 +139,7 @@ async function rateCard(colorIndex: number) {
   } else {
     try {
       console.log("[Check respnse]: try block")
+      deckStore.rate(card.id,card.deckID,colorIndex)
       const gainedXp = await userStore.earnXp(card.type,  1, 4 - colorIndex)
       earnedXp.value = gainedXp
 

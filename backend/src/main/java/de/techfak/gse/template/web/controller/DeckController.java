@@ -1,8 +1,12 @@
 package de.techfak.gse.template.web.controller;
 
+import de.techfak.gse.template.domain.*;
 import de.techfak.gse.template.domain.entities.Card;
+import de.techfak.gse.template.domain.entities.CardInfo;
 import de.techfak.gse.template.domain.entities.Deck;
 import de.techfak.gse.template.domain.entities.Usr;
+import de.techfak.gse.template.domain.implementation.CardIdDeckIdPair;
+import de.techfak.gse.template.domain.implementation.CardInfoCardDTO;
 import de.techfak.gse.template.domain.service.CardService;
 import de.techfak.gse.template.domain.service.DeckService;
 import de.techfak.gse.template.domain.service.UserService;
@@ -14,6 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -129,7 +134,7 @@ public class DeckController {
      */
     @GetMapping("/usr/decks/{deckId:\\d+}/cards")
     @Secured("ROLE_USER")
-    public List<Card> getUserCards(@PathVariable("deckId") final long deckId) {
+    public List<CardInfo> getUserCards(@PathVariable("deckId") final long deckId) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Usr usr = userService.loadUserByUsername(auth.getName());
         return deckService.getUserCards(usr, deckId);
@@ -144,7 +149,8 @@ public class DeckController {
      */
     @GetMapping("/usr/decks/{deckId:\\d+}/cards/{cardId:\\d+}")
     @Secured("ROLE_USER")
-    public Card getUserCardById(@PathVariable("deckId") final long deckId, @PathVariable("cardId") final long cardId) {
+    public CardInfo getUserCardById(@PathVariable("deckId") final long deckId,
+                                    @PathVariable("cardId") final long cardId) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Usr usr = userService.loadUserByUsername(auth.getName());
         return deckService.getUseCardById(usr, deckId, cardId).orElseThrow(BadRequestException::new);
@@ -187,6 +193,24 @@ public class DeckController {
     }
 
     /**
+     * API Endpoint for sending a rankCard Patch-Request.
+     *
+     * @param deckId the deckId for the to be updated card
+     * @param cardId the cardId for the to be updated card
+     * @param rating the new rating of the card
+     * @return an updated Version of the Card
+     */
+    @PatchMapping("/usr/decks/{deckId:\\d+}/{cardId:\\d+}/rank")
+    @Secured("ROLE_USER")
+    public CardInfo rankCard(@PathVariable final long deckId, @PathVariable final long cardId,
+                             @RequestBody String rating) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Usr usr = userService.loadUserByUsername(auth.getName());
+        return deckService.rankCard(usr, deckId, cardId,
+                Rating.getRating(rating)).orElseThrow(BadRequestException::new);
+    }
+
+    /**
      * API Endpoint for sending a updateDeck Patch-Request.
      *
      * @param deckId the deckId that shall be updated
@@ -200,4 +224,78 @@ public class DeckController {
         Usr usr = userService.loadUserByUsername(auth.getName());
         return deckService.updateDeck(usr, deckId, deck).orElseThrow(BadRequestException::new);
     }
+
+
+    /**
+     * API Endpoint to get all Cards from one of the users decks.
+     *
+     * @param deckId of the deck.
+     * @return List of Card.
+     */
+    @GetMapping("/usr/decks/{deckId:\\d+}/getLearningCards")
+    @Secured("ROLE_USER")
+    public List<CardInfoCardDTO> getLearningCardsFromThisDeck(@PathVariable("deckId") final long deckId,
+                                                       @RequestParam final int maxCards,
+                                                       @RequestParam final String[] cardTypes) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Usr usr = userService.loadUserByUsername(auth.getName());
+        return deckService.getMaxLearningCards(usr, new long[]{deckId}, maxCards, cardTypes);
+    }
+
+    /**
+     * API Endpoint to get Cards to learn (max) from the list of given decks.
+     * @param deckIds Ids of the decks to consider.
+     *
+     * @return List of CardInfoCardDTO with the Cards to learn.
+     */
+    @GetMapping("/usr/getLearningCards")
+    @Secured("ROLE_USER")
+    public List<CardInfoCardDTO> getLearningCardsFromThisDeck(@RequestParam final long[] deckIds,
+                                                              @RequestParam final int maxCards,
+                                                              @RequestParam final String[] cardTypes) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Usr usr = userService.loadUserByUsername(auth.getName());
+        return deckService.getMaxLearningCards(usr, deckIds, maxCards, cardTypes);
+    }
+
+    /**
+     * API Endpoint to get Cards to learn (max) from the list of given decks.
+     * @param deckIds Ids of the decks to consider.
+     *
+     * @return List of CardId and DeckId of the Cards to learn.
+     */
+    @GetMapping("/usr/decks/cards/getLearningCards/ids")
+    @Secured("ROLE_USER")
+    public List<CardIdDeckIdPair> getLearningCardsIdsFromThisDeck(@RequestParam String deckIds,
+                                                                  @RequestParam final int maxCards,
+                                                                  @RequestParam final String[] cardTypes) {
+        long[] ids = Arrays.stream(deckIds.split(","))
+                .mapToLong(Long::parseLong)
+                .toArray();
+        System.out.println("ids: " + Arrays.toString(ids));
+
+        System.out.println("maxCards: " + maxCards);
+        System.out.println("cardTypes: " + Arrays.toString(cardTypes));
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println("auth: " + auth);
+        Usr usr = userService.loadUserByUsername(auth.getName());
+        System.out.println("usr: " + usr);
+        return deckService.getMaxLearningCardsIds(usr, ids, maxCards, cardTypes);
+    }
+
+    /**
+     * API Endpoint to get the CardInfo of an Card and creates a new one if it doesnt exist already.
+     * @param deckId Id of the Deck
+     * @param cardId Id of the card
+     * @return the CardInfo
+     */
+    @GetMapping("/usr/decks/{deckId:\\d+}/cards/{cardId:\\d+}/info")
+    @Secured("ROLE_USER")
+    public CardInfo getCardInfo(@PathVariable("deckId") final long deckId,
+                                @PathVariable("cardId") final long cardId) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Usr usr = userService.loadUserByUsername(auth.getName());
+        return deckService.getCardInfo(deckId, cardId, usr.getUserId()).orElseThrow(BadRequestException::new);
+    }
+
 }

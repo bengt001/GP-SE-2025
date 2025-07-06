@@ -791,6 +791,7 @@ const zivilrecht_lexmea_broadcast_own = ref<TreeNode[]>([
 
 function addDecks() {
   const deckTuples = selected.value.map(deck => [deck.title, deck.color] as [string, string | undefined]);
+  deckStore.abortDeckLoading()
   deckStore.addMultDecks(deckTuples)
   addDecksSnack.value = true
   setTimeout(() => {

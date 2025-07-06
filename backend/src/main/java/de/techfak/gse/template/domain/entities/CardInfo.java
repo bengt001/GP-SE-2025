@@ -1,5 +1,9 @@
 package de.techfak.gse.template.domain.entities;
 
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import de.techfak.gse.template.domain.Rating;
+import de.techfak.gse.template.domain.SraValues;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -19,34 +23,77 @@ public class CardInfo {
     private Long id;
     @ManyToOne
     private Usr userId;
+
+
     @ManyToOne
     private Card cardId;
+
+
     @ManyToOne
     private Deck deckId;
+
+
     @Column
-    private LocalDate lastDateRated;
+    private LocalDate nextRepetition;
     @Lob
     private String editedContent;
     @Column
-    private int rating;
+    private Rating rating;
+    @Embedded
+    private SraValues sraValues;
 
+    /**
+     * Instantiates a new Card info.
+     */
     protected CardInfo() {
 
     }
 
+
     /**
-     * New card rating with specified content.
+     * Instantiates a new Card info.
      *
-     * @param userId
-     * @param cardId
-     * @param deckId
-     * @param rating
+     * @param userId the user id
+     * @param cardId the card id
+     * @param deckId the deck id
+     * @param rating the rating
      */
-    public CardInfo(Usr userId, Card cardId, Deck deckId, int rating) {
+    public CardInfo(Usr userId, Card cardId, Deck deckId, Rating rating) {
         this.userId = userId;
         this.cardId = cardId;
         this.deckId = deckId;
         this.rating = rating;
-        this.lastDateRated = LocalDate.now();
+        this.nextRepetition = LocalDate.now();
+        this.sraValues = new SraValues();
+    }
+
+    /**
+     * Gets deck id value.
+     *
+     * @return the deck id value
+     */
+    @JsonProperty("deckId")
+    public Long getDeckIdValue() {
+        return deckId != null ? deckId.getDeckId() : null;
+    }
+
+    /**
+     * Gets card id value.
+     *
+     * @return the card id value
+     */
+    @JsonProperty("cardId")
+    public Long getCardIdValue() {
+        return cardId != null ? cardId.getCardId() : null;
+    }
+
+    /**
+     * Gets user id value.
+     *
+     * @return the user id value
+     */
+    @JsonProperty("userId")
+    public String getUserIdValue() {
+        return userId != null ? userId.getUserId() : null;
     }
 }

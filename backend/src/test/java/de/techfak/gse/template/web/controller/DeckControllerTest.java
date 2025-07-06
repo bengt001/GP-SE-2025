@@ -48,9 +48,9 @@ public class DeckControllerTest {
         DECK_SINGLE.setPublishDate(LocalDate.now());
     }
     final List<Card> CARDS = List.of(
-            new Card("Tolle Karte", "Karte", DECK_SINGLE),
-            new Card("Super Karte", "Karte", DECK_SINGLE),
-            new Card("Blöde Karte", "Karte", DECK_SINGLE)
+            new Card("Tolle Karte", "Karte", DECK_SINGLE,"Title","Title"),
+            new Card("Super Karte", "Karte", DECK_SINGLE, "Title","Title"),
+            new Card("Blöde Karte", "Karte", DECK_SINGLE, "Title","Title")
     );
 
 
