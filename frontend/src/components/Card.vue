@@ -23,6 +23,7 @@ const backPossible = ref(false)
 const lastRating = ref(4)
 const ratingLabels = ['Einfach', 'Okay', 'Schwer', 'Nicht gewusst', 'Unbewertet']
 const earnedXp = ref<number | null>(null);
+const isRatingInProgress = ref(false);
 
 
 const cards = computed(() => cardStore.getCards())
@@ -127,10 +128,11 @@ function nextCard() {
 }
 
 async function rateCard(colorIndex: number) {
-  if (earnedXp.value !== null) {
+  if (isRatingInProgress.value) {
     console.log("RateCard blockiert – XP-Overlay noch aktiv.");
     return;
   }
+  isRatingInProgress.value = true;
   console.log("TESTUNG LOG")
   ratingArr.value[cardStore.getCardIndex()] = colorIndex
   lastRating.value = colorIndex
@@ -153,12 +155,14 @@ async function rateCard(colorIndex: number) {
       setTimeout(() => {
         earnedXp.value = null
         //nextCard();
+        isRatingInProgress.value = false;
       }, 1500)
       nextCard();
 
     } catch (error) {
       console.error("Fehler beim XP-Vergabe:", error)
       nextCard();
+      isRatingInProgress = false;
     }
   }
   //nextCard()
