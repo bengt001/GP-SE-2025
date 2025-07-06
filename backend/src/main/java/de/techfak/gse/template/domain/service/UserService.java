@@ -1,6 +1,7 @@
 package de.techfak.gse.template.domain.service;
 
 import de.techfak.gse.template.domain.entities.Usr;
+import de.techfak.gse.template.domain.entities.Usr;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
@@ -26,4 +27,6 @@ public interface UserService extends UserDetailsService {
     void deleteDeck(String userId, Long deckId);
 
     List<List<String>>  activeDeckNames(String userId);
+
+    void saveUser(Usr user);
 }

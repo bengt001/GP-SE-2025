@@ -3,6 +3,7 @@ import {useCardStore} from "@/stores/card";
 import {useDeckStore} from "@/stores/deck";
 import {useRoute} from "vue-router";
 import {ref} from 'vue'
+import {useUserStore} from "@/stores/users";
 
 
 const colorNames = ['green', 'yellow', 'orange', 'red', 'grey'];
@@ -10,6 +11,7 @@ const colorsChip = ['#92C1A5', '#FBDC5C', '#FFB571', '#FFAA9F', '#CBD0D7'];
 
 const cardStore = useCardStore()
 const deckStore = useDeckStore()
+const userStore = useUserStore()
 const router = useRouter();
 const route = useRoute<'/cards/[id]/'>()
 const id = route.params.id
@@ -20,6 +22,9 @@ const ratingArr = ref<number[]>([])
 const backPossible = ref(false)
 const lastRating = ref(4)
 const ratingLabels = ['Einfach', 'Okay', 'Schwer', 'Nicht gewusst', 'Unbewertet']
+const earnedXp = ref<number | null>(null);
+const isRatingInProgress = ref(false);
+
 
 const cards = computed(() => cardStore.getCards())
 const curCardIndex = computed(() => cardStore.getCardIndex())
@@ -122,15 +127,47 @@ function nextCard() {
   reveal.value = false
 }
 
-function rateCard(colorIndex: number) {
+async function rateCard(colorIndex: number) {
+  if (isRatingInProgress.value) {
+    console.log("RateCard blockiert – XP-Overlay noch aktiv.");
+    return;
+  }
+  isRatingInProgress.value = true;
+  console.log("TESTUNG LOG")
   ratingArr.value[cardStore.getCardIndex()] = colorIndex
   lastRating.value = colorIndex
+
   const card = cardStore.getCardAtIndex()
-  deckStore.rate(card.id,card.deckID,colorIndex)
-  nextCard()
+
+  if(!userStore.authenticated) {
+    deckStore.rate(card.id,card.deckID,colorIndex)
+    nextCard();
+  } else {
+    try {
+      console.log("[Check respnse]: try block")
+      deckStore.rate(card.id,card.deckID,colorIndex)
+      const gainedXp = await userStore.earnXp(card.type,  1, 4 - colorIndex)
+      earnedXp.value = gainedXp
+
+      console.log("[Check respone gainedXp]: " + gainedXp)
+      console.log("[Check response earnedXp]: " + earnedXp.value)
+      //XP für 2 Sekunden anzeigen
+      setTimeout(() => {
+        earnedXp.value = null
+        //nextCard();
+        isRatingInProgress.value = false;
+      }, 1500)
+      nextCard();
+
+    } catch (error) {
+      console.error("Fehler beim XP-Vergabe:", error)
+      nextCard();
+      isRatingInProgress.value = false;
+    }
+  }
+  //nextCard()
 }
 
-const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name
 </script>
 
 <template>
@@ -157,6 +194,7 @@ const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name
       / {{ cards.length }}
     </div>
   </div>
+
   <div class="card-button-wrap">
     <v-responsive class="card">
       <v-card
@@ -167,9 +205,20 @@ const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name
         :style="{borderColor: card?.color ?? 'transparent', borderStyle: 'solid', borderWidth: '10px'}"
         @click="reveal = true"
       >
+        <v-alert
+          v-if="earnedXp !== null"
+          type="success"
+          variant="elevated"
+          class="earned-xp-alert"
+          transition="fade-transition"
+        >
+          +{{ earnedXp }} XP erhalten!
+        </v-alert>
+
+
         <v-card-text>
           <p class="text-center">
-            {{ testDeckName }}
+            {{ card?.paragraph }}
           </p>
         </v-card-text>
 
@@ -435,6 +484,20 @@ const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name
 </template>
 
 <style scoped lang="sass">
+.earned-xp-alert
+  position: absolute
+  top: 10px
+  left: 50%
+  transform: translateX(-50%)
+  z-index: 10
+  width: calc(100% - 32px)
+  background-color: #4CAF50
+  color: white
+  opacity: 1
+  padding: 8px
+  border-radius: 8px
+
+
 .progress-container
   width: 100%
   max-width: 600px

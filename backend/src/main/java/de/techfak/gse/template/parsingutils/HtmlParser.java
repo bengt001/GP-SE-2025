@@ -24,7 +24,7 @@ public class HtmlParser {
     private static final String BACKSLASH_N_WITHOUT_SPACE = "\\\\n";
     private static final String DOUBLE_BACKSLASH_N = " \\\\n \\\\n ";
     private static final String TRIPLE_BACKSLASH_N = " \\\\n \\\\n \\\\n ";
-    private static final String NEWLINE = "\n";
+    private static final String NEWLINE = "\n ";
 
     /**
      * This should not be used.
@@ -47,21 +47,30 @@ public class HtmlParser {
         Elements problemSections = doc.select("section[data-style=problem]");
         ArrayList<CardHelper> problemBoxes = new ArrayList<>();
         for (Element section : problemSections) {
+            Elements uls = section.select("ul[style='list-style-type: square;']");
+            String[] ulTexts = new String[uls.size()];
+            for (int i = 0; i < uls.size(); i++) {
+                ulTexts[i] = uls.get(i).text();
+            }
+            String combinedBack = String.join(" ", ulTexts);
             LOGGER.debug(section.text());
             String text = section.text();
             text = text.replaceFirst(BACKSLASH_N, "");
-            String[] frontBackFirst = text.split(TRIPLE_BACKSLASH_N);
+            String[] frontBackFirst = text.split(BACKSLASH_N);
+            //frontBackFirst[0] = frontBackFirst[0].replaceFirst(BACKSLASH_N, "");
             //This gets ugly cards too
-            /*String[] frontBack = {
+            String[] frontBack = {
                     frontBackFirst[0],
-                    String.join(" ", Arrays.copyOfRange(frontBackFirst, 1, frontBackFirst.length))
-            };*/
-            String[] frontBack = frontBackFirst;
+                    combinedBack
+                    //String.join(" ", Arrays.copyOfRange(frontBackFirst, 1, frontBackFirst.length))
+            };
+            //String[] frontBack = frontBackFirst;
             if (frontBack.length == 2) {
                 frontBack[1] = frontBack[1].replaceAll(DOUBLE_BACKSLASH_N, NEWLINE);
                 frontBack[1] = frontBack[1].replaceAll(BACKSLASH_N, NEWLINE);
                 frontBack[1] = frontBack[1].replaceAll(BACKSLASH_N_WITHOUT_SPACE, NEWLINE);
                 frontBack[1] = frontBack[1].replaceAll(NEWLINE + NEWLINE, "");
+                frontBack[1] = frontBack[1].replaceAll(BACKSLASH_N_WITHOUT_SPACE, " ");
                 frontBack[0] = frontBack[0].replaceAll(BACKSLASH_N, NEWLINE);
                 logBoxes(frontBack[0], frontBack[1], "ProblemBox");
                 //new code wohoh
@@ -126,6 +135,7 @@ public class HtmlParser {
                 frontBack[1] = frontBack[1].replaceAll(BACKSLASH_N, NEWLINE);
                 frontBack[1] = frontBack[1].replaceAll(NEWLINE + NEWLINE, "");
                 frontBack[0] = frontBack[0].replaceAll(BACKSLASH_N, NEWLINE);
+                frontBack[1] = frontBack[1].replaceAll(BACKSLASH_N_WITHOUT_SPACE, NEWLINE);
                 logBoxes(frontBack[0], frontBack[1], "DefinitionBox");
                 //new code wohoh
                 Range.Position posOfBox = section.sourceRange().start();

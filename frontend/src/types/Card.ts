@@ -7,4 +7,5 @@ export default interface Card {
   color : string|undefined;
   lastRating: number;
   nextRepetition: string | undefined;
+  paragraph: string;
 }

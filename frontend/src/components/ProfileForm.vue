@@ -17,6 +17,10 @@ function logOut() {
     deckStore.reset_decks()
   }, 1000)
 }
+
+onMounted(async () => {
+  await userStore.loadProfile();
+});
 </script>
 
 <template>
@@ -40,6 +44,9 @@ function logOut() {
         </div>
         <div class="mb-4">
           Username: {{ userStore.username }}
+        </div>
+        <div class="mb-4">
+          Gesammelte XP: {{ userStore.totalXp }}
         </div>
 
         <v-btn

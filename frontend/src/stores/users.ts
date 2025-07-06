@@ -8,7 +8,8 @@ export const useUserStore = defineStore('users', {
         authenticated: Boolean(false),
         username: String(''),
         email: String(''),
-        id: String('')
+        id: String(''),
+        totalXp: 0,
     }),
 
     actions: {
@@ -58,5 +59,6 @@ export const useUserStore = defineStore('users', {
         return axios.get(`/api/exists`,{params: {email}})
           .then(res => res.data)
       }
+
     }
 })

@@ -159,3 +159,4 @@ public class InitializeLexmeaDatabase implements InitializingBean {
         }
     }
 }
+

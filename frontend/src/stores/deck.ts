@@ -144,7 +144,8 @@ export const useDeckStore = defineStore('decks', {
                 text:cardContent[1],
                 color:color,
                 lastRating:LastRating,
-                nextRepetition:nextRep
+                nextRepetition:nextRep,
+                paragraph:card.title
               }
               definitons.push(newCard)
             }
@@ -158,7 +159,8 @@ export const useDeckStore = defineStore('decks', {
                 text:cardContent[1],
                 color:color,
                 lastRating:LastRating,
-                nextRepetition:nextRep
+                nextRepetition:nextRep,
+                paragraph:card.title
               }
               schemas.push(newCard)            }
             else if(card.cardType == "Probleme"){
@@ -171,7 +173,8 @@ export const useDeckStore = defineStore('decks', {
                 text:cardContent[1],
                 color:color,
                 lastRating:LastRating,
-                nextRepetition:nextRep
+                nextRepetition:nextRep,
+                paragraph:card.title
               }
               problems.push(newCard)            }
           }
@@ -350,7 +353,8 @@ export const useDeckStore = defineStore('decks', {
     },
 
     cleanDefinitionString(content: string): string[] {
-      const cleanString : string[] = []
+      return JSON.parse(content);
+      /*const cleanString : string[] = []
 
       const cardContent = content.split(",")
       const question = cardContent[0]
@@ -369,7 +373,7 @@ export const useDeckStore = defineStore('decks', {
 
       cleanString.push(cleanAnswer)
 
-      return cleanString
+      return cleanString*/
     },
 
     async rate(cardID: number, deckID: number, rateIndex: number) {

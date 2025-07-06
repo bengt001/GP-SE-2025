@@ -3,10 +3,22 @@ package de.techfak.gse.template.web.controller;
 import de.techfak.gse.template.domain.service.UserService;
 import de.techfak.gse.template.domain.entities.Usr;
 import de.techfak.gse.template.web.command.UsrCmd;
+import de.techfak.gse.template.web.dto.UsrDto;
+import de.techfak.gse.template.web.dto.UsrDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.GetMapping;
+
+
+
+
+import java.util.ArrayList;
+import java.util.List;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,5 +82,15 @@ public class UsrController {
         Usr usr = userService.loadUserByUsername(auth.getName());
         result = userService.activeDeckNames(usr.getUserId());
         return result;
+    }
+    /**
+     * Liefert das Profil des aktuell eingeloggten Nutzers.
+     * @return ResponseEntity mit den Profildaten des Nutzers als {@link UsrDto}
+     */
+    @GetMapping("/profile")
+    public ResponseEntity<UsrDto> getCurrentUserProfile() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Usr user = userService.loadUserByUsername(auth.getName());
+        return ResponseEntity.ok(new UsrDto(user));
     }
 }
