@@ -3,7 +3,6 @@ import {useCardStore} from "@/stores/card";
 import {useDeckStore} from "@/stores/deck";
 import {useRoute} from "vue-router";
 import {ref} from 'vue'
-import {useUserStore} from "@/stores/users";
 
 
 const colorNames = ['green', 'yellow', 'orange', 'red', 'grey'];
@@ -11,7 +10,6 @@ const colorsChip = ['#92C1A5', '#FBDC5C', '#FFB571', '#FFAA9F', '#CBD0D7'];
 
 const cardStore = useCardStore()
 const deckStore = useDeckStore()
-const userStore = useUserStore()
 const router = useRouter();
 const route = useRoute<'/cards/[id]/'>()
 const id = route.params.id
@@ -127,10 +125,8 @@ function nextCard() {
 function rateCard(colorIndex: number) {
   ratingArr.value[cardStore.getCardIndex()] = colorIndex
   lastRating.value = colorIndex
-  if(!userStore.authenticated) {
-    const card = cardStore.getCardAtIndex()
-    deckStore.rate(card.id,card.deckID,colorIndex)
-  }
+  const card = cardStore.getCardAtIndex()
+  deckStore.rate(card.id,card.deckID,colorIndex)
   nextCard()
 }
 

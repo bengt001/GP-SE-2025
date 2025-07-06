@@ -22,8 +22,9 @@ import java.util.List;
 @Setter
 @Entity
 public class Usr implements UserDetails {
+
     @Serial
-    private static final long serialVersionUID = 0L;
+    private static final long serialVersionUID = 1L;
 
     @Id
     @Column
@@ -56,8 +57,8 @@ public class Usr implements UserDetails {
 
     @ManyToMany(mappedBy = "users", fetch = FetchType.EAGER)
     @JsonBackReference
-    private transient List<Deck> decks = new ArrayList<>();
-
+    @SuppressWarnings("serial")
+    private List<Deck> decks = new ArrayList<>();
     /**
      * JPA constructor.
      */
