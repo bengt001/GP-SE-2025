@@ -353,7 +353,8 @@ export const useDeckStore = defineStore('decks', {
     },
 
     cleanDefinitionString(content: string): string[] {
-      const cleanString : string[] = []
+      return JSON.parse(content);
+      /*const cleanString : string[] = []
 
       const cardContent = content.split(",")
       const question = cardContent[0]
@@ -372,7 +373,7 @@ export const useDeckStore = defineStore('decks', {
 
       cleanString.push(cleanAnswer)
 
-      return cleanString
+      return cleanString*/
     },
 
     async rate(cardID: number, deckID: number, rateIndex: number) {
