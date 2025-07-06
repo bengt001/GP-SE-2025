@@ -10,6 +10,9 @@ import lombok.Setter;
 
 import java.util.List;
 
+/**
+ * Subclass of AbstractNotification for Notifications of Type "DUECARDS".
+ */
 @Getter
 @Setter
 @Entity

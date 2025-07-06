@@ -15,6 +15,5 @@ public class WelcomeNote extends AbstractGeneralNotes {
         this.type = "WELCOME";
         this.messages.add("Willkommen zu LexArtes."
                 + " Hier kannst du all deine Schemata, Definitionen und Probleme lernen.");
-        this.messages.add("Willkommen zu LexArtes.");
     }
 }

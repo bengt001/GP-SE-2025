@@ -24,7 +24,6 @@ import static org.mockito.Mockito.when;
 public class NotificationControllerTest {
     final Usr TESTUSR = new Usr("testuser", "test@mytest.com", "{bcrypt}$2a$10$WoG5Z4YN9Z37EWyNCkltyeFr6PtrSXSLMeFWOeDUwcanht5CIJgPa", "TEST", "1");
     final Deck DECK = new Deck(false, new ArrayList<>(Collections.singleton("Strafrecht AT")));
-    final DeckInfo DECKINFO = new DeckInfo(TESTUSR, DECK, true);
 
     @Mock
     private NotificationService notificationService;
@@ -57,7 +56,7 @@ public class NotificationControllerTest {
     @Test
     void getNotifications() {
         when(userService.loadUserByUsername("testuser")).thenReturn(TESTUSR);
-        when(userService.loadUserById(TESTUSR.getUserId())).thenReturn(TESTUSR);
+        when(userService.loadUserByID(TESTUSR.getUserId())).thenReturn(TESTUSR);
 
         List<AbstractNotification> notifications = List.of(
                 new WelcomeNotification(TESTUSR),
@@ -65,7 +64,7 @@ public class NotificationControllerTest {
         );
 
         List<DueDeckInfo> dueDeckInfos = List.of(
-                new DueDeckInfo(notifications.get(1), DECKINFO, 7)
+                new DueDeckInfo(notifications.get(1), DECK, 7)
         );
         when(notificationService.getNotificationByUser(TESTUSR)).thenReturn(notifications);
         when(notificationService.getDueDeckInfos(notifications.get(1))).thenReturn(dueDeckInfos);

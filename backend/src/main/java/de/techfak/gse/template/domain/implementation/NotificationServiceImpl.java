@@ -46,12 +46,13 @@ public class NotificationServiceImpl implements NotificationService {
 
     /**
      * Constructor for NotificationService.
+     *
      * @param notificationRepository notificationRepository
-     * @param userRepository userRepository
-     * @param deckRepository deckRepository
-     * @param cardInfoRepository cardInfoRepository
-     * @param dueDeckInfoRepository dueDeckInfo Repository
-     * @param deckInfoRepository deckInfoRepository
+     * @param userRepository         userRepository
+     * @param deckRepository         deckRepository
+     * @param cardInfoRepository     cardInfoRepository
+     * @param dueDeckInfoRepository  dueDeckInfo Repository
+     * @param deckInfoRepository     deckInfoRepository
      */
     @Autowired
     public NotificationServiceImpl(final NotificationRepository notificationRepository, UserRepository userRepository,
@@ -107,13 +108,10 @@ public class NotificationServiceImpl implements NotificationService {
         List<DueDeckInfo> temp = new ArrayList<>();
 
         for (Deck deck : decks.keySet()) {
-            Optional<DeckInfo> deckInfo = deckInfoRepository.findByDeckAndUser(deck, user);
-            if (deckInfo.isPresent()) {
-                DueDeckInfo dueDeckInfo = new DueDeckInfo(note, deckInfo.get(),
-                        decks.get(deck));
-                dueDeckInfoRepository.save(dueDeckInfo);
-                temp.add(dueDeckInfo);
-            }
+            DueDeckInfo dueDeckInfo = new DueDeckInfo(note, deck,
+                    decks.get(deck));
+            dueDeckInfoRepository.save(dueDeckInfo);
+            temp.add(dueDeckInfo);
         }
         note.setDueDecks(temp);
     }
@@ -159,6 +157,7 @@ public class NotificationServiceImpl implements NotificationService {
 
     /**
      * Returns the DueDeckInfo for one note.
+     *
      * @param notification Notification about dueCards
      * @return List of due Decks with their number of due cards at the time of note creation
      */

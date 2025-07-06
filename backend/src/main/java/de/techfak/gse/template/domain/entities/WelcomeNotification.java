@@ -5,6 +5,9 @@ import jakarta.persistence.Entity;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Subclass of AbstractNotification for Notifications of Type "WELCOME".
+ */
 @Getter
 @Setter
 @Entity

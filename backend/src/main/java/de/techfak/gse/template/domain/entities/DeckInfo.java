@@ -25,13 +25,6 @@ public class DeckInfo {
     private Boolean visibility;
 
     /**
-     * Relation to number of due Cards in Deck for one user on one day.
-     */
-    @OneToMany(mappedBy = "deckInfo",  cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<DueDeckInfo> dueDeckInfos;
-
-
-    /**
      * Instantiates a new Deck info.
      */
     protected DeckInfo() {

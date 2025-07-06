@@ -61,7 +61,7 @@ public class NotificationController {
         Usr user = userService.loadUserByUsername(auth.getName());
 
         List<AbstractNotification> notifications = notificationService.getNotificationByUser(
-                userService.loadUserById(user.getUserId()));
+                userService.loadUserByID(user.getUserId()));
         List<AbstractGeneralNotes> notificationsDTO = new ArrayList<>();
 
         for  (AbstractNotification note : notifications) {
@@ -72,7 +72,7 @@ public class NotificationController {
                 List<String> messages = new ArrayList<>();
                 HashMap<String, Integer> dueCards = new HashMap<>();
                 for (DueDeckInfo info : dueDeckInfo) {
-                    String fieldOfLaw = info.getDeckInfo().getDeckId().getFieldOfLaw().getLast();
+                    String fieldOfLaw = info.getDeck().getFieldOfLaw().getLast();
                     if (!dueCards.containsKey(fieldOfLaw)) {
                         dueCards.put(fieldOfLaw, info.getDueCardsCount());
                     } else {
