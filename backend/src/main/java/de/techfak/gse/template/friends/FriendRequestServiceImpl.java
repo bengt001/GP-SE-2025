@@ -1,6 +1,7 @@
 package de.techfak.gse.template.friends;
 
 import de.techfak.gse.template.domain.entities.Usr;
+import de.techfak.gse.template.domain.service.NotificationService;
 import de.techfak.gse.template.domain.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,11 +17,15 @@ public class FriendRequestServiceImpl implements FriendRequestService {
 
     private final FriendRequestRepository friendRequestRepository;
     private final UserService userService;
+    private final  NotificationService notificationService;
+
 
     @Autowired
-    public FriendRequestServiceImpl(FriendRequestRepository friendRequestRepository, UserService userService) {
+    public FriendRequestServiceImpl(FriendRequestRepository friendRequestRepository, UserService userService,
+                                    NotificationService notificationService) {
         this.friendRequestRepository = friendRequestRepository;
         this.userService = userService;
+        this.notificationService = notificationService;
     }
 
     @Override
@@ -49,6 +54,8 @@ public class FriendRequestServiceImpl implements FriendRequestService {
         if (friendRequestRepository.existsByRequesterAndRecipient(recipient, requester)) {
             throw new IllegalStateException("Die Anfrage existiert schon zwischen Users");
         }
+
+        notificationService.sendFriendRequestNote(recipient, requester);
 
         FriendRequest request = new FriendRequest(requester, recipient);
         return friendRequestRepository.save(request);

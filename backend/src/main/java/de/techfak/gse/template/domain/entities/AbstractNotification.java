@@ -1,9 +1,7 @@
 package de.techfak.gse.template.domain.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.time.LocalDate;
-import java.util.List;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -16,8 +14,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
-public class Notification {
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "type")
+public abstract class AbstractNotification {
     /**
      * Unique id of Notification.
      */
@@ -39,34 +38,22 @@ public class Notification {
     private String creationDate;
 
     /**
-     * Type of message.
-     */
-    private String type;
-
-    /**
      * Information if the message has been read, default is 'false'.
      */
     private boolean read;
 
-    /**
-     * Information of due decks and their number of due cards.
-     */
-    @OneToMany(mappedBy = "notification", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
-    private List<DueDeckInfo> dueDecks;
-
-    protected Notification() {
+    protected AbstractNotification() {
     }
 
     /**
      * Constructor for Notification.
      * @param user User that gets the notification
-     * @param type Type of notification
      */
-    public Notification(final Usr user, final String type) {
+    public AbstractNotification(final Usr user) {
         this.user = user;
-        this.type = type;
         this.read = false;
         this.creationDate = LocalDate.now().toString();
     }
+
+    public abstract String getType();
 }

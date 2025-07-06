@@ -2,9 +2,11 @@ package de.techfak.gse.template.web.controller;
 
 import de.techfak.gse.template.domain.dto.AbstractGeneralNotes;
 import de.techfak.gse.template.domain.dto.DueCardsNote;
+import de.techfak.gse.template.domain.dto.FriendRequestNote;
 import de.techfak.gse.template.domain.dto.WelcomeNote;
 import de.techfak.gse.template.domain.entities.DueDeckInfo;
-import de.techfak.gse.template.domain.entities.Notification;
+import de.techfak.gse.template.domain.entities.AbstractNotification;
+import de.techfak.gse.template.domain.entities.FriendRequestNotification;
 import de.techfak.gse.template.domain.entities.Usr;
 import de.techfak.gse.template.domain.service.NotificationService;
 import de.techfak.gse.template.domain.service.UserService;
@@ -58,11 +60,11 @@ public class NotificationController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Usr user = userService.loadUserByUsername(auth.getName());
 
-        List<Notification> notifications = notificationService.getNotificationByUser(
+        List<AbstractNotification> notifications = notificationService.getNotificationByUser(
                 userService.loadUserById(user.getUserId()));
         List<AbstractGeneralNotes> notificationsDTO = new ArrayList<>();
 
-        for  (Notification note : notifications) {
+        for  (AbstractNotification note : notifications) {
             if (note.getType().equals("DUECARDS")) {
                 List<DueDeckInfo> dueDeckInfo = notificationService.getDueDeckInfos(note);
                 int allDueCards = 0;
@@ -93,6 +95,9 @@ public class NotificationController {
 
             } else if (note.getType().equals("WELCOME")) {
                 notificationsDTO.add(new WelcomeNote(note.getId(), note.isRead()));
+            } else if (note.getType().equals("FRIENDREQUEST")) {
+                Usr requester = ((FriendRequestNotification) note).getRequester();
+                notificationsDTO.add(new FriendRequestNote(note.getId(), note.isRead(), requester));
             }
         }
         return notificationsDTO;

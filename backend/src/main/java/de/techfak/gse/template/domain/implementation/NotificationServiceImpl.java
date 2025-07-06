@@ -66,17 +66,17 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public Notification getNotificationById(@PathVariable Long id) {
+    public AbstractNotification getNotificationById(@PathVariable Long id) {
         return notificationRepository.findById(id).orElse(null);
     }
 
     @Override
-    public List<Notification> getNotificationByUser(Usr user) {
-        final List<Notification> notifications = new ArrayList<>();
-        List<Notification> temp = new ArrayList<>();
+    public List<AbstractNotification> getNotificationByUser(Usr user) {
+        final List<AbstractNotification> notifications = new ArrayList<>();
+        List<AbstractNotification> temp = new ArrayList<>();
         notificationRepository.findAll().forEach(temp::add);
 
-        for (Notification notification : temp) {
+        for (AbstractNotification notification : temp) {
             if (notification.getUser().equals(user)) {
                 notifications.add(notification);
             }
@@ -89,9 +89,9 @@ public class NotificationServiceImpl implements NotificationService {
      * Sends daily message to user.
      * TODO: Change to midnight oder 6 am after SRA implemantation
      */
-    @Scheduled(cron = "0 */5 * * * *")
+    @Scheduled(cron = "0 */1 * * * *")
     @Transactional
-    public void sendNotificationToUsers() {
+    public void sendDueCardNoteToUsers() {
         List<Usr> users = (List<Usr>) userRepository.findAll();
         for (Usr user : users) {
             sendDueCardNote(user);
@@ -101,7 +101,7 @@ public class NotificationServiceImpl implements NotificationService {
     private void sendDueCardNote(Usr user) {
         HashMap<Deck, Integer> decks = getNumberOfDueCardsPerDeck(user);
 
-        Notification note = new Notification(user, "DUECARDS");
+        DueCardsNotification note = new DueCardsNotification(user);
         notificationRepository.save(note);
 
         List<DueDeckInfo> temp = new ArrayList<>();
@@ -118,12 +118,17 @@ public class NotificationServiceImpl implements NotificationService {
         note.setDueDecks(temp);
     }
 
+    public void sendFriendRequestNote(Usr recipient, Usr requester) {
+        FriendRequestNotification note = new FriendRequestNotification(recipient, requester);
+        notificationRepository.save(note);
+    }
+
     @Transactional
     @Override
     public boolean deleteNotificationById(Long id) {
-        Optional<Notification> note = notificationRepository.findById(id);
+        Optional<AbstractNotification> note = notificationRepository.findById(id);
         if (note.isPresent()) {
-            Notification notification = note.get();
+            AbstractNotification notification = note.get();
             notificationRepository.delete(notification);
             return true;
         }
@@ -138,9 +143,9 @@ public class NotificationServiceImpl implements NotificationService {
     @Transactional
     @Override
     public boolean markNotificationAsRead(Long id) {
-        Optional<Notification> note = notificationRepository.findById(id);
+        Optional<AbstractNotification> note = notificationRepository.findById(id);
         if (note.isPresent()) {
-            Notification notification = note.get();
+            AbstractNotification notification = note.get();
             notification.setRead(true);
             notificationRepository.save(notification);
             return true;
@@ -149,7 +154,7 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     public void sendWelcomeNote(Usr user) {
-        notificationRepository.save(new Notification(user, "WELCOME"));
+        notificationRepository.save(new WelcomeNotification(user));
     }
 
     /**
@@ -158,7 +163,7 @@ public class NotificationServiceImpl implements NotificationService {
      * @return List of due Decks with their number of due cards at the time of note creation
      */
     @Override
-    public List<DueDeckInfo> getDueDeckInfos(Notification notification) {
+    public List<DueDeckInfo> getDueDeckInfos(AbstractNotification notification) {
         return dueDeckInfoRepository.findAllDueDecksByNote(notification);
     }
 

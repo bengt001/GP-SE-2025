@@ -4,7 +4,6 @@ import de.techfak.gse.template.domain.dto.AbstractGeneralNotes;
 import de.techfak.gse.template.domain.entities.*;
 import de.techfak.gse.template.domain.service.NotificationService;
 import de.techfak.gse.template.domain.service.UserService;
-import io.jsonwebtoken.lang.Arrays;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -15,7 +14,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -61,9 +59,9 @@ public class NotificationControllerTest {
         when(userService.loadUserByUsername("testuser")).thenReturn(TESTUSR);
         when(userService.loadUserById(TESTUSR.getUserId())).thenReturn(TESTUSR);
 
-        List<Notification> notifications = List.of(
-                new Notification(TESTUSR, "WELCOME"),
-                new Notification(TESTUSR, "DUECARDS")
+        List<AbstractNotification> notifications = List.of(
+                new WelcomeNotification(TESTUSR),
+                new DueCardsNotification(TESTUSR)
         );
 
         List<DueDeckInfo> dueDeckInfos = List.of(
@@ -76,12 +74,12 @@ public class NotificationControllerTest {
 
         assertThat(notes).isNotNull();
         assertThat(notes).hasSize(2);
-        assertThat(notes).extracting("type").containsExactly("WELCOME", "DUECARDS");
+        assertThat(notes).extracting(AbstractGeneralNotes::getType).containsExactly("WELCOME", "DUECARDS");
     }
 
     @Test
     void successful_mark_as_read() {
-        Notification notification = new Notification(TESTUSR, "WELCOME");
+        WelcomeNotification notification = new WelcomeNotification(TESTUSR);
         notification.setId(1L);
 
         when(notificationService.markNotificationAsRead(notification.getId())).thenReturn(true);
@@ -93,7 +91,7 @@ public class NotificationControllerTest {
 
     @Test
     void unsuccessful_mark_as_read() {
-        Notification notification = new Notification(TESTUSR, "WELCOME");
+        WelcomeNotification notification = new WelcomeNotification(TESTUSR);
         notification.setId(1L);
 
         when(notificationService.markNotificationAsRead(notification.getId())).thenReturn(false);
@@ -105,7 +103,7 @@ public class NotificationControllerTest {
 
     @Test
     void successful_delete_notification() {
-        Notification notification = new Notification(TESTUSR, "WELCOME");
+        WelcomeNotification notification = new WelcomeNotification(TESTUSR);
         notification.setId(1L);
 
         when(notificationService.deleteNotificationById(notification.getId())).thenReturn(true);
@@ -117,7 +115,7 @@ public class NotificationControllerTest {
 
     @Test
     void unsuccessful_delete_notification() {
-        Notification notification = new Notification(TESTUSR, "WELCOME");
+        WelcomeNotification notification = new WelcomeNotification(TESTUSR);
         notification.setId(1L);
 
         when(notificationService.deleteNotificationById(notification.getId())).thenReturn(false);

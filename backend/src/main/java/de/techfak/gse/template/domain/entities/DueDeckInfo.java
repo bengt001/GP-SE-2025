@@ -22,7 +22,7 @@ public class DueDeckInfo {
      */
     @ManyToOne
     @JoinColumn(name = "notification_Id")
-    private Notification notification;
+    private AbstractNotification notification;
     /**
      * DeckInfo of user with due Cards.
      */
@@ -44,7 +44,7 @@ public class DueDeckInfo {
      * @param deckInfo DeckInfo of Deck with due Cards at the time the DueCardNote was generated
      * @param dueCardsCount number of due Cards in Deck
      */
-    public DueDeckInfo(Notification notification, DeckInfo deckInfo, int dueCardsCount) {
+    public DueDeckInfo(AbstractNotification notification, DeckInfo deckInfo, int dueCardsCount) {
         this.notification = notification;
         this.deckInfo = deckInfo;
         this.dueCardsCount = dueCardsCount;
