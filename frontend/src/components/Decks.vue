@@ -95,11 +95,11 @@ watch(
 
 
 watch(
-  allDecks,
-  (newDecks) => {
-    SelectedDeck.value = Array(newDecks.length).fill(false)
-  },
-  { immediate: true }
+    allDecks,
+    (newDecks) => {
+      SelectedDeck.value = Array(newDecks.length).fill(false)
+    },
+    { immediate: true }
 )
 
 watch(schema, (newVal) => {
@@ -116,12 +116,12 @@ watch([definitions, problems], ([newDefinitions, newProblems]) => {
 })
 
 watch([definitions, problems, schema], () => {
-  const selectedTypes = getSelectedTypes()
-  const newMax = getCardCount(selectedTypes)
-  if (numberOfCards.value > newMax) {
-    numberOfCards.value = newMax
-  }
-})
+    const selectedTypes = getSelectedTypes()
+    const newMax = getCardCount(selectedTypes)
+    if (numberOfCards.value > newMax) {
+      numberOfCards.value = newMax
+    }
+  })
 
 const anyTypeSelected = computed(() =>
   definitions.value || problems.value || schema.value
@@ -284,7 +284,7 @@ async function startLearning() {
       if (!SelectedDeck.value[i]) {
         continue
       }
-      for(const curId of allDecks.value[i].stapel_id){
+        for(const curId of allDecks.value[i].stapel_id){
         deckIds.push(curId)
       }
     }

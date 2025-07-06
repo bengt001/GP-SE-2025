@@ -48,6 +48,8 @@ public class Usr implements UserDetails {
     @OneToMany(mappedBy = "userId")
     private transient List<CardInfo> ratings;
 
+    private Integer totalXp;
+
     @JsonIgnore
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "usr_roles", joinColumns = @JoinColumn(name = "user_id"))
@@ -59,10 +61,6 @@ public class Usr implements UserDetails {
     @JsonBackReference
     @SuppressWarnings("serial")
     private List<Deck> decks = new ArrayList<>();
-
-    @Column
-    private int totalXp;
-
     /**
      * JPA constructor.
      */
