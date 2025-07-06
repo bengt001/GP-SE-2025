@@ -70,6 +70,9 @@ export const useNotificationStore = defineStore('notification', {
         console.error('Failed to delete notification: ', error);
       }
     },
+    getMessages(index: number) {
+      return this.notes[index].messages
+    }
   },
   getters: {
     hasUnread(state) {

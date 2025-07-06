@@ -1,10 +1,7 @@
 package de.techfak.gse.template.web.controller;
 
 import de.techfak.gse.template.domain.dto.AbstractGeneralNotes;
-import de.techfak.gse.template.domain.entities.Deck;
-import de.techfak.gse.template.domain.entities.DueDeckInfo;
-import de.techfak.gse.template.domain.entities.Notification;
-import de.techfak.gse.template.domain.entities.Usr;
+import de.techfak.gse.template.domain.entities.*;
 import de.techfak.gse.template.domain.service.NotificationService;
 import de.techfak.gse.template.domain.service.UserService;
 import io.jsonwebtoken.lang.Arrays;
@@ -20,6 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,6 +25,8 @@ import static org.mockito.Mockito.when;
 
 public class NotificationControllerTest {
     final Usr TESTUSR = new Usr("testuser", "test@mytest.com", "{bcrypt}$2a$10$WoG5Z4YN9Z37EWyNCkltyeFr6PtrSXSLMeFWOeDUwcanht5CIJgPa", "TEST", "1");
+    final Deck DECK = new Deck(false, new ArrayList<>(Collections.singleton("Strafrecht AT")));
+    final DeckInfo DECKINFO = new DeckInfo(TESTUSR, DECK, true);
 
     @Mock
     private NotificationService notificationService;
@@ -65,13 +65,18 @@ public class NotificationControllerTest {
                 new Notification(TESTUSR, "WELCOME"),
                 new Notification(TESTUSR, "DUECARDS")
         );
+
+        List<DueDeckInfo> dueDeckInfos = List.of(
+                new DueDeckInfo(notifications.get(1), DECKINFO, 7)
+        );
         when(notificationService.getNotificationByUser(TESTUSR)).thenReturn(notifications);
+        when(notificationService.getDueDeckInfos(notifications.get(1))).thenReturn(dueDeckInfos);
 
         List<AbstractGeneralNotes> notes = notificationController.getNotifications();
 
         assertThat(notes).isNotNull();
-        assertThat(notes).hasSize(1);
-        assertThat(notes).extracting("type").containsExactly("WELCOME");
+        assertThat(notes).hasSize(2);
+        assertThat(notes).extracting("type").containsExactly("WELCOME", "DUECARDS");
     }
 
     @Test

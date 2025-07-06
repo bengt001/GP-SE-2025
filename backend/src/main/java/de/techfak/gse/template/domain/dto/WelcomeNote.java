@@ -13,7 +13,8 @@ public class WelcomeNote extends AbstractGeneralNotes {
     public WelcomeNote(Long id, boolean read) {
         super(id, "Herzlich Willkommen!", read);
         this.type = "WELCOME";
-        this.messages.add("Herzlich Willkommen zu LexArtes."
+        this.messages.add("Willkommen zu LexArtes."
                 + " Hier kannst du all deine Schemata, Definitionen und Probleme lernen.");
+        this.messages.add("Willkommen zu LexArtes.");
     }
 }

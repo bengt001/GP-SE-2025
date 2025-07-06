@@ -17,25 +17,13 @@ const UserStore = useUserStore()
         v-for="(note, index) in notificationStore.notes"
         :key="index"
         class="mx-auto mb-4"
+        max-width="800"
         @click="notificationStore.markAsRead(index)"
       >
         <v-card-title
-          v-if="note.type === 'WELCOME'"
-          :class="{ 'read-text': note.read }"
-        >
-          Herzlich Willkommen!
-        </v-card-title>
-        <v-card-title
-          v-else-if="note.type === 'DUECARDS'"
           :class="{ 'read-text': note.read }"
         >
           {{ note.title }}
-        </v-card-title>
-        <v-card-title
-          v-else
-          :class="{ 'read-text': note.read }"
-        >
-          Heute sind Karten fällig!
         </v-card-title>
         <v-btn
           icon
@@ -48,17 +36,19 @@ const UserStore = useUserStore()
           <v-icon>mdi-delete</v-icon>
         </v-btn>
         <v-card-text
-          v-if="note.type === 'WELCOME'"
-          :class="{ 'read-text': note.read }"
+          v-for="(message, messageIndex) in notificationStore.getMessages(index)"
+          :key="messageIndex"
+          :class="['message-text',
+                   {'read-text': note.read },
+                   {'last-message': messageIndex === notificationStore.getMessages(index).length - 1}]"
         >
-          {{ note.messages?.[0] }}
-        </v-card-text>
-        <v-card-text
-          v-else
-          :class="{ 'read-text': note.read }"
-        >
-          Du hast Karten, die zum Lernen bereit sind.
-          Klicke hier, um sofort mit dem Lernen zu starten.
+          {{ message }}
+          <!--          <v-row
+            v-for="(message, messageIndex) in notificationStore.getMessages(index)"
+            :key="messageIndex"
+          >
+            {{ message }}
+          </v-row>-->
         </v-card-text>
       </v-card>
     </v-col>
@@ -75,4 +65,13 @@ const UserStore = useUserStore()
 
 .read-text
   color: rgba(0, 0, 0, 0.5)
+
+.message-text
+  margin-bottom: 4px
+  padding-top: 0
+  padding-bottom: 0
+
+.last-message
+  margin-bottom: 12px
+
 </style>
