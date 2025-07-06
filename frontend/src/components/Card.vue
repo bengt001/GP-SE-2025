@@ -163,16 +163,6 @@ const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name
 </script>
 
 <template>
-  <v-alert
-    v-if="earnedXp !== null"
-    type="success"
-    variant="tonal"
-    class="earned-xp-alert"
-    transition="fade-transition"
-  >
-    +{{ earnedXp }} XP erhalten!
-  </v-alert>
-
   <div class="progress-container d-flex flex-column align-center mb-4">
     <div class="progress-bar d-flex">
       <div
@@ -207,6 +197,17 @@ const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name
         :style="{borderColor: card?.color ?? 'transparent', borderStyle: 'solid', borderWidth: '10px'}"
         @click="reveal = true"
       >
+        <v-alert
+          v-if="earnedXp !== null"
+          type="success"
+          variant="elevated"
+          class="earned-xp-alert"
+          transition="fade-transition"
+        >
+          +{{ earnedXp }} XP erhalten!
+        </v-alert>
+
+
         <v-card-text>
           <p class="text-center">
             {{ testDeckName }}
@@ -477,10 +478,17 @@ const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name
 <style scoped lang="sass">
 .earned-xp-alert
   position: absolute
-  top: 20px
+  top: 10px
   left: 50%
   transform: translateX(-50%)
-  z-index: 9999
+  z-index: 10
+  width: calc(100% - 32px)
+  background-color: #4CAF50
+  color: white
+  opacity: 1
+  padding: 8px
+  border-radius: 8px
+
 
 .progress-container
   width: 100%
