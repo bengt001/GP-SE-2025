@@ -18,12 +18,22 @@ const route = useRoute<'/cards/[id]/'>()
 const id = route.params.id
 const DialogEnd = ref(false)
 const card = ref(cardStore.findCardById(parseInt(id)))
+const deck = ref()
+
+if (card.value && card.value.type == 'Aufdeckkarte') {
+  deck.value = deckStore.getDeckByOneID(card.value.deckID)
+}
 
 interface content {
   data: string
   index: number
   spacing: number
   cards?: Card[]
+}
+
+interface jsonTree {
+  data: string
+  children: jsonTree[]
 }
 
 const contentList: Ref<content[]> = ref(getContentList(getHeadlines(), 0))
@@ -91,6 +101,10 @@ watch (() => route.params.id, (newId) => {
     revealedText.value = []
   } else {
     revealedText.value = contentList.value
+  }
+
+  if (card.value && card.value.type == "Aufdeckkarte") {
+    deck.value = deckStore.getDeckByOneID(card.value.deckID)
   }
 
 })
@@ -174,14 +188,6 @@ function toggleCardBoxes() {
   showCardBoxes.value = !showCardBoxes.value;
 }
 
-if (card.value) {
-  if (card.value.type == "Aufdeckkarte") {
-    console.log(JSON.parse(card.value.text))
-  } else {
-    console.log(card.value.text)
-  }
-}
-
 function getHeadlines() {
   if (card.value && card.value.type == "Aufdeckkarte") {
     const root = JSON.parse(card.value.text)
@@ -208,24 +214,30 @@ function getHeadlineNumber(depth: number, index: number): string {
   }
 }
 
-function getContentList(content, depth: number): content[] {
+function getContentList(content: jsonTree[], depth: number): content[] {
   if (content) {
     let list: content[] = []
 
     let i = 0;
     for (const item of content) {
-      list.push({data: item.data, index: i, spacing: depth}) //doesnt work
-      i++;
+      const itemCards: Card[] = []
+      const headline = item.data
 
-      //TODO: get cards for headline
+      if(deck.value) {
+        let cards: Card[] = deck.value.definitions
+        cards = cards.concat(deck.value.problems)
+        for (const c of cards) {
+          if (headline == c.ueberschrift) {
+            itemCards.push(c)
+          }
+        }
+      }
+
+      list.push({data: headline, index: i, spacing: depth, cards: itemCards})
+      i++;
 
       if (item.children.length > 0) {
         list = list.concat(getContentList(item.children, depth + 1))
-      } else { //adds test boxes
-        const cards: Card[] = []
-        cards.push({id: 0, deckID: 0, type: "Definition", title: "Notstandslage i.S.d. § 228 BGB", text: "Von einer fremden Sache ausgehende, drohende Gefahr für ein Rechtsgut des Handelnden oder eines Dritten", lastRating: 0, color: undefined})
-        cards.push({id: 0, deckID: 0, type: "Problem", title: "problem title", text: "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.", lastRating: 0, color: undefined})
-        list[list.length - 1].cards = cards
       }
     }
     return list
@@ -234,7 +246,6 @@ function getContentList(content, depth: number): content[] {
 }
 
 const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name
-//TODO: fix formatting on problem/definition
 </script>
 
 <template>
@@ -272,7 +283,10 @@ const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name
         @click="showAnswer()"
       >
         <v-card-text>
-          <p class="text-center">
+          <p
+            v-if="card && card.type != 'Aufdeckkarte'"
+            class="text-center"
+          >
             {{ testDeckName }}
           </p>
         </v-card-text>

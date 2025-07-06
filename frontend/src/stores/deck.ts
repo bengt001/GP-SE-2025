@@ -143,6 +143,7 @@ export const useDeckStore = defineStore('decks', {
                 type:card.cardType,
                 title:cardContent[0],
                 text:cardContent[1],
+                ueberschrift:card.ueberschrift,
                 color:color,
                 lastRating:LastRating,
                 nextRepetition:nextRep
@@ -154,8 +155,9 @@ export const useDeckStore = defineStore('decks', {
                 id:card.cardId,
                 deckID:id,
                 type:card.cardType,
-                title:"card title", //TODO: get title (deck name I think)
+                title:card.title,
                 text:card.content,
+                ueberschrift:undefined,
                 color:color,
                 lastRating:LastRating,
                 nextRepetition:nextRep
@@ -169,6 +171,7 @@ export const useDeckStore = defineStore('decks', {
                 type:card.cardType,
                 title:cardContent[0],
                 text:cardContent[1],
+                ueberschrift:card.ueberschrift,
                 color:color,
                 lastRating:LastRating,
                 nextRepetition:nextRep
