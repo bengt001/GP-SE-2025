@@ -127,6 +127,10 @@ function nextCard() {
 }
 
 async function rateCard(colorIndex: number) {
+  if (earnedXp.value !== null) {
+    console.log("RateCard blockiert – XP-Overlay noch aktiv.");
+    return;
+  }
   console.log("TESTUNG LOG")
   ratingArr.value[cardStore.getCardIndex()] = colorIndex
   lastRating.value = colorIndex
@@ -148,8 +152,9 @@ async function rateCard(colorIndex: number) {
       //XP für 2 Sekunden anzeigen
       setTimeout(() => {
         earnedXp.value = null
-        nextCard();
-      }, 2000)
+        //nextCard();
+      }, 1500)
+      nextCard();
 
     } catch (error) {
       console.error("Fehler beim XP-Vergabe:", error)
