@@ -20,6 +20,12 @@ public class FriendRequestServiceImpl implements FriendRequestService {
     private final  NotificationService notificationService;
 
 
+    /**
+     * Constructor for FriendService.
+     * @param friendRequestRepository friendRequestRepository
+     * @param userService userService
+     * @param notificationService notificationService
+     */
     @Autowired
     public FriendRequestServiceImpl(FriendRequestRepository friendRequestRepository, UserService userService,
                                     NotificationService notificationService) {
