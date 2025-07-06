@@ -144,7 +144,8 @@ export const useDeckStore = defineStore('decks', {
                 text:cardContent[1],
                 color:color,
                 lastRating:LastRating,
-                nextRepetition:nextRep
+                nextRepetition:nextRep,
+                paragraph:card.title
               }
               definitons.push(newCard)
             }
@@ -158,7 +159,8 @@ export const useDeckStore = defineStore('decks', {
                 text:cardContent[1],
                 color:color,
                 lastRating:LastRating,
-                nextRepetition:nextRep
+                nextRepetition:nextRep,
+                paragraph:card.title
               }
               schemas.push(newCard)            }
             else if(card.cardType == "Probleme"){
@@ -171,7 +173,8 @@ export const useDeckStore = defineStore('decks', {
                 text:cardContent[1],
                 color:color,
                 lastRating:LastRating,
-                nextRepetition:nextRep
+                nextRepetition:nextRep,
+                paragraph:card.title
               }
               problems.push(newCard)            }
           }

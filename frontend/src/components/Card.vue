@@ -168,7 +168,6 @@ async function rateCard(colorIndex: number) {
   //nextCard()
 }
 
-const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name
 </script>
 
 <template>
@@ -219,7 +218,7 @@ const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name
 
         <v-card-text>
           <p class="text-center">
-            {{ testDeckName }}
+            {{ card?.paragraph }}
           </p>
         </v-card-text>
 
