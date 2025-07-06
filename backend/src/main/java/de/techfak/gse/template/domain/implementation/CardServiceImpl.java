@@ -1,5 +1,9 @@
-package de.techfak.gse.template.domain;
+package de.techfak.gse.template.domain.implementation;
 
+import de.techfak.gse.template.domain.repositories.CardRepository;
+import de.techfak.gse.template.domain.service.CardService;
+import de.techfak.gse.template.domain.entities.Card;
+import de.techfak.gse.template.domain.entities.Deck;
 import de.techfak.gse.template.web.exception.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,8 +39,9 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public Card addCard(final String content, final String cardType, final Deck deck) {
-        final Card card = new Card(content, cardType, deck);
+    public Card addCard(final String content, final String cardType, final Deck deck,
+                        final String title, final String ueberschrift) {
+        final Card card = new Card(content, cardType, deck, title, ueberschrift);
         return cardRepository.save(card);
     }
 

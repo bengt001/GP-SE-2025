@@ -6,13 +6,27 @@ import {useUserStore} from "@/stores/users";
 
 export const useDeckStore = defineStore('decks', {
   state: () => ({
-    decks: JSON.parse(localStorage.getItem('decks') || '[]') as Deck[],
-    decksLoading: 0
+    decks: [] as Deck[],
+    decksLoading: 0,
+    abortController: null as AbortController | null
   }),
 
   actions: {
+    loadFromLocalStorage() {
+      this.decks = [];
+      const data = localStorage.getItem('decks')
+      if (data) {
+        this.decks = JSON.parse(data)
+      }
+    },
     getloadingDecks(){
       return this.decksLoading
+    },
+    abortDeckLoading() {
+      if (this.abortController) {
+        this.abortController.abort();
+        this.abortController = null;
+      }
     },
     getDeckRating(deck:Deck){
       const ratingArr:number[] = [0,0,0,0,0]
@@ -24,13 +38,27 @@ export const useDeckStore = defineStore('decks', {
     },
 
     async addMultDecks(decks: [string, string | undefined][]): Promise<void> {
+      this.abortDeckLoading();
+      this.abortController = new AbortController();
+      const signal = this.abortController.signal;
+      if (decks.length <= 0){
+        return
+      }
       this.decksLoading = decks.length
       for (const [deckname, color] of decks) {
-        await this.addDeck(deckname, color);
+        try {
+          await this.addDeck(deckname, color, signal);
+        } catch (e) {
+          if (signal.aborted) {
+            console.log(`Aborted loading deck ${deckname}`);
+          } else {
+            console.error(e);
+          }
+        }
       }
     },
 
-    async addDeck(deckname: string,color: string|undefined): Promise<void>{
+    async addDeck(deckname: string,color: string|undefined,signal: AbortSignal): Promise<void>{
       const exists = this.decks.some(deck => deck.title === deckname);
       if (exists){
         this.decksLoading--
@@ -57,7 +85,7 @@ export const useDeckStore = defineStore('decks', {
       const schemas:Card[] = []
 
       const IDlist = []
-      const response = await axios.get('api/decks')
+      const response = await axios.get('api/decks',{signal})
       const allDecks = response.data
       for(const deck of allDecks){
         if(deck.fieldOfLaw.includes(nameSplit[0]) && deck.authorId === authorID){
@@ -69,17 +97,43 @@ export const useDeckStore = defineStore('decks', {
         this.decksLoading--
         return
       }
-      let  LastRating
-      if(useUserStore().authenticated){
-        LastRating = 4 // TODO aus backend
-      }
-      else{
-        LastRating = 4
-      }
+
 
       for(const id of IDlist){
-        const cards = await axios.get('api/decks/' + id + '/cards')
+        const cards = await axios.get('/api/decks/' + id + '/cards',{signal})
           for(const card of cards.data){
+            let  LastRating
+            let nextRep = undefined
+            if(useUserStore().authenticated){
+              const info = await axios.get('/api/usr/decks/' + id + '/cards/' + card.cardId + '/info',{signal})
+
+              nextRep = info.data.nextRepetition
+
+              switch (info.data.rating) {
+                case "NOT_LEARNED":
+                  LastRating = 4;
+                  break;
+                case "AGAIN":
+                  LastRating = 3;
+                  break;
+                case "HARD":
+                  LastRating = 2;
+                  break;
+                case "GOOD":
+                  LastRating = 1;
+                  break;
+                case "EASY":
+                  LastRating = 0;
+                  break;
+                default:
+                  LastRating = 4;
+                  break;
+              }
+
+            }
+            else{
+              LastRating = 4
+            }
             if(card.cardType == "Definitionen"){
               const cardContent = JSON.parse(card.content)
               cardContent[1] = cardContent[1].replace("\\n", "")
@@ -90,7 +144,8 @@ export const useDeckStore = defineStore('decks', {
                 title:cardContent[0],
                 text:cardContent[1],
                 color:color,
-                lastRating:LastRating
+                lastRating:LastRating,
+                nextRepetition:nextRep
               }
               definitons.push(newCard)
             }
@@ -102,7 +157,8 @@ export const useDeckStore = defineStore('decks', {
                 title:"card title", //TODO: get title (deck name I think)
                 text:card.content,
                 color:color,
-                lastRating:LastRating
+                lastRating:LastRating,
+                nextRepetition:nextRep
               }
               schemas.push(newCard)            }
             else if(card.cardType == "Probleme"){
@@ -114,13 +170,16 @@ export const useDeckStore = defineStore('decks', {
                 title:cardContent[0],
                 text:cardContent[1],
                 color:color,
-                lastRating:LastRating
+                lastRating:LastRating,
+                nextRepetition:nextRep
               }
               problems.push(newCard)            }
           }
+        if(useUserStore().authenticated){
+          await axios.post('/api/usr/decks/' + id + '/add',{signal})
+        }
       }
 
-      //TODO Deck beim user speichern
       const newDeck: Deck = {
         title: deckname,
         author_id: authorID,
@@ -135,13 +194,18 @@ export const useDeckStore = defineStore('decks', {
       this.decksLoading--
     },
 
-    deactivateDeck(deckname: string): void{
+    async deactivateDeck(deckname: string): Promise<void>{
       let counter: number = 0
       while(counter < this.decks.length){
         const deck = this.decks[counter]
         if (deck.title === deckname) {
+          if(useUserStore().authenticated){
+          for(const id of deck.stapel_id){
+            await axios.delete('/api/usr/decks/' + id + '/delete')
+          }
+          }
           this.decks.splice(counter,1)
-          localStorage.setItem('decks', JSON.stringify(this.decks)); //TODO im backend vom user entfernen
+          localStorage.setItem('decks', JSON.stringify(this.decks));
         }
         counter++
       }
@@ -157,32 +221,109 @@ export const useDeckStore = defineStore('decks', {
       }
       return selectedTitles.join(",")
     },
+
     getFaellig(deck: Deck): number{
-      return deck.stapel_id.length
+      const date = new Date();
+
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = date.getFullYear();
+      const currentDate = `${year}-${month}-${day}`;
+
+      let faellig = 0
+      let Cards: Card[] = []
+      Cards = Cards.concat(deck.definitions)
+      Cards = Cards.concat(deck.schemas)
+      Cards = Cards.concat(deck.problems)
+      for(const curCard of Cards)
+      {
+
+        if(curCard.nextRepetition === currentDate){
+          faellig += 1
+        }
+      }
+      return faellig
     },
-    resetCards(deckName : string): void{
+
+    async getCardsToLearn(deckIds:number[],numberOfCards : number,selectedMode: string[],Cards :Card[]){
+      const params = new URLSearchParams();
+      params.append('deckIds', deckIds.join(','));
+      params.append('maxCards', numberOfCards.toString());
+      selectedMode.forEach(mode => params.append('cardTypes', mode));
+
+      const response = await axios.get('/api/usr/decks/cards/getLearningCards/ids', {
+        params,
+      });
+
+
+      const idPairs: { cardId: number, deckId: number }[] = response.data
+
+      console.log(idPairs)
+
+      const tmpCards:Card[] = []
+      for(const pair of idPairs){
+        for(const card of Cards){
+          if(card.id === pair.cardId && card.deckID === pair.deckId){
+            tmpCards.push(card)
+          }
+        }
+      }
+      return  tmpCards
+    },
+
+    async resetCards(deckName : string): Promise<void>{
       for(const deck of this.decks){
         if(deck.title === deckName){
-          //TODO im backend deck resetten
           for(const card of deck.schemas){
+            if (useUserStore().authenticated) {
+              await axios.patch(
+                '/api/usr/decks/' + card.deckID + '/' + card.id + '/rank',
+                "NOT_LEARNED",
+                { headers: { "Content-Type": "text/plain" } }
+              );
+              const newInfo = await axios.get('/api/usr/decks/' + card.deckID + '/cards/' + card.id + '/info')
+              card.nextRepetition = newInfo.data.nextRepetition;
+            }
             card.lastRating = 4
           }
           for(const card of deck.problems){
+            if (useUserStore().authenticated) {
+              await axios.patch(
+                '/api/usr/decks/' + card.deckID + '/' + card.id + '/rank',
+                "NOT_LEARNED",
+                { headers: { "Content-Type": "text/plain" } }
+              );
+              const newInfo = await axios.get('/api/usr/decks/' + card.deckID + '/cards/' + card.id + '/info')
+              card.nextRepetition = newInfo.data.nextRepetition;
+            }
             card.lastRating = 4
           }
           for(const card of deck.definitions){
+            if (useUserStore().authenticated) {
+              await axios.patch(
+                '/api/usr/decks/' + card.deckID + '/' + card.id + '/rank',
+                "NOT_LEARNED",
+                { headers: { "Content-Type": "text/plain" } }
+              );
+              const newInfo = await axios.get('/api/usr/decks/' + card.deckID + '/cards/' + card.id + '/info')
+              card.nextRepetition = newInfo.data.nextRepetition;
+            }
             card.lastRating = 4
           }
         }
       }
     },
+
     getCardNumber(deck:Deck):number{
       return deck.schemas.length + deck.problems.length + deck.definitions.length
     },
-    async get_my_active_decks(): Promise<void>{
-      //MOCK um es zu leeren
-      this.clear_decks();
-      await this.addMultDecks([["Strafrecht AT (Lexmea)", "#03364D"]]);
+
+    async loadMyDecks() {
+      this.decks = [];
+      localStorage.removeItem('decks');
+      const tuples = await axios.get('api/usr/activeDecks');
+      this.abortDeckLoading()
+      await this.addMultDecks(tuples.data);
     },
     clear_decks(): void {
       this.decks.splice(0, this.decks.length)
@@ -194,6 +335,7 @@ export const useDeckStore = defineStore('decks', {
         this.decks.splice(counter ,1)
         localStorage.setItem('decks',JSON.stringify(this.decks))
       }
+      this.abortDeckLoading()
       await this.addMultDecks([["Strafrecht AT (Lexmea)", "#03364D"]]);
     },
     getDeckByOneID(id:number):Deck|undefined{
@@ -229,20 +371,42 @@ export const useDeckStore = defineStore('decks', {
 
       return cleanString
     },
-  //   Funktionene um bei unangemeldeten bewertungen zu speicher:
-    rate(cardID:number,deckID:number,rateIndex:number){
-      const deck = this.getDeckByOneID(deckID)
-      if(deck){
-        const allCards = deck.problems.concat(deck.schemas,deck.definitions)
-        for(const card of allCards){
-          if(card.id == cardID){
-            card.lastRating = rateIndex
-            break
+
+    async rate(cardID: number, deckID: number, rateIndex: number) {
+      const deck = this.getDeckByOneID(deckID);
+      if (deck) {
+        const allCards = deck.problems.concat(deck.schemas, deck.definitions);
+        for (const card of allCards) {
+          if (card.id == cardID) {
+            card.lastRating = rateIndex;
+
+            if (useUserStore().authenticated) {
+              let rankString = "";
+              switch (rateIndex) {
+                case 0: rankString = "EASY"; break;
+                case 1: rankString = "GOOD"; break;
+                case 2: rankString = "HARD"; break;
+                case 3: rankString = "AGAIN"; break;
+                case 4: rankString = "NOT_LEARNED"; break;
+              }
+
+              await axios.patch(
+                '/api/usr/decks/' + card.deckID + '/' + card.id + '/rank',
+                rankString,
+                { headers: { "Content-Type": "text/plain" } }
+              );
+
+              const newInfo = await axios.get('/api/usr/decks/' + card.deckID + '/cards/' + card.id + '/info')
+              card.nextRepetition = newInfo.data.nextRepetition;
+            }
+
+            break;
           }
         }
-        localStorage.setItem('decks', JSON.stringify(this.decks))
       }
-    },
+
+      localStorage.setItem('decks', JSON.stringify(this.decks));
+    }
 
   },
 })

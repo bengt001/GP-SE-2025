@@ -1,5 +1,6 @@
-package de.techfak.gse.template.domain;
+package de.techfak.gse.template.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -21,8 +22,9 @@ import java.util.List;
 @Setter
 @Entity
 public class Usr implements UserDetails {
+
     @Serial
-    private static final long serialVersionUID = 0L;
+    private static final long serialVersionUID = 1L;
 
     @Id
     @Column
@@ -53,9 +55,10 @@ public class Usr implements UserDetails {
     @SuppressWarnings("serial")
     private List<String> roles = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "users")
-    private transient List<Deck> decks = new ArrayList<>();
-
+    @ManyToMany(mappedBy = "users", fetch = FetchType.EAGER)
+    @JsonBackReference
+    @SuppressWarnings("serial")
+    private List<Deck> decks = new ArrayList<>();
     /**
      * JPA constructor.
      */

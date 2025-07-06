@@ -34,7 +34,8 @@ function login() {
     login_snack.value = false
     loginSuccess_snack.value = true
     userStore.setNameEmail(username.value, email.value);
-    deckStore.get_my_active_decks()
+    deckStore.abortDeckLoading()
+    deckStore.loadMyDecks()
     setTimeout(() => {
       router.push('/')
     }, 1000)
@@ -73,6 +74,7 @@ function register() {
             console.log('Token requestet')
             registerDone_snack.value = true
             userStore.setNameEmail(username.value, email.value);
+            deckStore.clear_decks();
             setTimeout(() => {
               router.push('/')
             }, 1000)

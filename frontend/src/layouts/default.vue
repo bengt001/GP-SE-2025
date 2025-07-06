@@ -27,7 +27,6 @@
           Hallo,  {{ userStore.username }}!
         </div>
 
-
         <div v-if="$vuetify.display.mdAndUp">
           <v-btn
             icon="mdi-magnify"
@@ -100,7 +99,6 @@
 
 <script lang="ts" setup>
 import {useUserStore} from "@/stores/users";
-
 const userStore = useUserStore();
 
 // Liste der Subheader-Tabs für for-Loop
@@ -125,6 +123,11 @@ const subheader_tabs = ref([
     title: 'Benachrichtigungen',
     icon: 'mdi-message-text',
     to: ' ',
+  },
+  {
+    title: 'Freunde',
+    icon: 'mdi-account-multiple',
+    to: '/addfriend',
   }
 ])
 

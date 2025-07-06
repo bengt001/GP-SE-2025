@@ -1,4 +1,7 @@
-package de.techfak.gse.template.domain;
+package de.techfak.gse.template.domain.service;
+
+import de.techfak.gse.template.domain.entities.Card;
+import de.techfak.gse.template.domain.entities.Deck;
 
 import java.util.List;
 import java.util.Optional;
@@ -8,7 +11,7 @@ import java.util.Optional;
  */
 public interface CardService {
 
-    Card addCard(String content, String cardType, Deck deck);
+    Card addCard(String content, String cardType, Deck deck, String title, String ueberschrift);
 
     Card updateCard(Long id, String content, String cardType, Deck deck);
 

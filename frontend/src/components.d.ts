@@ -8,6 +8,7 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     Adder: typeof import('./components/Adder.vue')['default']
+    AddFriend: typeof import('./components/AddFriend.vue')['default']
     AppFooter: typeof import('./components/AppFooter.vue')['default']
     Card: typeof import('./components/Card.vue')['default']
     Decks: typeof import('./components/Decks.vue')['default']

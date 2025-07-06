@@ -1,8 +1,10 @@
-package de.techfak.gse.template.domain;
+package de.techfak.gse.template.domain.repositories;
 
+import de.techfak.gse.template.domain.entities.Card;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
+
 import java.util.Optional;
 
 /**
