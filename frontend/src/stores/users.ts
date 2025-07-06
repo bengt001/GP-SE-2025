@@ -74,5 +74,18 @@ export const useUserStore = defineStore('users', {
         return response.data.gainedXp; //vorher .xp
       },
 
+      async loadProfile(): Promise<void> {
+        const token = localStorage.getItem('token');
+        const response = await axios.get('/api/profile', {
+          headers: { Authorization: token }
+        });
+
+        const data = response.data;
+        this.username = data.username;
+        this.email = data.email;
+        this.totalXp = data.totalXp;
+
+      }
+
     }
 })
