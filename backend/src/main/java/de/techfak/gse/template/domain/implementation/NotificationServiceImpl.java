@@ -88,9 +88,10 @@ public class NotificationServiceImpl implements NotificationService {
 
     /**
      * Sends daily message to user.
+     * To test notifications set cron to every minute or so!
      * TODO: Change to midnight oder 6 am after SRA implemantation
      */
-    @Scheduled(cron = "0 */1 * * * *")
+    @Scheduled(cron = "0 0 0 * * *")
     @Transactional
     public void sendDueCardNoteToUsers() {
         List<Usr> users = (List<Usr>) userRepository.findAll();
