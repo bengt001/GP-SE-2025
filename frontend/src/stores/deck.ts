@@ -135,13 +135,15 @@ export const useDeckStore = defineStore('decks', {
               LastRating = 4
             }
             if(card.cardType == "Definitionen"){
-              const cardContent = this.cleanDefinitionString(card.content)
+              const cardContent = JSON.parse(card.content)
+              cardContent[1] = cardContent[1].replace("\\n", "")
               const newCard: Card = {
                 id:card.cardId,
                 deckID:id,
                 type:card.cardType,
                 title:cardContent[0],
                 text:cardContent[1],
+                ueberschrift:card.ueberschrift,
                 color:color,
                 lastRating:LastRating,
                 nextRepetition:nextRep,
@@ -150,13 +152,13 @@ export const useDeckStore = defineStore('decks', {
               definitons.push(newCard)
             }
             else if(card.cardType == "Aufdeckkarte"){
-              const cardContent = this.cleanDefinitionString(card.content)
               const newCard: Card = {
                 id:card.cardId,
                 deckID:id,
                 type:card.cardType,
-                title:cardContent[0],
-                text:cardContent[1],
+                title:card.title,
+                text:card.content,
+                ueberschrift:undefined,
                 color:color,
                 lastRating:LastRating,
                 nextRepetition:nextRep,
@@ -164,13 +166,14 @@ export const useDeckStore = defineStore('decks', {
               }
               schemas.push(newCard)            }
             else if(card.cardType == "Probleme"){
-              const cardContent = this.cleanDefinitionString(card.content)
+              const cardContent = JSON.parse(card.content)
               const newCard: Card = {
                 id:card.cardId,
                 deckID:id,
                 type:card.cardType,
                 title:cardContent[0],
                 text:cardContent[1],
+                ueberschrift:card.ueberschrift,
                 color:color,
                 lastRating:LastRating,
                 nextRepetition:nextRep,
