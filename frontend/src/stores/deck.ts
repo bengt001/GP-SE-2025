@@ -82,6 +82,7 @@ export const useDeckStore = defineStore('decks', {
           for(const card of cards.data){
             if(card.cardType == "Definitionen"){
               const cardContent = JSON.parse(card.content)
+              cardContent[1] = cardContent[1].replace("\\n", "")
               const newCard: Card = {
                 id:card.cardId,
                 deckID:id,
