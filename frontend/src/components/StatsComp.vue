@@ -29,6 +29,14 @@ const toDisplay = computed(() => {
   return items;
 });
 
+let totalRating = [0, 0, 0, 0, 0]
+
+toDisplay.value.forEach(deck => {
+  const rating = DeckStore.getDeckRating(deck);
+
+  totalRating = totalRating.map((sum, index) => sum + rating[index]);
+})
+
 </script>
 <template>
   <v-responsive>
@@ -37,7 +45,7 @@ const toDisplay = computed(() => {
       <v-expansion-panel
         expand-icon="mdi-chevron-down"
       >
-        <v-expansion-panel-title>Deck Statistiken</v-expansion-panel-title>
+        <v-expansion-panel-title>Deck-Statistiken</v-expansion-panel-title>
         <v-expansion-panel-text>
           <v-container class="overflow-hidden">
             <v-row
@@ -66,30 +74,47 @@ const toDisplay = computed(() => {
                     >
                       {{ toDisplay[n - 1].title }}
                     </v-card-title>
-                    <v-spacer />
-                    <v-card-text class="text-center">
-                      <v-col
-                        class="text-h6"
-                        cols="auto"
-                      >
-                        Lernfortschritt:
-                        <div
-                          class="progress_bar"
-                          style="display:flex; max-width:250px; height:10px;  margin-left: -10px"
-                        >
-                          <!--                  geht durch liste der cards für den stapel : Aufbau [Anzahl grüne Karten,Anzahl gelbe Karten,Anzahl orange Karten,Anzahl rote Karten,Anzahl graue Karten]-->
-                          <div
-                            v-for="(count, color_index) in cardValue"
-                            :key="color_index"
-                            :style="{
-                              backgroundColor: colorNames[color_index],
-                              flexGrow: count,
-                              height: '100%'
-                            }"
-                          />
-                        </div>
-                      </v-col>
-                    </v-card-text>
+<!--                    <v-spacer />-->
+<!--                    <v-card-text class="text-center">-->
+<!--                      <v-col-->
+<!--                        class="text-h6"-->
+<!--                        cols="auto"-->
+<!--                      >-->
+<!--                        Lernfortschritt:-->
+<!--                        <div-->
+<!--                          class="progress_bar"-->
+<!--                          style="display:flex; max-width:250px; height:10px;  margin-left: -10px"-->
+<!--                        >-->
+<!--                          &lt;!&ndash;                  geht durch liste der cards für den stapel : Aufbau [Anzahl grüne Karten,Anzahl gelbe Karten,Anzahl orange Karten,Anzahl rote Karten,Anzahl graue Karten]&ndash;&gt;-->
+<!--                          <div-->
+<!--                            v-for="(count, color_index) in DeckStore.getDeckRating(toDisplay[n - 1])"-->
+<!--                            :key="color_index"-->
+<!--                            :style="{-->
+<!--                              backgroundColor: colorNames[color_index],-->
+<!--                              flexGrow: count,-->
+<!--                              height: '100%'-->
+<!--                            }"-->
+<!--                          />-->
+<!--                        </div>-->
+<!--                      </v-col>-->
+<!--                    </v-card-text>-->
+                    <v-expansion-panels elevation="0">
+                      <v-expansion-panel>
+                        <v-expansion-panel-title expand-icon="mdi-chevron-down">
+                          Karteninformationen
+                        </v-expansion-panel-title>
+                        <v-expansion-panel-text>
+                          <v-sheet>
+                            <ColoredSparkline
+                              :title="Definitionen"
+                              :values="DeckStore.getDeckRating(toDisplay[n - 1])"
+                              :labels="labels"
+                              :bar-colors="colorNames"
+                            />
+                          </v-sheet>
+                        </v-expansion-panel-text>
+                      </v-expansion-panel>
+                    </v-expansion-panels>
                     <v-spacer />
                   </v-card>
                 </v-sheet>
@@ -122,29 +147,30 @@ const toDisplay = computed(() => {
                     >
                       {{ toDisplay[n-1].title }}
                     </v-card-title>
-                    <v-spacer />
-                    <v-card-text class="text-center">
-                      <v-col
-                        class="text-h6"
-                        cols="auto"
-                      >
-                        Lernfortschritt:
-                        <div
-                          class="progress_bar"
-                          style="display:flex; max-width:250px; height:10px;  margin-left: -10px"
-                        >
-                          <!--geht durch liste der cards für den stapel : Aufbau [Anzahl grüne Karten,Anzahl gelbe Karten,Anzahl orange Karten,Anzahl rote Karten,Anzahl graue Karten]-->
-                          <div
-                            v-for="(count, color_index) in cardValue"
-                            :key="color_index"
-                            :style="{
-                              backgroundColor: colorNames[color_index],
-                              flexGrow: count,
-                              height: '100%'
-                            }"
-                          />
-                        </div>
-                      </v-col>
+<!--                    <v-spacer />-->
+<!--                    <v-card-text class="text-center">-->
+<!--                      <v-col-->
+<!--                        class="text-h6"-->
+<!--                        cols="auto"-->
+<!--                      >-->
+<!--                        Lernfortschritt:-->
+<!--                        <div-->
+<!--                          class="progress_bar"-->
+<!--                          style="display:flex; max-width:250px; height:10px;  margin-left: -10px"-->
+<!--                        >-->
+<!--                          &lt;!&ndash;geht durch liste der cards für den stapel : Aufbau [Anzahl grüne Karten,Anzahl gelbe Karten,Anzahl orange Karten,Anzahl rote Karten,Anzahl graue Karten]&ndash;&gt;-->
+<!--                          <div-->
+<!--                            v-for="(count, color_index) in DeckStore.getDeckRating(toDisplay[n - 1])"-->
+<!--                            :key="color_index"-->
+<!--                            :style="{-->
+<!--                              backgroundColor: colorNames[color_index],-->
+<!--                              flexGrow: count,-->
+<!--                              height: '100%'-->
+<!--                            }"-->
+<!--                          />-->
+<!--                        </div>-->
+<!--                      </v-col>-->
+<!--                    </v-card-text>-->
                       <v-expansion-panels elevation="0">
                         <v-expansion-panel>
                           <v-expansion-panel-title expand-icon="mdi-chevron-down">
@@ -154,7 +180,7 @@ const toDisplay = computed(() => {
                             <v-sheet>
                               <ColoredSparkline
                                 :title="Definitionen"
-                                :values="cardValue"
+                                :values="DeckStore.getDeckRating(toDisplay[n - 1])"
                                 :labels="labels"
                                 :bar-colors="colorNames"
                               />
@@ -162,7 +188,7 @@ const toDisplay = computed(() => {
                           </v-expansion-panel-text>
                         </v-expansion-panel>
                       </v-expansion-panels>
-                    </v-card-text>
+
                   </v-card>
                 </v-sheet>
               </v-col>
@@ -175,7 +201,7 @@ const toDisplay = computed(() => {
         v-if="UserStore.authenticated"
         expand-icon="mdi-chevron-down"
       >
-        <v-expansion-panel-title>Nutzer statistiken</v-expansion-panel-title>
+        <v-expansion-panel-title>Nutzer-Statistiken</v-expansion-panel-title>
         <v-expansion-panel-text>
           <v-card
             class="mx-auto text-center"
@@ -185,23 +211,17 @@ const toDisplay = computed(() => {
           >
             <v-card-text>
               <v-sheet>
-                <v-sparkline
-                  :fill="false"
-                  :gradient="['green', 'yellow', 'red']"
-                  :line-width="2"
-                  :model-value="value"
-                  :padding="8"
-                  :smooth="true"
-                  auto-draw
-                  show-labels
-                >
-                  {{ value }}
-                </v-sparkline>
+                <ColoredSparkline
+                  :title="Definitionen"
+                  :values="totalRating"
+                  :labels="labels"
+                  :bar-colors="colorNames"
+                />
               </v-sheet>
             </v-card-text>
             <v-card-text>
               <div class="text-h4 font-weight-thin">
-                Karten gelernt diese Woche
+                Alle Karten
               </div>
             </v-card-text>
           </v-card>
