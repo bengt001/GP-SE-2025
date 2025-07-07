@@ -22,8 +22,9 @@ import java.util.List;
 @Setter
 @Entity
 public class Usr implements UserDetails {
+
     @Serial
-    private static final long serialVersionUID = 0L;
+    private static final long serialVersionUID = 1L;
 
     @Id
     @Column
@@ -47,6 +48,8 @@ public class Usr implements UserDetails {
     @OneToMany(mappedBy = "userId")
     private transient List<CardInfo> ratings;
 
+    private Integer totalXp;
+
     @JsonIgnore
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "usr_roles", joinColumns = @JoinColumn(name = "user_id"))
@@ -56,8 +59,8 @@ public class Usr implements UserDetails {
 
     @ManyToMany(mappedBy = "users", fetch = FetchType.EAGER)
     @JsonBackReference
-    private transient List<Deck> decks = new ArrayList<>();
-
+    @SuppressWarnings("serial")
+    private List<Deck> decks = new ArrayList<>();
     /**
      * JPA constructor.
      */
@@ -85,6 +88,7 @@ public class Usr implements UserDetails {
         this.creationDate = LocalDate.now();
         this.displayName = displayName;
         this.userId = userId;
+        this.totalXp = 0;
     }
 
     public void addRole(String role) {
@@ -131,5 +135,9 @@ public class Usr implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public void addXp(int xp) {
+        this.totalXp += xp;
     }
 }

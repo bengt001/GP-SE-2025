@@ -4,6 +4,9 @@ export default interface Card {
   type : string,
   title : string,
   text : string,
+  ueberschrift: string | undefined,
   color : string|undefined;
   lastRating: number;
+  nextRepetition: string | undefined;
+  paragraph: string;
 }

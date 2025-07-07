@@ -4,6 +4,7 @@ import {useDeckStore} from "@/stores/deck";
 import {useRoute} from "vue-router";
 import {ref} from 'vue'
 import {useUserStore} from "@/stores/users";
+import type Card from "@/types/Card";
 
 
 const colorNames = ['green', 'yellow', 'orange', 'red', 'grey'];
@@ -17,11 +18,39 @@ const route = useRoute<'/cards/[id]/'>()
 const id = route.params.id
 const DialogEnd = ref(false)
 const card = ref(cardStore.findCardById(parseInt(id)))
+const deck = ref()
+
+if (card.value && card.value.type == 'Aufdeckkarte') {
+  deck.value = deckStore.getDeckByOneID(card.value.deckID)
+}
+
+interface content {
+  data: string
+  index: number
+  spacing: number
+  cards?: Card[]
+}
+
+interface jsonTree {
+  data: string
+  children: jsonTree[]
+}
+
+const contentList: Ref<content[]> = ref(getContentList(getHeadlines(), 0))
+const revealedText: Ref<content[]> = ref([])
+const showCardBoxes = ref(false)
+
+const romanNumbers: string[] = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"]
+const alphabetLower: string[] = "abcdefghijklmnopqrstuvwxyz".split("")
+
 const reveal = ref(false)
 const ratingArr = ref<number[]>([])
 const backPossible = ref(false)
 const lastRating = ref(4)
 const ratingLabels = ['Einfach', 'Okay', 'Schwer', 'Nicht gewusst', 'Unbewertet']
+const earnedXp = ref<number | null>(null);
+const isRatingInProgress = ref(false);
+
 
 const cards = computed(() => cardStore.getCards())
 const curCardIndex = computed(() => cardStore.getCardIndex())
@@ -70,6 +99,17 @@ watch(cards, newCards => {
 
 watch (() => route.params.id, (newId) => {
   card.value = cardStore.findCardById(parseInt(newId))
+  contentList.value = getContentList(getHeadlines(), 0)
+  if (backPossible.value) {
+    revealedText.value = []
+  } else {
+    revealedText.value = contentList.value
+  }
+
+  if (card.value && card.value.type == "Aufdeckkarte") {
+    deck.value = deckStore.getDeckByOneID(card.value.deckID)
+  }
+
 })
 
 function getLastRatingText(): string {
@@ -101,7 +141,17 @@ function goBack(){
 }
 
 function showAnswer() {
-  reveal.value = true;
+  if (card.value && card.value.type == "Aufdeckkarte") {
+    const linesRevealed = revealedText.value.length
+    if (linesRevealed >= contentList.value.length) {
+      reveal.value = true;
+    } else {
+      revealedText.value.push(contentList.value[linesRevealed])
+    }
+
+  } else {
+    reveal.value = true;
+  }
 }
 
 function goHome() {
@@ -122,19 +172,114 @@ function nextCard() {
   }
   router.push('/cards/' + nextId)
   reveal.value = false
+  revealedText.value = []
+  contentList.value = []
 }
 
-function rateCard(colorIndex: number) {
+async function rateCard(colorIndex: number) {
+  if (isRatingInProgress.value) {
+    console.log("RateCard blockiert – XP-Overlay noch aktiv.");
+    return;
+  }
+  isRatingInProgress.value = true;
+  console.log("TESTUNG LOG")
   ratingArr.value[cardStore.getCardIndex()] = colorIndex
   lastRating.value = colorIndex
+
+  const card = cardStore.getCardAtIndex()
+
   if(!userStore.authenticated) {
-    const card = cardStore.getCardAtIndex()
     deckStore.rate(card.id,card.deckID,colorIndex)
+    nextCard();
+  } else {
+    try {
+      console.log("[Check respnse]: try block")
+      deckStore.rate(card.id,card.deckID,colorIndex)
+      const gainedXp = await userStore.earnXp(card.type,  1, 4 - colorIndex)
+      earnedXp.value = gainedXp
+
+      console.log("[Check respone gainedXp]: " + gainedXp)
+      console.log("[Check response earnedXp]: " + earnedXp.value)
+      //XP für 2 Sekunden anzeigen
+      setTimeout(() => {
+        earnedXp.value = null
+        //nextCard();
+        isRatingInProgress.value = false;
+      }, 1500)
+      nextCard();
+
+    } catch (error) {
+      console.error("Fehler beim XP-Vergabe:", error)
+      nextCard();
+      isRatingInProgress.value = false;
+    }
   }
-  nextCard()
+  //nextCard()
 }
 
-const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name
+
+function toggleCardBoxes() {
+  showCardBoxes.value = !showCardBoxes.value;
+}
+
+function getHeadlines() {
+  if (card.value && card.value.type == "Aufdeckkarte") {
+    const root = JSON.parse(card.value.text)
+    const content = root.children
+    return content[0].children
+  }
+}
+
+function getHeadlineNumber(depth: number, index: number): string {
+  const dot: string = "."
+  const open: string = "("
+  const close: string = ")"
+
+  switch (depth) {
+    case 0: return romanNumbers[index] + dot
+    case 1: return (index + 1) + dot
+    case 2: return alphabetLower[index] + close
+    case 3:
+      const c = alphabetLower[index]
+      return c + c + close
+    case 4: return open + alphabetLower[index] + close
+    case 5: return open + (index + 1) + close
+    default: return ""
+  }
+}
+
+function getContentList(content: jsonTree[], depth: number): content[] {
+  if (content) {
+    let list: content[] = []
+
+    let i = 0;
+    for (const item of content) {
+      const itemCards: Card[] = []
+      const headline = item.data
+
+      if(deck.value) {
+        let cards: Card[] = deck.value.definitions
+        cards = cards.concat(deck.value.problems)
+        for (const c of cards) {
+          if (headline == c.ueberschrift) {
+            itemCards.push(c)
+          }
+        }
+      }
+
+      list.push({data: headline, index: i, spacing: depth, cards: itemCards})
+      i++;
+
+      if (item.children.length > 0) {
+        list = list.concat(getContentList(item.children, depth + 1))
+      }
+    }
+    return list
+  }
+  return []
+}
+
+
 </script>
 
 <template>
@@ -161,19 +306,31 @@ const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name
       / {{ cards.length }}
     </div>
   </div>
+
   <div class="card-button-wrap">
     <v-responsive class="card">
       <v-card
         class="mx-auto pa-4"
         color="grey_300"
         elevation="16"
-        style="width: 100%; max-width: 600px; max-height: 80vh; overflow-y: auto;"
+        style="width: 100%; max-width: 600px; overflow-y: auto;"
         :style="{borderColor: card?.color ?? 'transparent', borderStyle: 'solid', borderWidth: '10px'}"
-        @click="reveal = true"
+        @click="showAnswer()"
       >
+        <v-alert
+          v-if="earnedXp !== null"
+          type="success"
+          variant="elevated"
+          class="earned-xp-alert"
+          transition="fade-transition"
+        >
+          +{{ earnedXp }} XP erhalten!
+        </v-alert>
+
+
         <v-card-text>
           <p class="text-center">
-            {{ testDeckName }}
+            {{ card?.paragraph }}
           </p>
         </v-card-text>
 
@@ -226,22 +383,57 @@ const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name
           </h3>
         </v-card-title>
 
-        <v-card-text
-          v-if="reveal"
+        <template
+          v-if="card"
         >
+          <v-card-text
+            v-if="card.type == 'Aufdeckkarte'"
+            class="text-pre-wrap"
+          >
+            <div
+              v-for="item in revealedText"
+              :key="item.data"
+            >
+              <h3> {{ "\t".repeat(item.spacing) + getHeadlineNumber(item.spacing, item.index) + " " + item.data }} </h3>
+              <div
+                v-if="item.cards && showCardBoxes"
+              >
+                <div
+                  v-for="cardBox in item.cards"
+                  :key="cardBox.title"
+                  class="ma-3"
+                >
+                  <v-card
+                    class="mx-auto"
+                  >
+                    <v-card-text
+                      class="text-decoration-underline"
+                    >
+                      {{ cardBox.type }}
+                    </v-card-text>
+                    <v-card-text
+                      class="font-weight-bold text-wrap"
+                    >
+                      {{ cardBox.title }}
+                    </v-card-text>
+                    <v-card-text>
+                      {{ cardBox.text }}
+                    </v-card-text>
+                  </v-card>
+                </div>
+              </div>
+            </div>
+          </v-card-text>
           <p
-            v-if="card"
-            class="text-center text-justify"
+            v-if="reveal && card.type != 'Aufdeckkarte'"
+            class="text-center text-justify text-pre-wrap"
           >
             {{ card.text }}
           </p>
-          <p
-            v-else
-            class="text-center"
-          >
-            card content
-          </p>
-        </v-card-text>
+        </template>
+        <template v-else>
+          card text
+        </template>
       </v-card>
     </v-responsive>
 
@@ -254,6 +446,15 @@ const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name
         class="d-flex justify-between align-center flex-wrap"
         style="gap: 12px;"
       >
+        <v-btn
+          v-if="card && card.type == 'Aufdeckkarte'"
+          color="primary"
+          class="position-absolute left-0 ma-10"
+          @click="toggleCardBoxes()"
+        >
+          Definitionen/Probleme
+        </v-btn>
+
         <v-btn
           icon
           style="flex: 0 0 auto;"
@@ -439,6 +640,20 @@ const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name
 </template>
 
 <style scoped lang="sass">
+.earned-xp-alert
+  position: absolute
+  top: 10px
+  left: 50%
+  transform: translateX(-50%)
+  z-index: 10
+  width: calc(100% - 32px)
+  background-color: #4CAF50
+  color: white
+  opacity: 1
+  padding: 8px
+  border-radius: 8px
+
+
 .progress-container
   width: 100%
   max-width: 600px

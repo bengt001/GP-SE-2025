@@ -22,7 +22,6 @@ public class DeckInfo {
     @Column
     private Boolean visibility;
 
-
     /**
      * Instantiates a new Deck info.
      */

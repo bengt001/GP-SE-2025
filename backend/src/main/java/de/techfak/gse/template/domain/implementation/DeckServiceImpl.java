@@ -2,16 +2,14 @@ package de.techfak.gse.template.domain.implementation;
 
 import de.techfak.gse.template.domain.*;
 import de.techfak.gse.template.domain.entities.*;
-import de.techfak.gse.template.domain.repositories.CardInfoRepository;
-import de.techfak.gse.template.domain.repositories.CardRepository;
-import de.techfak.gse.template.domain.repositories.DeckInfoRepository;
-import de.techfak.gse.template.domain.repositories.DeckRepository;
+import de.techfak.gse.template.domain.repositories.*;
 import de.techfak.gse.template.domain.service.DeckService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Implementation for the deck service.
@@ -22,6 +20,7 @@ public class DeckServiceImpl implements DeckService {
     private final CardRepository cardRepository;
     private final CardInfoRepository cardInfoRepository;
     private final DeckInfoRepository deckInfoRepository;
+    private final UserRepository userRepository;
     private final SpacedRepetitionAlgorithm sra;
 
     /**
@@ -31,14 +30,17 @@ public class DeckServiceImpl implements DeckService {
      * @param cardRepository     the card repository
      * @param cardInfoRepository the card info repository
      * @param deckInfoRepository the deck info repository
+     * @param userRepository     the user repository
      */
     @Autowired
     public DeckServiceImpl(DeckRepository deckRepository, CardRepository cardRepository,
-                           CardInfoRepository cardInfoRepository, DeckInfoRepository deckInfoRepository) {
+                           CardInfoRepository cardInfoRepository, DeckInfoRepository deckInfoRepository,
+                           UserRepository userRepository) {
         this.deckRepository = deckRepository;
         this.cardRepository = cardRepository;
         this.cardInfoRepository = cardInfoRepository;
         this.deckInfoRepository = deckInfoRepository;
+        this.userRepository = userRepository;
         this.sra = new SMTwoAnki();
     }
 
@@ -107,7 +109,8 @@ public class DeckServiceImpl implements DeckService {
     public Optional<Card> updateCard(Usr usr, long deckId, long cardId, Card updatedCard) {
         Optional<Card> tempCard = cardRepository.findCardByIdAndDeckId(cardId, deckId);
         if (tempCard.isPresent()) {
-            Optional<CardInfo> tempCardInfo = cardInfoRepository.findCardInfoByDeckIdAndCardIdAndUserId(deckId, cardId, usr.getUserId());
+            Optional<CardInfo> tempCardInfo = cardInfoRepository.findCardInfoByDeckIdAndCardIdAndUserId(
+                    deckId, cardId, usr.getUserId());
             if (tempCardInfo.isPresent()) {
                 tempCardInfo.get().setEditedContent(updatedCard.getContent());
                 cardInfoRepository.save(tempCardInfo.get());
@@ -137,7 +140,6 @@ public class DeckServiceImpl implements DeckService {
         Optional<Deck> tempDeck = getDeck(templateDeckId);
         if (tempDeck.isPresent()) {
             System.out.println("getNewUserDeck");
-            tempDeck.get().getUsers().add(usr);
             usr.getDecks().add(tempDeck.get());
             deckRepository.save(tempDeck.get());
             //I am not checking the existence of DeckInfo
@@ -227,7 +229,8 @@ public class DeckServiceImpl implements DeckService {
      */
     @Override
     public Optional<CardInfo> rankCard(Usr usr, long deckId, long cardId, Rating rating) {
-        Optional<CardInfo> tempCardInfo = cardInfoRepository.findCardInfoByCardIdAndUserId(cardId, usr.getUserId());
+        Optional<CardInfo> tempCardInfo =
+                cardInfoRepository.findCardInfoByDeckIdAndCardIdAndUserId(deckId, cardId, usr.getUserId());
         return tempCardInfo.map(cardInfo -> {
             cardInfo.setRating(rating);
             cardInfo.setSraValues(sra.updateValues(cardInfo.getSraValues(), cardInfo.getRating()));
@@ -236,19 +239,62 @@ public class DeckServiceImpl implements DeckService {
         });
     }
 
-    /**
-     * The method returns the number of cards that are rated as easy, good, hard, again and not learned as a list.
-     * @ usr used for the id.
-     * @ deckId The deck to get.
-     * @return an List of five integers.
-     */
-//    @Override
-//    public Dictionary<Rating, Long> getDeckInfo(Usr usr, long deckId) {
-//        Dictionary<Rating, Long> ratingCount = new Hashtable<>();
-//        for (Rating rating : Rating.values()) {
-//            ratingCount.put(rating, cardInfoRepository.countByDeckIdAndRatingEqualsAndUserIdEquals(
-//                    deckId, rating, usr.getUserId()));
-//        }
-//        return ratingCount;
-//    }
+
+    @Override
+    public List<CardInfoCardDTO> getMaxLearningCards(Usr usr, long[] deckId, int maxCards, String[] cardTypes) {
+        List<CardInfoCardDTO> cardsAndInfo = new ArrayList<>();
+        for (int i = 0; i < deckId.length; i++) {
+            Optional<Deck> deck = getUserDeckById(usr, deckId[i]);
+            if (deck.isPresent()) {
+                if ((deck.get().getCards().size() == getUserCards(usr, deckId[i]).size())
+                        && !getUserCards(usr, deckId[i]).isEmpty()) {
+                    for (int j = 0; j < deck.get().getCards().size(); j++) {
+                        if (Arrays.asList(cardTypes).contains(deck.get().getCards().get(j).getCardType())) {
+                            cardsAndInfo.add(new CardInfoCardDTO(getUserCards(usr, deckId[i]).get(j),
+                                    deck.get().getCards().get(j)));
+                        }
+                    }
+                }
+            }
+        }
+        LocalDate today = LocalDate.now().plusDays(1);
+        cardsAndInfo = cardsAndInfo.stream()
+                .filter(dto -> dto.getCardInfo().getNextRepetition().isBefore(today))
+                .sorted(Comparator.comparing(dto -> dto.getCardInfo().getNextRepetition()))
+                .limit(maxCards)
+                .collect(Collectors.toList());
+        return cardsAndInfo;
+    }
+
+    @Override
+    public Optional<CardInfo> getCardInfo(long deckId, long cardId, String userId) {
+        Optional<CardInfo>  info = cardInfoRepository.findCardInfoByDeckIdAndCardIdAndUserId(deckId, cardId, userId);
+        if (info.isPresent()) {
+            return info;
+        }
+        Optional<Deck> deckOpt = deckRepository.findById(deckId);
+        Optional<Card> cardOpt = cardRepository.findById(cardId);
+        Optional<Usr> userOpt = userRepository.findById(userId);
+
+        if (deckOpt.isEmpty() || cardOpt.isEmpty() || userOpt.isEmpty()) {
+            return Optional.empty();
+        }
+
+        CardInfo newInfo = new CardInfo(userOpt.get(), cardOpt.get(), deckOpt.get(), Rating.NOT_LEARNED);
+        cardInfoRepository.save(newInfo);
+        return Optional.of(newInfo);
+
+    }
+
+    @Override
+    public List<CardIdDeckIdPair> getMaxLearningCardsIds(Usr usr, long[] deckIds, int maxCards, String[] cardTypes) {
+        List<CardIdDeckIdPair> result = new ArrayList<>();
+        List<CardInfoCardDTO> cardDTOs = getMaxLearningCards(usr, deckIds, maxCards, cardTypes);
+        for (CardInfoCardDTO cardDTO : cardDTOs) {
+            Long cardId = cardDTO.getCard().getCardId();
+            Long deckId = cardDTO.getCard().getDeck().getDeckId();
+            result.add(new CardIdDeckIdPair(cardId, deckId));
+        }
+        return result;
+    }
 }

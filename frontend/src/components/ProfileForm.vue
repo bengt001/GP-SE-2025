@@ -9,6 +9,7 @@ const router = useRouter()
 const LogOutSuccess_snack = ref(false)
 
 function logOut() {
+  deckStore.abortDeckLoading()
   LogOutSuccess_snack.value = true
   setTimeout(() => {
     router.push('/')
@@ -16,6 +17,10 @@ function logOut() {
     deckStore.reset_decks()
   }, 1000)
 }
+
+onMounted(async () => {
+  await userStore.loadProfile();
+});
 </script>
 
 <template>
@@ -39,6 +44,9 @@ function logOut() {
         </div>
         <div class="mb-4">
           Username: {{ userStore.username }}
+        </div>
+        <div class="mb-4">
+          Gesammelte XP: {{ userStore.totalXp }}
         </div>
 
         <v-btn

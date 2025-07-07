@@ -91,32 +91,33 @@ public class ParsingPipeline {
             //Build deck and cards
             //first build cards if there are no cards no deck is build
             schemaHtml.set(0, schemaHtml.get(0).replace("\n", "\\n"));
-            ArrayList<String[]> problemBoxes = HtmlParser.getProblemBoxes(schemaHtml.getFirst());
-            ArrayList<String[]> definitionBoxes = HtmlParser.getDefinitionBoxes(schemaHtml.getFirst());
+            ArrayList<CardHelper> problemBoxes = HtmlParser.getProblemBoxes(schemaHtml.getFirst());
+            ArrayList<CardHelper> definitionBoxes = HtmlParser.getDefinitionBoxes(schemaHtml.getFirst());
             TreeNode<String> aufdeckCard = HtmlParser.getTableOfContentsAsTree(schemaHtml.getFirst());
             if (problemBoxes.isEmpty() && definitionBoxes.isEmpty() && !aufdeckCard.hasOtherData()) {
-                LOGGER.error("no cards could be generated");
+                LOGGER.error("no cards could be generated(This is fine)");
                 throw new DeckCreationFailedException(ERROR_MSG);
             } else {
                 Deck currentDeck = deckService.addDeck(true, rechtgebietList, userId);
-
-                for (String[] content : problemBoxes) {
+                for (CardHelper content : problemBoxes) {
                     card1++;
                     try {
-                        String jsonArray = mapper.writeValueAsString(content);
+                        String jsonArray = mapper.writeValueAsString(content.getFrontback());
                         LOGGER.debug(jsonArray);
-                        cardService.addCard(jsonArray, "Probleme", currentDeck, title.getFirst());
+                        cardService.addCard(jsonArray, "Probleme", currentDeck, title.getFirst(),
+                                content.getUeberschrift());
                     } catch (JsonProcessingException e) {
                         LOGGER.error("JsonProcessingException: Probleme card fail");
                         throw new RuntimeException(e);
                     }
                 }
-                for (String[] content : definitionBoxes) {
+                for (CardHelper content : definitionBoxes) {
                     try {
                         card2++;
-                        String jsonArray = mapper.writeValueAsString(content);
+                        String jsonArray = mapper.writeValueAsString(content.getFrontback());
                         LOGGER.debug(jsonArray);
-                        cardService.addCard(jsonArray, "Definitionen", currentDeck, title.getFirst());
+                        cardService.addCard(jsonArray, "Definitionen", currentDeck, title.getFirst(),
+                                content.getUeberschrift());
                     } catch (JsonProcessingException e) {
                         LOGGER.error("JsonProcessingException: Definitionen card fail");
                         throw new RuntimeException(e);
@@ -128,7 +129,7 @@ public class ParsingPipeline {
                     if (aufdeckCard.hasOtherData()) {
                         card3++;
                         LOGGER.debug(jsonArray);
-                        cardService.addCard(jsonArray, "Aufdeckkarte", currentDeck, title.getFirst());
+                        cardService.addCard(jsonArray, "Aufdeckkarte", currentDeck, title.getFirst(), title.getFirst());
                     } else {
                         LOGGER.debug("Tree structure doesnt have enough content to build a card");
                     }

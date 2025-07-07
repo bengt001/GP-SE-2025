@@ -8,6 +8,8 @@ export const useUserStore = defineStore('users', {
         authenticated: Boolean(false),
         username: String(''),
         email: String(''),
+        id: String(''),
+        totalXp: 0,
     }),
 
     actions: {
@@ -37,24 +39,52 @@ export const useUserStore = defineStore('users', {
         this.email = email;
       },
 
-      saveUsr(user: Credentials): Promise<AxiosResponse<Credentials>> {
+      async saveUsr(user: Credentials): Promise<AxiosResponse<Credentials>> {
         const usrCmd = {
           username: user.username,
           email: user.email,
           password: user.password
         };
-        return axios.post('/api/register', usrCmd);
+        return await axios.post('/api/register', usrCmd);
       },
       logout() {
         this.authenticated = false;
         this.email = '';
         this.username = '';
         localStorage.removeItem('token')
+        localStorage.removeItem('decks');
       },
 
       emailTaken(email: string): Promise<boolean> {
         return axios.get(`/api/exists`,{params: {email}})
           .then(res => res.data)
+      },
+
+      async earnXp(cardType: string, itemCount: number, rating: number): Promise<number> {
+        const token = localStorage.getItem('token');
+
+        const response = await axios.post('/api/xp/earn',
+          {
+            cardType,
+            uncoveredItems: itemCount,
+            rating
+          },
+          { headers: { Authorization: token } }
+        );
+        return response.data.gainedXp; //vorher .xp
+      },
+
+      async loadProfile(): Promise<void> {
+        const token = localStorage.getItem('token');
+        const response = await axios.get('/api/profile', {
+          headers: { Authorization: token }
+        });
+
+        const data = response.data;
+        this.username = data.username;
+        this.email = data.email;
+        this.totalXp = data.totalXp;
+
       }
 
     }
