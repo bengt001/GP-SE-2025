@@ -17,6 +17,7 @@ onMounted(() => {
   if (userStore.authenticated) {
     try {
       deckStore.loadMyDecks()
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       userStore.logout()
       deckStore.reset_decks()

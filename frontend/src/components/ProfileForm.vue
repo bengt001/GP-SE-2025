@@ -39,8 +39,8 @@ onMounted(async () => {
         <v-chip
           color="orange lighten-3"
           text-color="black"
-          class="mb-4"
           v-if="userStore.streakCount > 0"
+          class="mb-4"
         >
           <v-icon start>
             mdi-fire

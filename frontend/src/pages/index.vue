@@ -13,6 +13,5 @@ onMounted(async () => {
 </script>
 
 <template>
-
   <Decks />
 </template>
