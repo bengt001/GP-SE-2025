@@ -40,7 +40,7 @@ public class XpController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Usr usr = userService.loadUserByUsername(auth.getName());
 
-        int gainedXp = xpService.addXp(
+        Integer gainedXp = xpService.addXp(
                 usr.getUserId(),
                 request.getCardType(),
                 request.getUncoveredItems(),
@@ -85,11 +85,11 @@ public class XpController {
      * Response-DTO für die zurückgegebenen XP.
      */
     public static class XpResponse {
-        private final int gainedXp;
-        public XpResponse(int gainedXp) {
+        private final Integer gainedXp;
+        public XpResponse(Integer gainedXp) {
             this.gainedXp = gainedXp;
         }
-        public int getGainedXp() {
+        public Integer getGainedXp() {
             return gainedXp;
         }
     }

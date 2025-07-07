@@ -17,6 +17,8 @@ public interface UserService extends UserDetailsService {
 
     Usr createUser(String username, String email, String password, String displayName, String... roles);
 
+    Usr checkAndUpdateStreak(Usr user);
+
     boolean existsEmail(String email);
 
     String getFreeID();

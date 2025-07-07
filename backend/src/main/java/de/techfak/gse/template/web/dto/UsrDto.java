@@ -12,7 +12,8 @@ public class UsrDto {
     private String username;
     private String email;
     private String displayName;
-    private int totalXp;
+    private Integer totalXp;
+    private Integer streakCount;
 
     /**
      * Erstellt ein {@code UsrDto}-Objekt aus einer {@link Usr}-Entität.
@@ -24,6 +25,7 @@ public class UsrDto {
         this.email = user.getEmail();
         this.displayName = user.getDisplayName();
         this.totalXp = user.getTotalXp();
+        this.streakCount = user.getStreakCount();
     }
 
     // Getter und Setter
@@ -59,11 +61,19 @@ public class UsrDto {
         this.displayName = displayName;
     }
 
-    public int getTotalXp() {
+    public Integer getTotalXp() {
         return totalXp;
     }
 
     public void setTotalXp(int totalXp) {
         this.totalXp = totalXp;
+    }
+
+    public Integer getStreakCount() {
+        return streakCount;
+    }
+
+    public void setStreakCount(int streakCount) {
+        this.streakCount = streakCount;
     }
 }

@@ -48,7 +48,8 @@ public class Usr implements UserDetails {
     @OneToMany(mappedBy = "userId")
     private transient List<CardInfo> ratings;
 
-    private Integer totalXp;
+    @Column
+    private Integer totalXp = 0;
 
     @JsonIgnore
     @ElementCollection(fetch = FetchType.EAGER)
@@ -61,6 +62,13 @@ public class Usr implements UserDetails {
     @JsonBackReference
     @SuppressWarnings("serial")
     private List<Deck> decks = new ArrayList<>();
+
+    @Column
+    private LocalDate lastLoginDate;
+
+    @Column
+    private Integer streakCount;
+
     /**
      * JPA constructor.
      */
@@ -89,6 +97,7 @@ public class Usr implements UserDetails {
         this.displayName = displayName;
         this.userId = userId;
         this.totalXp = 0;
+        this.streakCount = 1;
     }
 
     public void addRole(String role) {
@@ -105,6 +114,31 @@ public class Usr implements UserDetails {
     @Override
     public String getPassword() {
         return this.password;
+    }
+
+    @JsonIgnore
+    public LocalDate getLastLoginDate() {
+        return lastLoginDate;
+    }
+
+    @JsonIgnore
+    public Integer getStreakCount() {
+        return streakCount;
+    }
+
+    @JsonIgnore
+    public void setLastLoginDate(LocalDate lastLoginDate) {
+        this.lastLoginDate = lastLoginDate;
+    }
+
+    @JsonIgnore
+    public Integer getTotalXp() {
+        return totalXp;
+    }
+
+    @JsonIgnore
+    public void setStreakCount(int streakCount) {
+        this.streakCount = streakCount;
     }
 
     @JsonIgnore

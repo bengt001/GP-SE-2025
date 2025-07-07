@@ -10,6 +10,7 @@ export const useUserStore = defineStore('users', {
         email: String(''),
         id: String(''),
         totalXp: 0,
+        streakCount: 0,
     }),
 
     actions: {
@@ -63,6 +64,13 @@ export const useUserStore = defineStore('users', {
       async earnXp(cardType: string, itemCount: number, rating: number): Promise<number> {
         const token = localStorage.getItem('token');
 
+        console.log("[earnXp] token:", token);
+
+        if (!token) {
+          console.error("FEHLER: Kein Token vorhanden → XP-Request wird nicht geschickt!");
+          return 0;
+        }
+
         const response = await axios.post('/api/xp/earn',
           {
             cardType,
@@ -84,6 +92,7 @@ export const useUserStore = defineStore('users', {
         this.username = data.username;
         this.email = data.email;
         this.totalXp = data.totalXp;
+        this.streakCount = data.streakCount;
 
       }
 

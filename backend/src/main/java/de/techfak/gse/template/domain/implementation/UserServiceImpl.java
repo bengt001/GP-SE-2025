@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.*;
 
 /**
@@ -62,6 +63,8 @@ public class UserServiceImpl implements UserService {
         Iterable<Usr> users = userRepository.findAll();
         for (Usr user : users) {
             if (user.getEmail().equals(email)) {
+                //Die Streak prüfen und ggf. aktualisieren
+                checkAndUpdateStreak(user);
                 return user;
             }
         }
@@ -212,5 +215,28 @@ public class UserServiceImpl implements UserService {
     @Override
     public void saveUser(Usr user) {
         userRepository.save(user);
+    }
+
+    public Usr checkAndUpdateStreak(Usr user) {
+        LocalDate today = LocalDate.now();
+        LocalDate lastLogin = user.getLastLoginDate();
+
+        if (lastLogin == null) {
+            // Erster Login überhaupt
+            user.setStreakCount(1);
+        } else if (lastLogin.isEqual(today)) {
+            // User hat sich heute schon eingeloggt → keine Änderung
+        } else if (lastLogin.plusDays(1).isEqual(today)) {
+            // Gestern eingeloggt → streak erhöhen
+            user.setStreakCount(user.getStreakCount() + 1);
+        } else {
+            // Mehr als 1 Tag Pause → streak zurücksetzen
+            user.setStreakCount(1);
+        }
+
+        user.setLastLoginDate(today);
+        userRepository.save(user);
+
+        return user;
     }
 }

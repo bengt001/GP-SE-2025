@@ -322,7 +322,40 @@ async function startLearning() {
 
 </script>
 <template>
-  <Searchbar @change-value="searchValue=$event" />
+  <v-row
+    align="center"
+    justify="center"
+    class="my-8"
+    no-gutters
+  >
+    <v-col
+      cols="12"
+      md="auto"
+      class="d-flex justify-center"
+    >
+      <v-card
+        flat
+        rounded="pill"
+        class="pa-2 px-4"
+      >
+        <Searchbar @change-value="searchValue = $event" />
+      </v-card>
+    </v-col>
+  </v-row>
+
+  <!-- Der Chip wird fixiert rechts angezeigt -->
+  <v-chip
+    v-if="UserStore.authenticated && UserStore.streakCount > 0"
+    color="orange lighten-3"
+    text-color="black"
+    size="small"
+    class="streak-chip-fixed"
+  >
+    <v-icon start>
+      mdi-fire
+    </v-icon>
+    {{ UserStore.streakCount }} {{ UserStore.streakCount === 1 ? 'Tag' : 'Tage' }}
+  </v-chip>
   <v-menu
     v-model="menu"
     :close-on-content-click="false"
@@ -813,4 +846,10 @@ async function startLearning() {
 .no-word-break
   word-break: keep-all
   overflow-wrap: normal
+
+.streak-chip-fixed
+  position: fixed
+  top: 150px
+  right: 20px
+  z-index: 2000
 </style>

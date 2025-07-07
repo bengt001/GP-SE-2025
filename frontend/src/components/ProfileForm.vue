@@ -34,7 +34,19 @@ onMounted(async () => {
       class="mx-auto"
       max-width="900"
     >
-      <div class="text-center">
+      <div class="text-center d-flex flex-column align-center">
+        <!-- Streak in Chip-Form anzeigen (optimal für mobile ansicht) -->
+        <v-chip
+          color="orange lighten-3"
+          text-color="black"
+          class="mb-4"
+          v-if="userStore.streakCount > 0"
+        >
+          <v-icon start>
+            mdi-fire
+          </v-icon>
+          Streak: {{ userStore.streakCount }} {{ userStore.streakCount === 1 ? 'Tag' : 'Tage' }}
+        </v-chip>
         <h3 class="mb-4">
           Profile
         </h3>
@@ -69,5 +81,31 @@ onMounted(async () => {
   </v-card>
 </template>
 
+<style scoped>
+.streak-badge {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  background: #fff3e0;
+  color: #e65100;
+  padding: 8px 12px;
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  z-index: 9999;
+}
+
+.streak-text {
+  font-size: 14px;
+}
+</style>
+<style scoped>
+.text-wrap {
+  word-break: break-word;
+  white-space: normal;
+}
+</style>
 
 

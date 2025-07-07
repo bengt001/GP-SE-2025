@@ -9,7 +9,12 @@ const successSnack = ref(false)
 const errorSnack = ref(false)
 const errorText = ref('')
 const pendingRequests = ref<{ id: number, requester: { email: string } }[]>([])
-const friends = ref<{ email: string }[]>([])
+//const friends = ref<{ email: string }[]>([])
+const friends = ref<{
+  email: string,
+  totalXp: number,
+  streakCount: number
+}[]>([])
 
 async function sendFriendRequest() {
   const token = localStorage.getItem('token')
@@ -185,13 +190,37 @@ onMounted(() => {
           color="white"
         >
           <v-card-title>Deine Freunde</v-card-title>
+          <!--
+        <v-card-text>
+          <div
+            v-for="friend in friends"
+            :key="friend.email"
+            class="user-info mb-2"
+          >
+            👤 {{ friend.email }}
+          </div>
+        </v-card-text>
+        -->
           <v-card-text>
             <div
               v-for="friend in friends"
               :key="friend.email"
-              class="user-info mb-2"
+              class="user-info mb-4"
             >
-              👤 {{ friend.email }}
+              <v-row align="center" justify="space-between">
+                <v-col cols="12" md="6">
+                  👤 {{ friend.email }}
+                </v-col>
+                <v-col cols="12" md="3" class="d-flex align-center">
+                  <v-icon color="orange" start>mdi-fire</v-icon>
+                  <span>{{ friend.streakCount }} {{ friend.streakCount === 1 ? 'Tag' : 'Tage' }}</span>
+                </v-col>
+                <v-col cols="12" md="3" class="d-flex align-center justify-end">
+                  <v-chip color="primary" variant="tonal" size="small">
+                    {{ friend.totalXp }} XP
+                  </v-chip>
+                </v-col>
+              </v-row>
             </div>
           </v-card-text>
         </v-card>
