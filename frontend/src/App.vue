@@ -7,12 +7,20 @@ import {onMounted} from 'vue';
 import {useUserStore} from "@/stores/users"
 import {useDeckStore} from "@/stores/deck";
 
-const deckStore = useDeckStore()
-const userStore = useUserStore()
-
 onMounted(() => {
+  const userStore = useUserStore()
+  const deckStore = useDeckStore()
+
+  const token = localStorage.getItem('token')
+  userStore.authenticate(token) // this sets authenticated = true if token exists
+
   if (userStore.authenticated) {
-    deckStore.loadMyDecks()
+    try {
+      deckStore.loadMyDecks()
+    } catch (error) {
+      userStore.logout()
+      deckStore.reset_decks()
+    }
   } else {
     userStore.logout()
     deckStore.reset_decks()
