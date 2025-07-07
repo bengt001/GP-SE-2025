@@ -27,13 +27,6 @@
           Hallo,  {{ userStore.username }}!
         </div>
 
-        <div v-if="$vuetify.display.mdAndUp">
-          <v-btn
-            icon="mdi-magnify"
-            variant="text"
-          />
-        </div>
-
         <div>
           <router-link
             v-if="!userStore.authenticated"
