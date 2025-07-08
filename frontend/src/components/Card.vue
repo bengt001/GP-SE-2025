@@ -133,6 +133,7 @@ function getLastColor():string{
 function goBack(){
   DialogEnd.value = false
   backPossible.value = false
+  reveal.value = false
   cardStore.indexMinusOne()
   const prevId = cardStore.getCardAtIndex().id;
   router.replace(`/cards/${prevId}`);
