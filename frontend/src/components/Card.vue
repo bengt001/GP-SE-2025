@@ -39,6 +39,7 @@ interface jsonTree {
 const contentList: Ref<content[]> = ref(getContentList(getHeadlines(), 0))
 const revealedText: Ref<content[]> = ref([])
 const showCardBoxes = ref(false)
+const showBoxesMenu = ref(false)
 
 const romanNumbers: string[] = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"]
 const alphabetLower: string[] = "abcdefghijklmnopqrstuvwxyz".split("")
@@ -217,10 +218,6 @@ async function rateCard(colorIndex: number) {
   //nextCard()
 }
 
-
-function toggleCardBoxes() {
-  showCardBoxes.value = !showCardBoxes.value;
-}
 
 function getHeadlines() {
   if (card.value && card.value.type == "Aufdeckkarte") {
@@ -446,14 +443,6 @@ function getContentList(content: jsonTree[], depth: number): content[] {
         class="d-flex justify-between align-center flex-wrap"
         style="gap: 12px;"
       >
-        <v-btn
-          v-if="card && card.type == 'Aufdeckkarte'"
-          color="primary"
-          class="position-absolute left-0 ma-10"
-          @click="toggleCardBoxes()"
-        >
-          Definitionen/Probleme
-        </v-btn>
 
         <v-btn
           icon
@@ -512,6 +501,32 @@ function getContentList(content: jsonTree[], depth: number): content[] {
             </v-btn>
           </div>
         </div>
+        <v-menu
+          v-if="card && card.type == 'Aufdeckkarte'"
+          v-model="showBoxesMenu"
+          :close-on-content-click="false"
+        >
+          <template #activator="{ props }">
+            <v-btn
+              v-bind="props"
+              icon="mdi-dots-horizontal"
+            >
+            </v-btn>
+          </template>
+          <v-card>
+            <v-list>
+              <v-list-item>
+                <v-switch
+                  v-model="showCardBoxes"
+                  color="primary"
+                  label="Definitionen/Probleme"
+                  hide-details
+                >
+                </v-switch>
+              </v-list-item>
+            </v-list>
+          </v-card>
+        </v-menu>
 
         <v-btn
           icon
