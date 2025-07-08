@@ -36,9 +36,11 @@ interface jsonTree {
   children: jsonTree[]
 }
 
-const contentList: Ref<content[]> = ref(getContentList(getHeadlines(), 0))
 const revealedText: Ref<content[]> = ref([])
+const contentList: Ref<content[]> = ref(getContentList(getHeadlines(), 0))
 const showCardBoxes = ref(false)
+const showBoxesMenu = ref(false)
+let linesRevealed = 0
 
 const romanNumbers: string[] = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"]
 const alphabetLower: string[] = "abcdefghijklmnopqrstuvwxyz".split("")
@@ -99,13 +101,9 @@ watch(cards, newCards => {
 
 watch (() => route.params.id, (newId) => {
   card.value = cardStore.findCardById(parseInt(newId))
+  revealedText.value = []
+  linesRevealed = 0
   contentList.value = getContentList(getHeadlines(), 0)
-  if (backPossible.value) {
-    revealedText.value = []
-  } else {
-    revealedText.value = contentList.value
-  }
-
   if (card.value && card.value.type == "Aufdeckkarte") {
     deck.value = deckStore.getDeckByOneID(card.value.deckID)
   }
@@ -135,6 +133,7 @@ function getLastColor():string{
 function goBack(){
   DialogEnd.value = false
   backPossible.value = false
+  reveal.value = false
   cardStore.indexMinusOne()
   const prevId = cardStore.getCardAtIndex().id;
   router.replace(`/cards/${prevId}`);
@@ -142,11 +141,10 @@ function goBack(){
 
 function showAnswer() {
   if (card.value && card.value.type == "Aufdeckkarte") {
-    const linesRevealed = revealedText.value.length
+    revealedText.value[linesRevealed] = contentList.value[linesRevealed]
+    linesRevealed++
     if (linesRevealed >= contentList.value.length) {
       reveal.value = true;
-    } else {
-      revealedText.value.push(contentList.value[linesRevealed])
     }
 
   } else {
@@ -172,7 +170,6 @@ function nextCard() {
   }
   router.push('/cards/' + nextId)
   reveal.value = false
-  revealedText.value = []
   contentList.value = []
 }
 
@@ -195,7 +192,19 @@ async function rateCard(colorIndex: number) {
     try {
       console.log("[Check respnse]: try block")
       deckStore.rate(card.id,card.deckID,colorIndex)
-      const gainedXp = await userStore.earnXp(card.type,  1, 4 - colorIndex)
+      //const gainedXp = await userStore.earnXp(card.type,  1, 4 - colorIndex)
+
+      console.log("[Check respone gainedXp revealed Length]: " + revealedText.value.length)
+
+      const uncoveredItems =
+        card.type === "Aufdeckkarte" ? revealedText.value.length : 1;
+
+      const gainedXp = await userStore.earnXp(
+        card.type,
+        uncoveredItems,
+        4 - colorIndex
+      );
+
       earnedXp.value = gainedXp
 
       console.log("[Check respone gainedXp]: " + gainedXp)
@@ -218,13 +227,10 @@ async function rateCard(colorIndex: number) {
 }
 
 
-function toggleCardBoxes() {
-  showCardBoxes.value = !showCardBoxes.value;
-}
-
 function getHeadlines() {
   if (card.value && card.value.type == "Aufdeckkarte") {
     const root = JSON.parse(card.value.text)
+    console.log(root)
     const content = root.children
     return content[0].children
   }
@@ -244,6 +250,7 @@ function getHeadlineNumber(depth: number, index: number): string {
       return c + c + close
     case 4: return open + alphabetLower[index] + close
     case 5: return open + (index + 1) + close
+    case 6: return open + alphabetLower[index] + close
     default: return ""
   }
 }
@@ -268,6 +275,7 @@ function getContentList(content: jsonTree[], depth: number): content[] {
       }
 
       list.push({data: headline, index: i, spacing: depth, cards: itemCards})
+      revealedText.value.push({data: "...", index: i, spacing: depth, cards: undefined})
       i++;
 
       if (item.children.length > 0) {
@@ -447,15 +455,6 @@ function getContentList(content: jsonTree[], depth: number): content[] {
         style="gap: 12px;"
       >
         <v-btn
-          v-if="card && card.type == 'Aufdeckkarte'"
-          color="primary"
-          class="position-absolute left-0 ma-10"
-          @click="toggleCardBoxes()"
-        >
-          Definitionen/Probleme
-        </v-btn>
-
-        <v-btn
           icon
           style="flex: 0 0 auto;"
           :disabled="!backPossible"
@@ -512,6 +511,30 @@ function getContentList(content: jsonTree[], depth: number): content[] {
             </v-btn>
           </div>
         </div>
+        <v-menu
+          v-if="card && card.type == 'Aufdeckkarte'"
+          v-model="showBoxesMenu"
+          :close-on-content-click="false"
+        >
+          <template #activator="{ props }">
+            <v-btn
+              v-bind="props"
+              icon="mdi-dots-horizontal"
+            />
+          </template>
+          <v-card>
+            <v-list>
+              <v-list-item>
+                <v-switch
+                  v-model="showCardBoxes"
+                  color="primary"
+                  label="Definitionen/Probleme"
+                  hide-details
+                />
+              </v-list-item>
+            </v-list>
+          </v-card>
+        </v-menu>
 
         <v-btn
           icon

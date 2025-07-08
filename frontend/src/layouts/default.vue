@@ -24,14 +24,7 @@
 
 
         <div v-if="$vuetify.display.mdAndUp && userStore.authenticated">
-          Hallo,  {{ userStore.username }}!
-        </div>
-
-        <div v-if="$vuetify.display.mdAndUp">
-          <v-btn
-            icon="mdi-magnify"
-            variant="text"
-          />
+          Hallo, {{ userStore.username }}!
         </div>
 
         <div>
@@ -40,9 +33,16 @@
             to="/login"
           >
             <v-btn
-              icon="mdi-account"
+              icon
               color="white"
-            />
+            >
+              <v-avatar size="32">
+                <img
+                  src="/defaultIcon.svg"
+                  alt="Profilbild"
+                >
+              </v-avatar>
+            </v-btn>
           </router-link>
 
           <router-link
@@ -50,9 +50,18 @@
             to="/profile"
           >
             <v-btn
-              icon="mdi-account"
+              icon
               color="white"
-            />
+            >
+              <v-avatar size="32">
+                <img
+                  :src="(userStore.profilePicture ? userStore.profilePicture + '?t=' + profilePictureTimestamp : '/defaultIcon.svg')"
+                  alt="Profilbild"
+                  style="object-fit: cover; width: 100%; height: 100%;"
+                  @error="e => (e.target as HTMLImageElement).src = '/defaultIcon.svg'"
+                >
+              </v-avatar>
+            </v-btn>
           </router-link>
         </div>
       </v-app-bar>
@@ -107,9 +116,13 @@
 <script lang="ts" setup>
 import {useUserStore} from "@/stores/users";
 import {useNotificationStore} from "@/stores/notifications";
+import {ref, watch} from 'vue'
+import {profilePictureTimestamp} from '@/stores/profilePictureStore'
+
 
 const userStore = useUserStore();
 const notificationStore = useNotificationStore();
+
 
 // Liste der Subheader-Tabs für for-Loop
 const subheader = ref(' ')
@@ -153,7 +166,7 @@ const items = ref([
         title: 'Gesetze',
       },
       {
-        title:'Inhalte',
+        title: 'Inhalte',
       },
       {
         title: 'Chronik',
