@@ -51,6 +51,14 @@ public class Usr implements UserDetails {
     @Column
     private Integer totalXp = 0;
 
+
+    @Column(name = "profile_picture_type")
+    private String profilePictureType;
+
+    @Lob
+    @Column(name = "profile_picture_data", nullable = true)
+    private byte[] profilePictureData;
+
     @JsonIgnore
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "usr_roles", joinColumns = @JoinColumn(name = "user_id"))

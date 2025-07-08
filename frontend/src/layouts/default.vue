@@ -1,4 +1,5 @@
 <template>
+
   <v-responsive>
     <v-app>
       <v-app-bar color="primary">
@@ -24,7 +25,7 @@
 
 
         <div v-if="$vuetify.display.mdAndUp && userStore.authenticated">
-          Hallo,  {{ userStore.username }}!
+          Hallo, {{ userStore.username }}!
         </div>
 
         <div>
@@ -32,20 +33,27 @@
             v-if="!userStore.authenticated"
             to="/login"
           >
-            <v-btn
-              icon="mdi-account"
-              color="white"
-            />
+            <v-btn icon color="white">
+              <v-avatar size="32">
+                <img src="/defaultIcon.svg" alt="Profilbild"/>
+              </v-avatar>
+            </v-btn>
           </router-link>
 
           <router-link
             v-else
             to="/profile"
           >
-            <v-btn
-              icon="mdi-account"
-              color="white"
-            />
+            <v-btn icon color="white">
+              <v-avatar size="32">
+                <img
+                  :src="(userStore.profilePicture ? userStore.profilePicture + '?t=' + profilePictureTimestamp : '/defaultIcon.svg')"
+                  alt="Profilbild"
+                  style="object-fit: cover; width: 100%; height: 100%;"
+                  @error="e => (e.target as HTMLImageElement).src = '/defaultIcon.svg'"
+                />
+              </v-avatar>
+            </v-btn>
           </router-link>
         </div>
       </v-app-bar>
@@ -56,7 +64,7 @@
         temporary
         color="primary"
       >
-        <v-list :items="items" />
+        <v-list :items="items"/>
       </v-navigation-drawer>
 
       <v-main>
@@ -90,7 +98,7 @@
           </v-tab>
         </v-tabs>
         <v-container>
-          <router-view />
+          <router-view/>
         </v-container>
       </v-main>
     </v-app>
@@ -100,9 +108,13 @@
 <script lang="ts" setup>
 import {useUserStore} from "@/stores/users";
 import {useNotificationStore} from "@/stores/notifications";
+import {ref, watch} from 'vue'
+import {profilePictureTimestamp} from '@/stores/profilePictureStore'
+
 
 const userStore = useUserStore();
 const notificationStore = useNotificationStore();
+
 
 // Liste der Subheader-Tabs für for-Loop
 const subheader = ref(' ')
@@ -146,7 +158,7 @@ const items = ref([
         title: 'Gesetze',
       },
       {
-        title:'Inhalte',
+        title: 'Inhalte',
       },
       {
         title: 'Chronik',

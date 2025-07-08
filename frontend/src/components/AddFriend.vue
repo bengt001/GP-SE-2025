@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { useUserStore } from '@/stores/users'
+import {ref, onMounted} from 'vue'
+import {useUserStore} from '@/stores/users'
 import axios from 'axios'
 
 const userStore = useUserStore()
@@ -13,8 +13,12 @@ const pendingRequests = ref<{ id: number, requester: { email: string } }[]>([])
 const friends = ref<{
   email: string,
   totalXp: number,
-  streakCount: number
+  streakCount: number,
+  profilePictureUrl?: string
 }[]>([])
+
+
+const defaultAvatar = '/defaultIcon.svg';
 
 async function sendFriendRequest() {
   const token = localStorage.getItem('token')
@@ -29,7 +33,7 @@ async function sendFriendRequest() {
       requester: userStore.email,
       recipient: email.value.trim()
     }, {
-      headers: { Authorization: token }
+      headers: {Authorization: token}
     })
     successSnack.value = true
     email.value = ''
@@ -48,7 +52,7 @@ async function sendFriendRequest() {
 async function fetchPendingRequests() {
   try {
     const response = await axios.get('/api/pending', {
-      params: { email: userStore.email }
+      params: {email: userStore.email}
     })
     pendingRequests.value = response.data
   } catch (err) {
@@ -59,7 +63,7 @@ async function fetchPendingRequests() {
 async function fetchFriends() {
   try {
     const response = await axios.get('/api/list', {
-      params: { email: userStore.email }
+      params: {email: userStore.email}
     })
     friends.value = response.data
   } catch (err) {
@@ -69,7 +73,7 @@ async function fetchFriends() {
 
 async function acceptRequest(requestId: number) {
   try {
-    await axios.post('/api/accept', { requestId })
+    await axios.post('/api/accept', {requestId})
     await fetchPendingRequests()
     await fetchFriends()
   } catch (err) {
@@ -79,7 +83,7 @@ async function acceptRequest(requestId: number) {
 
 async function declineRequest(requestId: number) {
   try {
-    await axios.post('/api/decline', { requestId })
+    await axios.post('/api/decline', {requestId})
     await fetchPendingRequests()
   } catch (err) {
     console.error('Fehler beim Ablehnen:', err)
@@ -190,17 +194,6 @@ onMounted(() => {
           color="white"
         >
           <v-card-title>Deine Freunde</v-card-title>
-          <!--
-        <v-card-text>
-          <div
-            v-for="friend in friends"
-            :key="friend.email"
-            class="user-info mb-2"
-          >
-            👤 {{ friend.email }}
-          </div>
-        </v-card-text>
-        -->
           <v-card-text>
             <div
               v-for="friend in friends"
@@ -208,9 +201,15 @@ onMounted(() => {
               class="user-info mb-4"
             >
               <v-row align="center" justify="space-between">
-                <v-col cols="12" md="6">
-                  👤 {{ friend.email }}
-                </v-col>
+                <v-avatar size="36">
+                  <img
+                    :src=" `/api/profile/profile-picture/${friend.email}` || defaultAvatar"
+                    @error="e => { const img = e.target as HTMLImageElement; if (img) img.src = defaultAvatar; }"
+                    alt="Profilbild"
+                    style="object-fit: cover; width: 100%; height: 100%;"
+                  />
+                </v-avatar>
+                <span>{{ friend.email }}</span>
                 <v-col cols="12" md="3" class="d-flex align-center">
                   <v-icon color="orange" start>mdi-fire</v-icon>
                   <span>{{ friend.streakCount }} {{ friend.streakCount === 1 ? 'Tag' : 'Tage' }}</span>

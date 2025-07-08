@@ -1,12 +1,23 @@
 <script setup lang="ts">
 import {useUserStore} from "@/stores/users"
 import {useDeckStore} from "@/stores/deck";
+import {profilePictureTimestamp} from '@/stores/profilePictureStore'
+import axios from 'axios'
 
 const deckStore = useDeckStore()
 const userStore = useUserStore()
 const router = useRouter()
 
 const LogOutSuccess_snack = ref(false)
+
+//const profilePictureTimestamp = ref(Date.now())
+const profilePictureFile = ref<File | null>(null)
+const dialog = ref(false)
+const uploadSnack = ref(false)
+const uploadErrorSnack = ref(false)
+const uploadErrorText = ref('')
+const defaultAvatar = '/defaultIcon.svg'
+
 
 function logOut() {
   deckStore.abortDeckLoading()
@@ -16,6 +27,24 @@ function logOut() {
     userStore.logout()
     deckStore.reset_decks()
   }, 1000)
+}
+
+async function uploadProfilePicture() {
+  if (!profilePictureFile.value) return
+
+  try {
+    await userStore.setProfilePicture(profilePictureFile.value)
+    await userStore.loadProfile()
+    console.log('New profilePicture URL:', userStore.profilePicture)
+    profilePictureTimestamp.value = Date.now()
+    uploadSnack.value = true
+    profilePictureFile.value = null
+    dialog.value = false // Close dialog on success
+  } catch (err: any) {
+    console.log('FORTNUT')
+    uploadErrorText.value = err.response?.data?.message || 'Fehler beim Hochladen'
+    uploadErrorSnack.value = true
+  }
 }
 
 onMounted(async () => {
@@ -34,6 +63,49 @@ onMounted(async () => {
       class="mx-auto"
       max-width="900"
     >
+
+      <!-- Profile Picture -->
+      <div class="d-flex justify-center">
+        <v-avatar
+          size="96"
+          class="mx-auto mb-4"
+          style="cursor: pointer;"
+          @click="dialog = true"
+        >
+          <img
+            :src="(userStore.profilePicture || defaultAvatar) + '?t=' + profilePictureTimestamp"
+            @error="e => { if (e.target) (e.target as HTMLImageElement).src = defaultAvatar }"
+            alt="Profile picture"
+            style="object-fit: cover; width: 100%; height: 100%;"
+          />
+        </v-avatar>
+      </div>
+      <v-dialog v-model="dialog" max-width="400px">
+        <v-card>
+          <v-card-title>Profilbild ändern</v-card-title>
+          <v-card-text>
+            <v-file-input
+              v-model="profilePictureFile"
+              label="Bild auswählen"
+              accept="image/png, image/jpeg, image/gif"
+              prepend-icon="mdi-camera"
+              show-size
+              dense
+            />
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn variant="text" @click="dialog = false">Abbrechen</v-btn>
+            <v-btn
+              color="primary"
+              :disabled="!profilePictureFile"
+              @click="uploadProfilePicture"
+            >
+              Hochladen
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
       <div class="text-center d-flex flex-column align-center">
         <!-- Streak in Chip-Form anzeigen (optimal für mobile ansicht) -->
         <v-chip
@@ -79,6 +151,12 @@ onMounted(async () => {
       Log Out erfolgreich
     </v-snackbar>
   </v-card>
+  <v-snackbar v-model="uploadSnack" :timeout="2000" color="success">
+    Profilbild erfolgreich hochgeladen!
+  </v-snackbar>
+  <v-snackbar v-model="uploadErrorSnack" :timeout="3000" color="error">
+    {{ uploadErrorText }}
+  </v-snackbar>
 </template>
 
 <style scoped>
@@ -93,7 +171,7 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   font-weight: bold;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   z-index: 9999;
 }
 

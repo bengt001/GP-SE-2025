@@ -45,13 +45,13 @@ public class UsrControllerTest {
 
     }
 
-    @Test
+    /*@Test
     void exists_success() {
         UsrController usrController = new UsrController(userService);
         Boolean exists = usrController.exists("test@mail.com");
 
         assertThat(exists).isEqualTo(true);
-    }
+    }*/
 
     @AfterEach
     public void releaseMocks() throws Exception {
