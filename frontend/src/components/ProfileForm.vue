@@ -2,7 +2,7 @@
 import {useUserStore} from "@/stores/users"
 import {useDeckStore} from "@/stores/deck";
 import {profilePictureTimestamp} from '@/stores/profilePictureStore'
-import axios from 'axios'
+
 
 const deckStore = useDeckStore()
 const userStore = useUserStore()
@@ -40,10 +40,10 @@ async function uploadProfilePicture() {
     uploadSnack.value = true
     profilePictureFile.value = null
     dialog.value = false // Close dialog on success
-  } catch (err: any) {
-    console.log('FORTNUT')
-    uploadErrorText.value = err.response?.data?.message || 'Fehler beim Hochladen'
-    uploadErrorSnack.value = true
+  } catch (err: unknown) {
+    const message = (err as { response?: { data?: { message?: string } } })?.response?.data?.message;
+    uploadErrorText.value = message || 'Fehler beim Hochladen';
+    uploadErrorSnack.value = true;
   }
 }
 
@@ -63,7 +63,6 @@ onMounted(async () => {
       class="mx-auto"
       max-width="900"
     >
-
       <!-- Profile Picture -->
       <div class="d-flex justify-center">
         <v-avatar
@@ -74,13 +73,16 @@ onMounted(async () => {
         >
           <img
             :src="(userStore.profilePicture || defaultAvatar) + '?t=' + profilePictureTimestamp"
-            @error="e => { if (e.target) (e.target as HTMLImageElement).src = defaultAvatar }"
             alt="Profile picture"
             style="object-fit: cover; width: 100%; height: 100%;"
-          />
+            @error="e => { if (e.target) (e.target as HTMLImageElement).src = defaultAvatar }"
+          >
         </v-avatar>
       </div>
-      <v-dialog v-model="dialog" max-width="400px">
+      <v-dialog
+        v-model="dialog"
+        max-width="400px"
+      >
         <v-card>
           <v-card-title>Profilbild ändern</v-card-title>
           <v-card-text>
@@ -94,8 +96,13 @@ onMounted(async () => {
             />
           </v-card-text>
           <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn variant="text" @click="dialog = false">Abbrechen</v-btn>
+            <v-spacer />
+            <v-btn
+              variant="text"
+              @click="dialog = false"
+            >
+              Abbrechen
+            </v-btn>
             <v-btn
               color="primary"
               :disabled="!profilePictureFile"
@@ -109,9 +116,9 @@ onMounted(async () => {
       <div class="text-center d-flex flex-column align-center">
         <!-- Streak in Chip-Form anzeigen (optimal für mobile ansicht) -->
         <v-chip
+          v-if="userStore.streakCount > 0"
           color="orange lighten-3"
           text-color="black"
-          v-if="userStore.streakCount > 0"
           class="mb-4"
         >
           <v-icon start>
@@ -151,10 +158,18 @@ onMounted(async () => {
       Log Out erfolgreich
     </v-snackbar>
   </v-card>
-  <v-snackbar v-model="uploadSnack" :timeout="2000" color="success">
+  <v-snackbar
+    v-model="uploadSnack"
+    :timeout="2000"
+    color="success"
+  >
     Profilbild erfolgreich hochgeladen!
   </v-snackbar>
-  <v-snackbar v-model="uploadErrorSnack" :timeout="3000" color="error">
+  <v-snackbar
+    v-model="uploadErrorSnack"
+    :timeout="3000"
+    color="error"
+  >
     {{ uploadErrorText }}
   </v-snackbar>
 </template>

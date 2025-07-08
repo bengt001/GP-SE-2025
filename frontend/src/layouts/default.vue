@@ -1,5 +1,4 @@
 <template>
-
   <v-responsive>
     <v-app>
       <v-app-bar color="primary">
@@ -33,9 +32,15 @@
             v-if="!userStore.authenticated"
             to="/login"
           >
-            <v-btn icon color="white">
+            <v-btn
+              icon
+              color="white"
+            >
               <v-avatar size="32">
-                <img src="/defaultIcon.svg" alt="Profilbild"/>
+                <img
+                  src="/defaultIcon.svg"
+                  alt="Profilbild"
+                >
               </v-avatar>
             </v-btn>
           </router-link>
@@ -44,14 +49,17 @@
             v-else
             to="/profile"
           >
-            <v-btn icon color="white">
+            <v-btn
+              icon
+              color="white"
+            >
               <v-avatar size="32">
                 <img
                   :src="(userStore.profilePicture ? userStore.profilePicture + '?t=' + profilePictureTimestamp : '/defaultIcon.svg')"
                   alt="Profilbild"
                   style="object-fit: cover; width: 100%; height: 100%;"
                   @error="e => (e.target as HTMLImageElement).src = '/defaultIcon.svg'"
-                />
+                >
               </v-avatar>
             </v-btn>
           </router-link>
@@ -64,7 +72,7 @@
         temporary
         color="primary"
       >
-        <v-list :items="items"/>
+        <v-list :items="items" />
       </v-navigation-drawer>
 
       <v-main>
@@ -98,7 +106,7 @@
           </v-tab>
         </v-tabs>
         <v-container>
-          <router-view/>
+          <router-view />
         </v-container>
       </v-main>
     </v-app>

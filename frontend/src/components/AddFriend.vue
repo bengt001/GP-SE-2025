@@ -200,22 +200,42 @@ onMounted(() => {
               :key="friend.email"
               class="user-info mb-4"
             >
-              <v-row align="center" justify="space-between">
+              <v-row
+                align="center"
+                justify="space-between"
+              >
                 <v-avatar size="36">
                   <img
                     :src=" `/api/profile/profile-picture/${friend.email}` || defaultAvatar"
-                    @error="e => { const img = e.target as HTMLImageElement; if (img) img.src = defaultAvatar; }"
                     alt="Profilbild"
                     style="object-fit: cover; width: 100%; height: 100%;"
-                  />
+                    @error="e => { const img = e.target as HTMLImageElement; if (img) img.src = defaultAvatar; }"
+                  >
                 </v-avatar>
                 <span>{{ friend.email }}</span>
-                <v-col cols="12" md="3" class="d-flex align-center">
-                  <v-icon color="orange" start>mdi-fire</v-icon>
+                <v-col
+                  cols="12"
+                  md="3"
+                  class="d-flex align-center"
+                >
+                  <v-icon
+                    color="orange"
+                    start
+                  >
+                    mdi-fire
+                  </v-icon>
                   <span>{{ friend.streakCount }} {{ friend.streakCount === 1 ? 'Tag' : 'Tage' }}</span>
                 </v-col>
-                <v-col cols="12" md="3" class="d-flex align-center justify-end">
-                  <v-chip color="primary" variant="tonal" size="small">
+                <v-col
+                  cols="12"
+                  md="3"
+                  class="d-flex align-center justify-end"
+                >
+                  <v-chip
+                    color="primary"
+                    variant="tonal"
+                    size="small"
+                  >
                     {{ friend.totalXp }} XP
                   </v-chip>
                 </v-col>
