@@ -30,7 +30,7 @@ public class XpServiceImpl implements XpService {
 
     private static final int BASE_XP_DEFINITIONEN = 10;
     private static final int BASE_XP_PROBLEME = 10;
-    private static final int BASE_XP_PER_ITEM_SCHEMA = 5;
+    private static final int BASE_XP_PER_ITEM_SCHEMA = 2;
     private static final int DEFAULT_BASE_XP = 0;
 
     private final UserService userService;
@@ -47,7 +47,7 @@ public class XpServiceImpl implements XpService {
         int baseXp = switch (cardType.toLowerCase()) {
             case "definitionen" -> BASE_XP_DEFINITIONEN;
             case "probleme" -> BASE_XP_PROBLEME;
-            case "schema" -> BASE_XP_PER_ITEM_SCHEMA * uncoveredItems;
+            case "aufdeckkarte" -> BASE_XP_PER_ITEM_SCHEMA * uncoveredItems;
             default -> DEFAULT_BASE_XP;
         };
 

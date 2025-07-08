@@ -195,7 +195,19 @@ async function rateCard(colorIndex: number) {
     try {
       console.log("[Check respnse]: try block")
       deckStore.rate(card.id,card.deckID,colorIndex)
-      const gainedXp = await userStore.earnXp(card.type,  1, 4 - colorIndex)
+      //const gainedXp = await userStore.earnXp(card.type,  1, 4 - colorIndex)
+
+      console.log("[Check respone gainedXp revealed Length]: " + revealedText.value.length)
+
+      const uncoveredItems =
+        card.type === "Aufdeckkarte" ? revealedText.value.length : 1;
+
+      const gainedXp = await userStore.earnXp(
+        card.type,
+        uncoveredItems,
+        4 - colorIndex
+      );
+
       earnedXp.value = gainedXp
 
       console.log("[Check respone gainedXp]: " + gainedXp)
