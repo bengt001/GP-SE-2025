@@ -53,6 +53,7 @@ const ratingLabels = ['Einfach', 'Okay', 'Schwer', 'Nicht gewusst', 'Unbewertet'
 const isEditing = ref(false)
 const editedText = ref(card.value?.text ?? '')
 const editedTitle = ref(card.value?.title ?? '')
+const isSavingInProgress = ref(false)
 
 
 const earnedXp = ref<number | null>(null);
@@ -106,6 +107,9 @@ watch(cards, newCards => {
 
 watch (() => route.params.id, (newId) => {
   card.value = cardStore.findCardById(parseInt(newId))
+  editedTitle.value = card.value?.title ?? ''
+  editedText.value = card.value?.text ?? ''
+
   revealedText.value = []
   linesRevealed = 0
   contentList.value = getContentList(getHeadlines(), 0)
@@ -304,16 +308,35 @@ function cancelEditingCard() {
 }
 
 async function saveCardChanges() {
-  if(card.value) {
-    const updateCard = {
-      ...card.value,
-      title: editedTitle.value,
-      text: editedText.value
-    }
+  if (isSavingInProgress.value) {
+    return;
+  }
 
-    await cardStore.updateCard(updateCard)
-    card.value = updateCard
-    isEditing.value = false
+  if (!userStore.authenticated) {
+    console.log("Saving changes failed, User not logged in.");
+    return;
+  }
+
+  if (card.value) {
+    isSavingInProgress.value = true;
+
+    try {
+      const updatedCard = {
+        ...card.value,
+        title: editedTitle.value,
+        text: editedText.value,
+      };
+
+      await cardStore.updateCard(updatedCard);
+
+      card.value = updatedCard;
+      isEditing.value = false;
+
+    } catch (error) {
+      console.error("Failed to save changes: ", error);
+    } finally {
+      isSavingInProgress.value = false;
+    }
   }
 }
 
