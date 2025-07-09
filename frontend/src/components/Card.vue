@@ -317,8 +317,6 @@ async function saveCardChanges() {
   }
 }
 
-const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name
-
 </script>
 
 <template>
