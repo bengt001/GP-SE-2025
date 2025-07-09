@@ -1,6 +1,8 @@
 import {defineStore} from 'pinia'
+import { useUserStore } from "@/stores/users";
 import type Card from "@/types/Card.ts";
 import router from "@/router";
+import axios from "axios";
 
 export const useCardStore = defineStore('card', {
   state: () => ({
@@ -33,38 +35,33 @@ export const useCardStore = defineStore('card', {
     },
 
     async updateCard(updatedCard:Card){
-      const userToken = localStorage.getItem('userToken');
+      const cardToUpdate = this.cards.find((card) => card.id === updatedCard.id);
+      if (cardToUpdate) {
+        cardToUpdate.title = updatedCard.title;
+        cardToUpdate.text = updatedCard.text;
 
-      if (!userToken) {
-        console.error("user token not found, cant update Card.")
-        return;
-      }
+        if (useUserStore().authenticated) {
+          console.log("Auth success, saving changes.");
 
-      const payload = {
-        title: updatedCard.title,
-        text: updatedCard.text,
-      };
+          try {
+            const payload = {
+              title: updatedCard.title,
+              text: updatedCard.text,
+            };
+            const response = await axios.patch(
+              `api/usr/decks/${cardToUpdate.deckID}/${cardToUpdate.id}`,
+              payload
+            );
 
-      try {
-        const response = await fetch(`api/usr/decks/${updatedCard.deckID}/${updatedCard.id}`,
-          {
-            method: 'PATCH',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${userToken}`,
-            },
-            body: JSON.stringify(payload),
-          });
-        if (!response.ok) {
-          console.error("Failed to update Card.");
+            const savedCard = response.data;
+            Object.assign(updatedCard, savedCard);
+
+            console.log("Server sync success, Card content is match.");
+
+          } catch (error) {
+            console.error("Could not save changes: " + error);
+          }
         }
-        const savedCard: Card = await response.json();
-        const index = this.cards.findIndex(card => card.id == savedCard.id);
-        if (index !== -1) {
-          this.cards[index] = savedCard;
-        }
-      } catch (error) {
-        console.error("Failed to update Card.", error);
       }
     },
 

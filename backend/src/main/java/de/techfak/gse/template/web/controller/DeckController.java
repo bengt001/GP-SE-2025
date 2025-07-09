@@ -189,6 +189,8 @@ public class DeckController {
                            @RequestBody final Card card) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Usr usr = userService.loadUserByUsername(auth.getName());
+        //Debug
+        System.out.println("cardId: " + cardId + " was updated");
         return deckService.updateCard(usr, deckId, cardId, card).orElseThrow(BadRequestException::new);
     }
 
