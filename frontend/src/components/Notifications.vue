@@ -5,6 +5,15 @@ import { useNotificationStore } from '@/stores/notifications'
 const notificationStore = useNotificationStore()
 const UserStore = useUserStore()
 
+watch(() => UserStore.authenticated,
+  (isAuthenticated) => {
+    if (isAuthenticated) {
+      notificationStore.getNotifications()
+    }
+  },
+  { immediate: true }
+)
+
 </script>
 
 <template>
