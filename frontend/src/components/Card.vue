@@ -264,7 +264,6 @@ function getHeadlineNumber(depth: number, index: number): string {
 function getContentList(content: jsonTree[], depth: number): content[] {
   if (content) {
     let list: content[] = []
-
     let i = 0;
     for (const item of content) {
       const itemCards: Card[] = []
@@ -279,7 +278,18 @@ function getContentList(content: jsonTree[], depth: number): content[] {
           }
         }
       }
+      list.push({data: headline, index: i, spacing: depth, cards: itemCards})
+      revealedText.value.push({data: "...", index: i, spacing: depth, cards: undefined})
+      i++;
 
+      if (item.children.length > 0) {
+        list = list.concat(getContentList(item.children, depth + 1))
+      }
+    }
+    return list
+  }
+  return []
+}
 
 function startEditingCard() {
   isEditing.value = true
@@ -308,19 +318,6 @@ async function saveCardChanges() {
 }
 
 const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name
-      list.push({data: headline, index: i, spacing: depth, cards: itemCards})
-      revealedText.value.push({data: "...", index: i, spacing: depth, cards: undefined})
-      i++;
-
-      if (item.children.length > 0) {
-        list = list.concat(getContentList(item.children, depth + 1))
-      }
-    }
-    return list
-  }
-  return []
-}
-
 
 </script>
 
@@ -476,9 +473,8 @@ const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name
           <p
             v-if="reveal && card.type != 'Aufdeckkarte'"
             class="text-center text-justify text-pre-wrap"
-        <v-card-text
-          v-if="reveal"
-        >
+          />
+
           <p
             v-if="card && !isEditing"
             class="text-center text-justify"
@@ -499,7 +495,6 @@ const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name
           >
             card content
           </p>
-        </v-card-text>
         </template>
         <template v-else>
           card text
