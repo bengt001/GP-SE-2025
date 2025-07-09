@@ -1,6 +1,6 @@
 package de.techfak.gse.template.web.controller;
 
-import de.techfak.gse.template.domain.Usr;
+import de.techfak.gse.template.domain.entities.Usr;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

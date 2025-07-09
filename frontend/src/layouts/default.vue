@@ -11,10 +11,10 @@
           <div>
             <v-card
               max-width="150"
+              class="rounded-0"
             >
               <v-img
-                max-height="55"
-                color="white"
+                max-height="50"
                 src="@/assets/lexMeaWebsiteLogo.png"
                 alt="LexMea logo"
               />
@@ -24,14 +24,7 @@
 
 
         <div v-if="$vuetify.display.mdAndUp && userStore.authenticated">
-          Hallo,  {{ userStore.username }}!
-        </div>
-
-        <div v-if="$vuetify.display.mdAndUp">
-          <v-btn
-            icon="mdi-magnify"
-            variant="text"
-          />
+          Hallo, {{ userStore.username }}!
         </div>
 
         <div>
@@ -40,9 +33,16 @@
             to="/login"
           >
             <v-btn
-              icon="mdi-account"
+              icon
               color="white"
-            />
+            >
+              <v-avatar size="32">
+                <img
+                  src="/defaultIcon.svg"
+                  alt="Profilbild"
+                >
+              </v-avatar>
+            </v-btn>
           </router-link>
 
           <router-link
@@ -50,9 +50,18 @@
             to="/profile"
           >
             <v-btn
-              icon="mdi-account"
+              icon
               color="white"
-            />
+            >
+              <v-avatar size="32">
+                <img
+                  :src="(userStore.profilePicture ? userStore.profilePicture + '?t=' + profilePictureTimestamp : '/defaultIcon.svg')"
+                  alt="Profilbild"
+                  style="object-fit: cover; width: 100%; height: 100%;"
+                  @error="e => (e.target as HTMLImageElement).src = '/defaultIcon.svg'"
+                >
+              </v-avatar>
+            </v-btn>
           </router-link>
         </div>
       </v-app-bar>
@@ -81,9 +90,16 @@
             class="font-weight-light text-none font-weight-bold"
             :to="tab.to"
           >
-            <v-icon>
-              {{ tab.icon }}
-            </v-icon>
+            <div style="position: relative; display: inline-block;">
+              <v-icon>{{ tab.icon }}</v-icon>
+
+              <!-- Roten Punkt nur bei Benachrichtigungen anzeigen, wenn User angemeldet und ungelesene Nachrichten vorhanden -->
+              <span
+                v-if="tab.title === 'Benachrichtigungen' && notificationStore.hasUnread && userStore.authenticated"
+                class="red-dot"
+                aria-label="unread notifications"
+              />
+            </div>
             <div v-if="$vuetify.display.mdAndUp">
               {{ tab.title }}
             </div>
@@ -99,7 +115,14 @@
 
 <script lang="ts" setup>
 import {useUserStore} from "@/stores/users";
+import {useNotificationStore} from "@/stores/notifications";
+import {ref, watch} from 'vue'
+import {profilePictureTimestamp} from '@/stores/profilePictureStore'
+
+
 const userStore = useUserStore();
+const notificationStore = useNotificationStore();
+
 
 // Liste der Subheader-Tabs für for-Loop
 const subheader = ref(' ')
@@ -122,7 +145,7 @@ const subheader_tabs = ref([
   {
     title: 'Benachrichtigungen',
     icon: 'mdi-message-text',
-    to: ' ',
+    to: '/notification',
   },
   {
     title: 'Freunde',
@@ -138,13 +161,12 @@ const group = ref()
 const items = ref([
   {
     title: 'Bibliothek',
-    value: 'foo',
     children: [
       {
         title: 'Gesetze',
       },
       {
-        title:'Inhalte',
+        title: 'Inhalte',
       },
       {
         title: 'Chronik',
@@ -153,12 +175,10 @@ const items = ref([
     ]
   },
   {
-    title: 'Arbeitsbereich',
-    value: 'fizz',
+    title: 'Arbeitsbereich'
   },
   {
-    title: 'Lernbereich',
-    value: 'buzz',
+    title: 'Lernbereich'
   },
 ])
 
@@ -166,3 +186,14 @@ watch(group, () => {
   drawer.value = false
 })
 </script>
+
+<style scoped lang="sass">
+.red-dot
+  position: absolute
+  top: 0
+  right: 0
+  width: 8px
+  height: 8px
+  background-color: red
+  border-radius: 50%
+</style>

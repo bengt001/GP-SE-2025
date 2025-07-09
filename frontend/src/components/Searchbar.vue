@@ -8,7 +8,7 @@ export default {
   },
   methods: {
     changeValue() {
-      this.$emit("changeValue", this.searchValue)
+      this.$emit("changeValue", this.searchValue.toLowerCase())
     }
   }
 }

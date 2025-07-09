@@ -4,6 +4,7 @@ import {useDeckStore} from "@/stores/deck";
 import {useRoute} from "vue-router";
 import {ref} from 'vue'
 import {useUserStore} from "@/stores/users";
+import type Card from "@/types/Card";
 
 
 const colorNames = ['green', 'yellow', 'orange', 'red', 'grey'];
@@ -17,6 +18,33 @@ const route = useRoute<'/cards/[id]/'>()
 const id = route.params.id
 const DialogEnd = ref(false)
 const card = ref(cardStore.findCardById(parseInt(id)))
+const deck = ref()
+
+if (card.value && card.value.type == 'Aufdeckkarte') {
+  deck.value = deckStore.getDeckByOneID(card.value.deckID)
+}
+
+interface content {
+  data: string
+  index: number
+  spacing: number
+  cards?: Card[]
+}
+
+interface jsonTree {
+  data: string
+  children: jsonTree[]
+}
+
+const revealedText: Ref<content[]> = ref([])
+const contentList: Ref<content[]> = ref(getContentList(getHeadlines(), 0))
+const showCardBoxes = ref(false)
+const showBoxesMenu = ref(false)
+let linesRevealed = 0
+
+const romanNumbers: string[] = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"]
+const alphabetLower: string[] = "abcdefghijklmnopqrstuvwxyz".split("")
+
 const reveal = ref(false)
 const ratingArr = ref<number[]>([])
 const backPossible = ref(false)
@@ -26,6 +54,9 @@ const isEditing = ref(false)
 const editedText = ref(card.value?.text ?? '')
 const editedTitle = ref(card.value?.title ?? '')
 
+
+const earnedXp = ref<number | null>(null);
+const isRatingInProgress = ref(false);
 
 
 const cards = computed(() => cardStore.getCards())
@@ -75,6 +106,13 @@ watch(cards, newCards => {
 
 watch (() => route.params.id, (newId) => {
   card.value = cardStore.findCardById(parseInt(newId))
+  revealedText.value = []
+  linesRevealed = 0
+  contentList.value = getContentList(getHeadlines(), 0)
+  if (card.value && card.value.type == "Aufdeckkarte") {
+    deck.value = deckStore.getDeckByOneID(card.value.deckID)
+  }
+
 })
 
 function getLastRatingText(): string {
@@ -100,13 +138,23 @@ function getLastColor():string{
 function goBack(){
   DialogEnd.value = false
   backPossible.value = false
+  reveal.value = false
   cardStore.indexMinusOne()
   const prevId = cardStore.getCardAtIndex().id;
   router.replace(`/cards/${prevId}`);
 }
 
 function showAnswer() {
-  reveal.value = true;
+  if (card.value && card.value.type == "Aufdeckkarte") {
+    revealedText.value[linesRevealed] = contentList.value[linesRevealed]
+    linesRevealed++
+    if (linesRevealed >= contentList.value.length) {
+      reveal.value = true;
+    }
+
+  } else {
+    reveal.value = true;
+  }
 }
 
 function goHome() {
@@ -127,17 +175,110 @@ function nextCard() {
   }
   router.push('/cards/' + nextId)
   reveal.value = false
+  contentList.value = []
 }
 
-function rateCard(colorIndex: number) {
+async function rateCard(colorIndex: number) {
+  if (isRatingInProgress.value) {
+    console.log("RateCard blockiert – XP-Overlay noch aktiv.");
+    return;
+  }
+  isRatingInProgress.value = true;
+  console.log("TESTUNG LOG")
   ratingArr.value[cardStore.getCardIndex()] = colorIndex
   lastRating.value = colorIndex
+
+  const card = cardStore.getCardAtIndex()
+
   if(!userStore.authenticated) {
     const card = cardStore.getCardAtIndex()
     deckStore.rate(card.id,card.deckID,colorIndex)
+    nextCard();
+  } else {
+    try {
+      console.log("[Check respnse]: try block")
+      deckStore.rate(card.id,card.deckID,colorIndex)
+      //const gainedXp = await userStore.earnXp(card.type,  1, 4 - colorIndex)
+
+      console.log("[Check respone gainedXp revealed Length]: " + revealedText.value.length)
+
+      const uncoveredItems =
+        card.type === "Aufdeckkarte" ? revealedText.value.length : 1;
+
+      const gainedXp = await userStore.earnXp(
+        card.type,
+        uncoveredItems,
+        4 - colorIndex
+      );
+
+      earnedXp.value = gainedXp
+
+      console.log("[Check respone gainedXp]: " + gainedXp)
+      console.log("[Check response earnedXp]: " + earnedXp.value)
+      //XP für 2 Sekunden anzeigen
+      setTimeout(() => {
+        earnedXp.value = null
+        //nextCard();
+        isRatingInProgress.value = false;
+      }, 1500)
+      nextCard();
+
+    } catch (error) {
+      console.error("Fehler beim XP-Vergabe:", error)
+      nextCard();
+      isRatingInProgress.value = false;
+    }
   }
-  nextCard()
+  //nextCard()
 }
+
+
+function getHeadlines() {
+  if (card.value && card.value.type == "Aufdeckkarte") {
+    const root = JSON.parse(card.value.text)
+    console.log(root)
+    const content = root.children
+    return content[0].children
+  }
+}
+
+function getHeadlineNumber(depth: number, index: number): string {
+  const dot: string = "."
+  const open: string = "("
+  const close: string = ")"
+
+  switch (depth) {
+    case 0: return romanNumbers[index] + dot
+    case 1: return (index + 1) + dot
+    case 2: return alphabetLower[index] + close
+    case 3:
+      const c = alphabetLower[index]
+      return c + c + close
+    case 4: return open + alphabetLower[index] + close
+    case 5: return open + (index + 1) + close
+    case 6: return open + alphabetLower[index] + close
+    default: return ""
+  }
+}
+
+function getContentList(content: jsonTree[], depth: number): content[] {
+  if (content) {
+    let list: content[] = []
+
+    let i = 0;
+    for (const item of content) {
+      const itemCards: Card[] = []
+      const headline = item.data
+
+      if(deck.value) {
+        let cards: Card[] = deck.value.definitions
+        cards = cards.concat(deck.value.problems)
+        for (const c of cards) {
+          if (headline == c.ueberschrift) {
+            itemCards.push(c)
+          }
+        }
+      }
 
 
 function startEditingCard() {
@@ -167,6 +308,20 @@ async function saveCardChanges() {
 }
 
 const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name
+      list.push({data: headline, index: i, spacing: depth, cards: itemCards})
+      revealedText.value.push({data: "...", index: i, spacing: depth, cards: undefined})
+      i++;
+
+      if (item.children.length > 0) {
+        list = list.concat(getContentList(item.children, depth + 1))
+      }
+    }
+    return list
+  }
+  return []
+}
+
+
 </script>
 
 <template>
@@ -193,19 +348,31 @@ const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name
       / {{ cards.length }}
     </div>
   </div>
+
   <div class="card-button-wrap">
     <v-responsive class="card">
       <v-card
         class="mx-auto pa-4"
         color="grey_300"
         elevation="16"
-        style="width: 100%; max-width: 600px; max-height: 80vh; overflow-y: auto;"
+        style="width: 100%; max-width: 600px; overflow-y: auto;"
         :style="{borderColor: card?.color ?? 'transparent', borderStyle: 'solid', borderWidth: '10px'}"
-        @click="reveal = true"
+        @click="showAnswer()"
       >
+        <v-alert
+          v-if="earnedXp !== null"
+          type="success"
+          variant="elevated"
+          class="earned-xp-alert"
+          transition="fade-transition"
+        >
+          +{{ earnedXp }} XP erhalten!
+        </v-alert>
+
+
         <v-card-text>
           <p class="text-center">
-            {{ testDeckName }}
+            {{ card?.paragraph }}
           </p>
         </v-card-text>
 
@@ -265,6 +432,50 @@ const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name
           </h3>
         </v-card-title>
 
+        <template
+          v-if="card"
+        >
+          <v-card-text
+            v-if="card.type == 'Aufdeckkarte'"
+            class="text-pre-wrap"
+          >
+            <div
+              v-for="item in revealedText"
+              :key="item.data"
+            >
+              <h3> {{ "\t".repeat(item.spacing) + getHeadlineNumber(item.spacing, item.index) + " " + item.data }} </h3>
+              <div
+                v-if="item.cards && showCardBoxes"
+              >
+                <div
+                  v-for="cardBox in item.cards"
+                  :key="cardBox.title"
+                  class="ma-3"
+                >
+                  <v-card
+                    class="mx-auto"
+                  >
+                    <v-card-text
+                      class="text-decoration-underline"
+                    >
+                      {{ cardBox.type }}
+                    </v-card-text>
+                    <v-card-text
+                      class="font-weight-bold text-wrap"
+                    >
+                      {{ cardBox.title }}
+                    </v-card-text>
+                    <v-card-text>
+                      {{ cardBox.text }}
+                    </v-card-text>
+                  </v-card>
+                </div>
+              </div>
+            </div>
+          </v-card-text>
+          <p
+            v-if="reveal && card.type != 'Aufdeckkarte'"
+            class="text-center text-justify text-pre-wrap"
         <v-card-text
           v-if="reveal"
         >
@@ -289,6 +500,10 @@ const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name
             card content
           </p>
         </v-card-text>
+        </template>
+        <template v-else>
+          card text
+        </template>
       </v-card>
     </v-responsive>
 
@@ -359,6 +574,30 @@ const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name
             </v-btn>
           </div>
         </div>
+        <v-menu
+          v-if="card && card.type == 'Aufdeckkarte'"
+          v-model="showBoxesMenu"
+          :close-on-content-click="false"
+        >
+          <template #activator="{ props }">
+            <v-btn
+              v-bind="props"
+              icon="mdi-dots-horizontal"
+            />
+          </template>
+          <v-card>
+            <v-list>
+              <v-list-item>
+                <v-switch
+                  v-model="showCardBoxes"
+                  color="primary"
+                  label="Definitionen/Probleme"
+                  hide-details
+                />
+              </v-list-item>
+            </v-list>
+          </v-card>
+        </v-menu>
         <v-btn
           v-if="reveal"
           icon
@@ -512,6 +751,20 @@ const testDeckName = "Hausfriedensbruch (§ 123 StGB)" //TODO: load deck name
 </template>
 
 <style scoped lang="sass">
+.earned-xp-alert
+  position: absolute
+  top: 10px
+  left: 50%
+  transform: translateX(-50%)
+  z-index: 10
+  width: calc(100% - 32px)
+  background-color: #4CAF50
+  color: white
+  opacity: 1
+  padding: 8px
+  border-radius: 8px
+
+
 .progress-container
   width: 100%
   max-width: 600px

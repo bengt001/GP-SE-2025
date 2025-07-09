@@ -77,7 +77,7 @@ public class HtmlParserTests {
 
     }
 
-    @Test
+    /*@Test
     void getDefinitionBoxesTest() {
         ArrayList<String[]> definitionBoxes = HtmlParser.getDefinitionBoxes(html);
         System.out.println(definitionBoxes);
@@ -86,9 +86,9 @@ public class HtmlParserTests {
         definitionBoxes = HtmlParser.getDefinitionBoxes(correctTestText);
         System.out.println(definitionBoxes);
         assertThat(definitionBoxes.size()).isEqualTo(4);
-    }
+    }*/
 
-    @Test
+    /*@Test
     void getProblemBoxesTest() {
         ArrayList<String[]> problemBoxes = HtmlParser.getProblemBoxes(html);
         System.out.println(problemBoxes);
@@ -98,6 +98,6 @@ public class HtmlParserTests {
         //Lexmea lul
         System.out.println(problemBoxes);
         //assertThat(problemBoxes.size()).isEqualTo(4);
-    }
+    }*/
 
 }

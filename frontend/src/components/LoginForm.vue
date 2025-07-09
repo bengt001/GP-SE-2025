@@ -19,6 +19,7 @@ const loginSuccess_snack = ref(false)
 const regexEmail = new RegExp("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9]+\\.[a-zA-Z0-9]+")
 const regexPassword = new RegExp("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}")
 
+
 const router = useRouter()
 
 
@@ -34,7 +35,9 @@ function login() {
     login_snack.value = false
     loginSuccess_snack.value = true
     userStore.setNameEmail(username.value, email.value);
-    deckStore.get_my_active_decks()
+    userStore.loadProfile();
+    deckStore.abortDeckLoading()
+    deckStore.loadMyDecks()
     setTimeout(() => {
       router.push('/')
     }, 1000)
@@ -73,6 +76,8 @@ function register() {
             console.log('Token requestet')
             registerDone_snack.value = true
             userStore.setNameEmail(username.value, email.value);
+            userStore.loadProfile();
+            deckStore.clear_decks();
             setTimeout(() => {
               router.push('/')
             }, 1000)

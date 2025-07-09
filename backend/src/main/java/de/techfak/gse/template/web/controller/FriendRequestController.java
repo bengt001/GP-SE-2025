@@ -1,13 +1,18 @@
 package de.techfak.gse.template.web.controller;
 
-import de.techfak.gse.template.domain.*;
+import de.techfak.gse.template.domain.entities.Usr;
+import de.techfak.gse.template.domain.service.UserService;
+import de.techfak.gse.template.friends.FriendRequest;
+import de.techfak.gse.template.friends.FriendRequestService;
 import de.techfak.gse.template.web.command.FriendRequestCmd;
 import de.techfak.gse.template.web.command.FriendSendCmd;
+import de.techfak.gse.template.web.dto.FriendDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -74,9 +79,30 @@ public class FriendRequestController {
         friendRequestService.declineRequest(request);
     }
 
+    /*
     @GetMapping("/list")
     public Set<Usr> getFriends(@RequestParam String email) {
         Usr user = userService.loadUserByUsername(email);
         return friendRequestService.getFriends(user);
+    }
+
+     */
+
+    @GetMapping("/list")
+    public Set<FriendDto> getFriends(@RequestParam String email) {
+        Usr user = userService.loadUserByUsername(email);
+        Set<Usr> friends = friendRequestService.getFriends(user);
+
+        Set<FriendDto> friendDtos = new HashSet<>();
+        for (Usr friend : friends) {
+            FriendDto dto = new FriendDto(
+                    friend.getEmail(),
+                    friend.getStreakCount(),
+                    friend.getTotalXp()
+            );
+            friendDtos.add(dto);
+        }
+
+        return friendDtos;
     }
 }
