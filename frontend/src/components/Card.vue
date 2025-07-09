@@ -64,8 +64,8 @@ const cards = computed(() => cardStore.getCards())
 const curCardIndex = computed(() => cardStore.getCardIndex())
 const countGreen = computed(() => {
   let counted = 0
-  for(const rating of ratingArr.value){
-    if (rating === 0){
+  for (const rating of ratingArr.value) {
+    if (rating === 0) {
       counted += 1
     }
   }
@@ -73,8 +73,8 @@ const countGreen = computed(() => {
 })
 const countYellow = computed(() => {
   let counted = 0
-  for(const rating of ratingArr.value){
-    if (rating === 1){
+  for (const rating of ratingArr.value) {
+    if (rating === 1) {
       counted += 1
     }
   }
@@ -82,8 +82,8 @@ const countYellow = computed(() => {
 })
 const countOrange = computed(() => {
   let counted = 0
-  for(const rating of ratingArr.value){
-    if (rating === 2){
+  for (const rating of ratingArr.value) {
+    if (rating === 2) {
       counted += 1
     }
   }
@@ -91,8 +91,8 @@ const countOrange = computed(() => {
 })
 const countRed = computed(() => {
   let counted = 0
-  for(const rating of ratingArr.value){
-    if (rating === 3){
+  for (const rating of ratingArr.value) {
+    if (rating === 3) {
       counted += 1
     }
   }
@@ -102,10 +102,10 @@ const countRed = computed(() => {
 watch(cards, newCards => {
     ratingArr.value = Array(newCards.length).fill(4);
   },
-  { immediate: true }
+  {immediate: true}
 );
 
-watch (() => route.params.id, (newId) => {
+watch(() => route.params.id, (newId) => {
   card.value = cardStore.findCardById(parseInt(newId))
   editedTitle.value = card.value?.title ?? ''
   editedText.value = card.value?.text ?? ''
@@ -113,6 +113,7 @@ watch (() => route.params.id, (newId) => {
   revealedText.value = []
   linesRevealed = 0
   contentList.value = getContentList(getHeadlines(), 0)
+  reveal.value = false
   if (card.value && card.value.type == "Aufdeckkarte") {
     deck.value = deckStore.getDeckByOneID(card.value.deckID)
   }
@@ -129,17 +130,16 @@ function getLastRatingText(): string {
 
 }
 
-function getLastColor():string{
+function getLastColor(): string {
   const curCard = card.value
-  if(curCard){
+  if (curCard) {
     return colorsChip[curCard.lastRating]
-  }
-  else{
+  } else {
     return colorsChip[4]
   }
 }
 
-function goBack(){
+function goBack() {
   DialogEnd.value = false
   backPossible.value = false
   reveal.value = false
@@ -150,12 +150,16 @@ function goBack(){
 
 function showAnswer() {
   if (card.value && card.value.type == "Aufdeckkarte") {
-    revealedText.value[linesRevealed] = contentList.value[linesRevealed]
-    linesRevealed++
-    if (linesRevealed >= contentList.value.length) {
+    if (linesRevealed < contentList.value.length) {
+      revealedText.value[linesRevealed] = contentList.value[linesRevealed]
+      linesRevealed++
+      if (linesRevealed >= contentList.value.length) {
+        reveal.value = true;
+      }
+    } else {
+      // Already fully revealed, don't do anything
       reveal.value = true;
     }
-
   } else {
     reveal.value = true;
   }
@@ -166,7 +170,7 @@ function goHome() {
   router.push('/')
 }
 
-function showEndDialog(){
+function showEndDialog() {
   DialogEnd.value = true
 }
 
@@ -184,6 +188,7 @@ function nextCard() {
 
 async function rateCard(colorIndex: number) {
   if (isRatingInProgress.value) {
+    isRatingInProgress.value = false;
     console.log("RateCard blockiert – XP-Overlay noch aktiv.");
     return;
   }
@@ -194,14 +199,15 @@ async function rateCard(colorIndex: number) {
 
   const card = cardStore.getCardAtIndex()
 
-  if(!userStore.authenticated) {
+  if (!userStore.authenticated) {
     const card = cardStore.getCardAtIndex()
-    deckStore.rate(card.id,card.deckID,colorIndex)
+    deckStore.rate(card.id, card.deckID, colorIndex)
+    isRatingInProgress.value = false;
     nextCard();
   } else {
     try {
       console.log("[Check respnse]: try block")
-      deckStore.rate(card.id,card.deckID,colorIndex)
+      deckStore.rate(card.id, card.deckID, colorIndex)
       //const gainedXp = await userStore.earnXp(card.type,  1, 4 - colorIndex)
 
       console.log("[Check respone gainedXp revealed Length]: " + revealedText.value.length)
@@ -252,16 +258,23 @@ function getHeadlineNumber(depth: number, index: number): string {
   const close: string = ")"
 
   switch (depth) {
-    case 0: return romanNumbers[index] + dot
-    case 1: return (index + 1) + dot
-    case 2: return alphabetLower[index] + close
+    case 0:
+      return romanNumbers[index] + dot
+    case 1:
+      return (index + 1) + dot
+    case 2:
+      return alphabetLower[index] + close
     case 3:
       const c = alphabetLower[index]
       return c + c + close
-    case 4: return open + alphabetLower[index] + close
-    case 5: return open + (index + 1) + close
-    case 6: return open + alphabetLower[index] + close
-    default: return ""
+    case 4:
+      return open + alphabetLower[index] + close
+    case 5:
+      return open + (index + 1) + close
+    case 6:
+      return open + alphabetLower[index] + close
+    default:
+      return ""
   }
 }
 
@@ -273,7 +286,7 @@ function getContentList(content: jsonTree[], depth: number): content[] {
       const itemCards: Card[] = []
       const headline = item.data
 
-      if(deck.value) {
+      if (deck.value) {
         let cards: Card[] = deck.value.definitions
         cards = cards.concat(deck.value.problems)
         for (const c of cards) {
@@ -301,7 +314,7 @@ function startEditingCard() {
 
 function cancelEditingCard() {
   isEditing.value = false
-  if(card.value) {
+  if (card.value) {
     editedText.value = card.value.text
     editedTitle.value = card.value.title
   }
@@ -497,7 +510,7 @@ async function saveCardChanges() {
           />
 
           <p
-            v-if="card && !isEditing"
+            v-if="card && !isEditing && card.type !== 'Aufdeckkarte'"
             class="text-center text-justify"
           >
             {{ card.text }}
@@ -511,7 +524,7 @@ async function saveCardChanges() {
             rows="4"
           />
           <p
-            v-else
+            v-else-if="card && card.type !== 'Aufdeckkarte'"
             class="text-center"
           >
             card content
