@@ -10,10 +10,8 @@ declare module 'vue' {
     Adder: typeof import('./components/Adder.vue')['default']
     AddFriend: typeof import('./components/AddFriend.vue')['default']
     AppFooter: typeof import('./components/AppFooter.vue')['default']
-    BarPlot: typeof import('./components/sparkline')['default']
     Card: typeof import('./components/Card.vue')['default']
     ColoredSparkline: typeof import('./components/ColoredSparkline.vue')['default']
-    Deck: typeof import('./components/Deck.vue')['default']
     Decks: typeof import('./components/Decks.vue')['default']
     HelloWorld: typeof import('./components/HelloWorld.vue')['default']
     LoginForm: typeof import('./components/LoginForm.vue')['default']
@@ -22,10 +20,6 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     Searchbar: typeof import('./components/Searchbar.vue')['default']
-    SparkLine: typeof import('./components/SparkLine.vue')['default']
-    Stats: typeof import('./components/Stats.vue')['default']
     StatsComp: typeof import('./components/StatsComp.vue')['default']
-    StatsComponent: typeof import('./components/StatsComponent.vue')['default']
-    StatsCompt: typeof import('./components/StatsCompt.vue')['default']
   }
 }

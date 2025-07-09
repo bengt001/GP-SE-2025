@@ -86,15 +86,12 @@ toDisplay.value.forEach(deck => {
             <v-card-text>
               <v-sheet>
                 <ColoredSparkline
-                  :title="Definitionen"
+                  :title="'Karten'"
                   :values="totalRating"
                   :labels="labels"
                   :bar-colors="colorNames"
                 />
                 <div style="height: 16px" />
-                <div class="text-h4 font-weight-thin">
-                  Alle Karten
-                </div>
               </v-sheet>
             </v-card-text>
           </v-card>
@@ -140,7 +137,7 @@ toDisplay.value.forEach(deck => {
                         <v-expansion-panel-text>
                           <v-sheet>
                             <ColoredSparkline
-                              :title="Definitionen"
+                              :title="'Karten'"
                               :values="DeckStore.getDeckRating(toDisplay[n - 1])"
                               :labels="labels"
                               :bar-colors="colorNames"
@@ -190,7 +187,7 @@ toDisplay.value.forEach(deck => {
                           <v-expansion-panel-text>
                             <v-sheet>
                               <ColoredSparkline
-                                :title="Definitionen"
+                                :title="'Karten'"
                                 :values="DeckStore.getDeckRating(toDisplay[n - 1])"
                                 :labels="labels"
                                 :bar-colors="colorNames"
