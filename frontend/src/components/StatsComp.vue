@@ -12,9 +12,6 @@ const DeckStore = useDeckStore()
 const searchValue = ref("")
 
 const colorNames = ['green', 'yellow', 'orange', 'red', 'grey'];
-const value = ref([3,6,1,12,9,3,6])
-
-const cardValue = ref([3,6,1,12,9])
 const labels = ["Easy", "Good", "Hard", "Again", "not learned"];
 
 const allDecks = computed(() => DeckStore.getAllDecks())
@@ -54,14 +51,17 @@ toDisplay.value.forEach(deck => {
                 class="mx-auto text-center"
                 color="primary"
                 dark
-                style="width: 100%; max-width: 600px"
+                style="
+                width: 100%;
+                max-width: 600px"
               >
                 <v-card-title>Streak</v-card-title>
                 <v-card-text>
                   <v-icon start>
                     mdi-fire
                   </v-icon>
-                  {{ UserStore.streakCount }} {{ UserStore.streakCount === 1 ? 'Tag' : 'Tage' }}</v-card-text>
+                  {{ UserStore.streakCount }} {{ UserStore.streakCount === 1 ? 'Tag' : 'Tage' }}
+                </v-card-text>
               </v-card>
             </v-col>
             <v-col>
@@ -72,10 +72,11 @@ toDisplay.value.forEach(deck => {
                 style="width: 100%; max-width: 600px"
               >
                 <v-card-title>Total XP</v-card-title>
-                <v-card-text> {{ UserStore.totalXp }} </v-card-text>
+                <v-card-text>
+                  {{ UserStore.totalXp }}
+                </v-card-text>
               </v-card>
             </v-col>
-
           </v-row>
           <v-card
             class="mx-auto text-center"
@@ -196,7 +197,6 @@ toDisplay.value.forEach(deck => {
                           </v-expansion-panel-text>
                         </v-expansion-panel>
                       </v-expansion-panels>
-
                   </v-card>
                 </v-sheet>
               </v-col>

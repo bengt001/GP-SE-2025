@@ -17,14 +17,17 @@ const maxValue = Math.max(...props.values, 1) // avoid 0
 
 <template>
   <div class="sparkline-container">
-    <h3 class="sparkline-title">{{ title }}</h3>
+    <h3 class="sparkline-title">
+      {{ title }}
+    </h3>
 
     <svg
       class="sparkline-svg"
       :width="(barWidth + barGap) * values.length"
       :height="maxHeight"
     >
-      <g v-for="(val, idx) in values" :key="idx">
+      <g v-for="(val, idx) in values"
+         :key="idx">
         <rect
           :x="idx * (barWidth + barGap)"
           :y="maxHeight - (val / maxValue) * maxHeight"
