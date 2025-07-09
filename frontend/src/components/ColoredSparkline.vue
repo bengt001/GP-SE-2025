@@ -26,8 +26,10 @@ const maxValue = Math.max(...props.values, 1) // avoid 0
       :width="(barWidth + barGap) * values.length"
       :height="maxHeight"
     >
-      <g v-for="(val, idx) in values"
-         :key="idx">
+      <g
+        v-for="(val, idx) in values"
+        :key="idx"
+      >
         <rect
           :x="idx * (barWidth + barGap)"
           :y="maxHeight - (val / maxValue) * maxHeight"

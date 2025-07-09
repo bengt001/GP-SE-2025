@@ -650,10 +650,18 @@ function getContentList(content: jsonTree[], depth: number): content[] {
       </v-card-text>
       <v-card-actions>
         <v-responsive>
-          <v-btn @click="goBack()">
+          <v-btn
+            variant="outlined"
+            style="border-width: 0; outline: 2px solid; outline-offset: -4px; border-radius: 10px;"
+            @click="goBack()"
+          >
             Zurück zur letzten Karte
           </v-btn>
-          <v-btn @click="goHome()">
+          <v-btn
+            variant="outlined"
+            style="border-width: 0; outline: 2px solid; outline-offset: -4px; border-radius: 10px;"
+            @click="goHome()"
+          >
             Zurück zum Dashboard
           </v-btn>
         </v-responsive>

@@ -45,7 +45,11 @@ toDisplay.value.forEach(deck => {
       >
         <v-expansion-panel-title>Nutzer-Statistiken</v-expansion-panel-title>
         <v-expansion-panel-text>
-          <v-row justify="center" align="stretch" class="mb-4">
+          <v-row
+            justify="center"
+            align="stretch"
+            class="mb-4"
+          >
             <v-col>
               <v-card
                 class="mx-auto text-center"
@@ -180,23 +184,23 @@ toDisplay.value.forEach(deck => {
                     >
                       {{ toDisplay[n-1].title }}
                     </v-card-title>
-                      <v-expansion-panels elevation="0">
-                        <v-expansion-panel>
-                          <v-expansion-panel-title expand-icon="mdi-chevron-down">
-                            Karteninformationen
-                          </v-expansion-panel-title>
-                          <v-expansion-panel-text>
-                            <v-sheet>
-                              <ColoredSparkline
-                                :title="'Karten'"
-                                :values="DeckStore.getDeckRating(toDisplay[n - 1])"
-                                :labels="labels"
-                                :bar-colors="colorNames"
-                              />
-                            </v-sheet>
-                          </v-expansion-panel-text>
-                        </v-expansion-panel>
-                      </v-expansion-panels>
+                    <v-expansion-panels elevation="0">
+                      <v-expansion-panel>
+                        <v-expansion-panel-title expand-icon="mdi-chevron-down">
+                          Karteninformationen
+                        </v-expansion-panel-title>
+                        <v-expansion-panel-text>
+                          <v-sheet>
+                            <ColoredSparkline
+                              :title="'Karten'"
+                              :values="DeckStore.getDeckRating(toDisplay[n - 1])"
+                              :labels="labels"
+                              :bar-colors="colorNames"
+                            />
+                          </v-sheet>
+                        </v-expansion-panel-text>
+                      </v-expansion-panel>
+                    </v-expansion-panels>
                   </v-card>
                 </v-sheet>
               </v-col>
