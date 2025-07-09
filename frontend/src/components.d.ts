@@ -11,6 +11,7 @@ declare module 'vue' {
     AddFriend: typeof import('./components/AddFriend.vue')['default']
     AppFooter: typeof import('./components/AppFooter.vue')['default']
     Card: typeof import('./components/Card.vue')['default']
+    ColoredSparkline: typeof import('./components/ColoredSparkline.vue')['default']
     Decks: typeof import('./components/Decks.vue')['default']
     HelloWorld: typeof import('./components/HelloWorld.vue')['default']
     LoginForm: typeof import('./components/LoginForm.vue')['default']
@@ -19,5 +20,6 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     Searchbar: typeof import('./components/Searchbar.vue')['default']
+    StatsComp: typeof import('./components/StatsComp.vue')['default']
   }
 }
